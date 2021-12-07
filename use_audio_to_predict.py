@@ -3,6 +3,7 @@ import pyaudio
 import os
 import wave
 from sys import byteorder
+import sys
 from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier
@@ -29,7 +30,7 @@ if __name__ == "__main__":
                                             """Emotions to recognize separated by a comma ',', available emotions are
                                             "neutral", "calm", "happy" "sad", "angry", "fear", "disgust", "ps" (pleasant surprise)
                                             and "boredom", default is "sad,neutral,happy"
-                                            """, default="neutral,calm,happy,sad,angry,fear,disgust,ps,boredom" )
+                                            """, default=sys.argv[1] )
     parser.add_argument("-m", "--model", help=
                                         """
                                         The model to use, 8 models available are: "SVC","AdaBo
@@ -37,25 +38,25 @@ if __name__ == "__main__":
                                         ingClassifier","DecisionTreeClassifier","KNeighborsCla
                                         ssifier","MLPClassifier","BaggingClassifier", default
                                         is "BaggingClassifier"
-                                        """.format(estimators_str), default="BaggingClassifier")
+                                        """.format(estimators_str), default=sys.argv[2])
 
 
     # Parse the arguments passed
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     features = ["mfcc", "chroma", "mel"]
     detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), features=features, verbose=0)
     
-    # for SVC
-    # detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), features=features, verbose=0)
+    if(sys.argv[2]=="SVC"):
+        detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), features=features, verbose=0)
     detector.train()
     print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
 
 
 
-    filename = os.path.join('predict_from_audio_','emotion testing audio 44k', 'd1_DC-d0.wav')
-    result = detector.predict(filename)
+    #predict from filename passed in args
+    result = detector.predict(sys.argv[3])
     print(result)
-    print((detector.predict_proba(filename)).values())
-    # print(detector.confusion_matrix(percentage=True, labeled=True))
+    print((detector.predict_proba(sys.argv[3])).values())
+    

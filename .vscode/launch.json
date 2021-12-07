@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // The model to use, 8 models available are: "SVC","AdaBoostClassifier","RandomForestClassifier",
+    // "GradientBoostingClassifier","DecisionTreeClassifier","KNeighborsClassifier","MLPClassifier","BaggingClassifier"
+    // "neutral,calm,happy,sad,angry,fear,disgust,ps (pleasant surprise),boredom" 
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: model prediction",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "neutral,calm,happy,sad,angry,fear,disgust,ps,boredom",
+                "BaggingClassifier",
+                "predict_from_audio/emotion testing audio 44k/d1_DC_d08.wav"
+            ]
+        }
+    ]
+}
