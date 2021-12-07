@@ -2,10 +2,12 @@ from emotion_recognition import EmotionRecognizer
 import pyaudio
 import os
 import wave
+import glob
+import re
 from sys import byteorder
 from array import array
 from struct import pack
-from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier, AdaBoostClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
@@ -37,7 +39,7 @@ if __name__ == "__main__":
                                         ingClassifier","DecisionTreeClassifier","KNeighborsCla
                                         ssifier","MLPClassifier","BaggingClassifier", default
                                         is "BaggingClassifier"
-                                        """.format(estimators_str), default="BaggingClassifier")
+                                        """.format(estimators_str), default="KNeighborsClassifier")
 
 
     # Parse the arguments passed
@@ -47,15 +49,17 @@ if __name__ == "__main__":
     detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), features=features, verbose=0)
     
     # for SVC
-    # detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), features=features, verbose=0)
+    #detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), features=features, verbose=0)
     detector.train()
     print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
 
+    with open(file = 'predict_from_audio' + os.sep + 'output.txt', mode  = 'w') as file:
 
-
-    filename = os.path.join('predict_from_audio_','emotion testing audio 44k', 'd1_DC-d0.wav')
-    result = detector.predict(filename)
-    print(result)
-    print((detector.predict_proba(filename)).values())
-    # print(detector.confusion_matrix(percentage=True, labeled=True))
+        for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 44k/*"):
+            for value in (detector.predict_proba(filepath)).values():
+                file.write(str(value) + ",")
+            #output = str(list((detector.predict_proba(filepath)).values()))
+            file.write('\n')
+ 
+    #print(detector.confusion_matrix(percentage=True, labeled=True))
