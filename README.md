@@ -64,5 +64,5 @@ Using the edited model prediction.json file above, running:
 | --- | --- |
 | `use_audio_to_predict.py` | Outputs the predicted emotion for the audio file along with probability distribution of audio using the given model |
 | `use_audio_to_predict_deep.py` | Outputs the predicted emotion for the audio file along with probability distribution of audio using an RNN model |
-| `use_audio_to_predict_multiple.py` | Reads all the audio files `predict_from_audio/emotion testing audio 44k` and writes the emotion probability distribution to the file `predict_from_audio/emotion testing audio 44k`. I used this to make this [spreadsheet](https://docs.google.com/spreadsheets/d/1eKX86JusWnL_1YBtDadtsKyx1cQiSuedk0V_xlTiHLw/edit?usp=sharing) to find the best model. |
+| `use_audio_to_predict_multiple.py` | Reads all the audio files with the relevant emotion being tested`predict_from_audio/emotion testing audio 44k` and writes the emotion probability distribution to the file `predict_from_audio/emotion testing audio 44k/predictions.txt`. I used this to make this [spreadsheet](https://docs.google.com/spreadsheets/d/1eKX86JusWnL_1YBtDadtsKyx1cQiSuedk0V_xlTiHLw/edit?usp=sharing) to find the best model. |
 

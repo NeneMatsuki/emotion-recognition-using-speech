@@ -71,8 +71,10 @@ if __name__ == "__main__":
         emotions = emotions=args.emotions.split(",")
         for i in range(len(emotions)):
             for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 22k" + os.sep + emotions[i] + os.sep + "/*"):
+            # for filepath in glob.iglob("data" + os.sep + "training"+ os.sep + "Actor_01" + "/*"):
             # write probabilities in output
                 file.write(str(filepath) + ",")
-                for value in (detector.predict_proba(filepath)).values():
-                    file.write(str(value) + ",")
+                file.write(detector.predict(filepath))
+                # for value in (detector.predict_proba(filepath)).values():
+                #     file.write(str(value) + ",")
                 file.write('\n')           

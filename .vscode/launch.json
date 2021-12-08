@@ -22,7 +22,7 @@
             "console": "integratedTerminal",
             "args": [
                 "neutral,happy,sad,angry",
-                "MLPClassifier",
+                "BaggingClassifier",
                 "predict_from_audio/emotion testing audio 44k/disgust/d1_DC_d08.wav"
             ]
         }
