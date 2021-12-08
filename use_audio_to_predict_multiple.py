@@ -42,6 +42,11 @@ if __name__ == "__main__":
                                         is "BaggingClassifier"
                                         """.format(estimators_str), default=sys.argv[2])
 
+    parser.add_argument("--tess_ravdess", default = True)
+    parser.add_argument("--classification", default = True)
+    parser.add_argument("--custome_db", default = False)
+    parser.add_argument("--emodb", default = False)
+    
 
     # Parse the arguments passed
     args, unknown = parser.parse_known_args()
@@ -57,14 +62,17 @@ if __name__ == "__main__":
     detector.train()
     print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
+    
     # oprn file  
-    with open(file = 'predict_from_audio' + os.sep + 'output.txt', mode  = 'w') as file:
+    with open(file = 'predict_from_audio' + os.sep + 'predictions.txt', mode  = 'w') as file:
 
         # iterate through all the files
-        for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 44k/*"):
+
+        emotions = emotions=args.emotions.split(",")
+        for i in range(len(emotions)):
+            for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 22k" + os.sep + emotions[i] + os.sep + "/*"):
             # write probabilities in output
-            for value in (detector.predict_proba(filepath)).values():
-                file.write(str(value) + ",")
-            file.write('\n')
- 
-    #print(detector.confusion_matrix(percentage=True, labeled=True))
+                file.write(str(filepath) + ",")
+                for value in (detector.predict_proba(filepath)).values():
+                    file.write(str(value) + ",")
+                file.write('\n')           

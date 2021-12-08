@@ -40,6 +40,9 @@ if __name__ == "__main__":
                                         is "BaggingClassifier"
                                         """.format(estimators_str), default=sys.argv[2])
 
+    parser.add_argument("-t","--tess_ravdess", help= True)
+    parser.add_argument("-c","--classification", help= True)
+
 
     # Parse the arguments passed
     args, unknown = parser.parse_known_args()
@@ -52,11 +55,8 @@ if __name__ == "__main__":
     detector.train()
     print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
-
-
-
     #predict from filename passed in args
     result = detector.predict(sys.argv[3])
     print(result)
-    print((detector.predict_proba(sys.argv[3])).values())
+    print((detector.predict_proba(sys.argv[3])))
     

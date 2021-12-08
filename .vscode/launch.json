@@ -21,9 +21,9 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "neutral,calm,happy,sad,angry,fear,disgust,ps,boredom",
-                "BaggingClassifier",
-                "predict_from_audio/emotion testing audio 44k/d1_DC_d08.wav"
+                "neutral,happy,sad,angry",
+                "MLPClassifier",
+                "predict_from_audio/emotion testing audio 44k/disgust/d1_DC_d08.wav"
             ]
         }
     ]
