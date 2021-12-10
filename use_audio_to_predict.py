@@ -41,7 +41,7 @@ if __name__ == "__main__":
                                         """.format(estimators_str), default=sys.argv[2])
 
     parser.add_argument("-t","--tess_ravdess", help= True)
-    parser.add_argument("-c","--classification", help= True)
+    parser.add_argument("-c","--classification", help= False)
 
 
     # Parse the arguments passed

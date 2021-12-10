@@ -43,9 +43,10 @@ if __name__ == "__main__":
                                         """.format(estimators_str), default=sys.argv[2])
 
     parser.add_argument("--tess_ravdess", default = True)
-    parser.add_argument("--classification", default = True)
+    parser.add_argument("--classification", default = False)
     parser.add_argument("--custome_db", default = False)
     parser.add_argument("--emodb", default = False)
+    parser.add_argument("--balance", default = True)
     
 
     # Parse the arguments passed
@@ -69,12 +70,23 @@ if __name__ == "__main__":
         # iterate through all the files
 
         emotions = emotions=args.emotions.split(",")
+
+        file.write("results," + str(emotions) + "\n")
         for i in range(len(emotions)):
-            for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 22k" + os.sep + emotions[i] + os.sep + "/*"):
-            # for filepath in glob.iglob("data" + os.sep + "training"+ os.sep + "Actor_01" + "/*"):
+
+            # record emotions to predict to write to the putput file later
+            to_predict = emotions[i] + (8-len(emotions[i]))*(" ")
+
+            for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 44k" + os.sep + emotions[i] + os.sep + "/*"):
             # write probabilities in output
-                file.write(str(filepath) + ",")
-                file.write(detector.predict(filepath))
-                # for value in (detector.predict_proba(filepath)).values():
-                #     file.write(str(value) + ",")
-                file.write('\n')           
+
+                if(emotions[i]==detector.predict(filepath).lower()):
+                    file.write(to_predict + " correct  :" )
+                
+                else:
+                    file.write(to_predict + " incorrect:" )
+                
+                for value in (detector.predict_proba(filepath)).values():
+                    file.write(str(value) + ",")
+                file.write(str(filepath) + "\n")
+            

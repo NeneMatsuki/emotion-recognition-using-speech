@@ -21,8 +21,8 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "neutral,happy,sad,angry",
-                "BaggingClassifier",
+                "angry,happy,neutral,sad",
+                "GradientBoostingClassifier",
                 "predict_from_audio/emotion testing audio 44k/disgust/d1_DC_d08.wav"
             ]
         }
