@@ -20,16 +20,16 @@ a1_high_Dervla_emottsangry_0376.wav
 
 Where:
 
-| Emotion key | Meaning | Dataset these emotions were taken from |
-| ----------- | ------- | --- |
-| a | angry | soul machines deep learning dataset |
-| h | happy | soul machines deep learning dataset |
-| s | sad | soul machines deep learning dataset |
-| n | neutal | soul machines deep learning dataset |
-| d | digust | SAVEE dataset |
-| su | suprise| SAVEE dataset |
-| f | fear |  SAVEE dataset |
-| b-n | boring/neutral | soul machines deep learning dataset |
+| Emotion key | Meaning | 
+| ----------- | ------- | 
+| a | angry | 
+| h | happy |
+| s | sad | 
+| n | neutal | 
+| d | digust | 
+| su | suprise| 
+| f | fear |  
+| b | boredom| 
 
 
 
@@ -40,6 +40,7 @@ Please configure by going into the .json file `.vscode/launch.json`
 In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, audio file directory]
 
 For example, below configuration uses the Bagging Classifier model to predict emotions neutral,calm,happy,sad,angry,fear,disgust,ps,boredom from the file predict_from_audio/emotion testing audio 44k/d1_DC_d08.wav
+
 
 ```.json
         {
@@ -57,7 +58,9 @@ For example, below configuration uses the Bagging Classifier model to predict em
 
 ```
 
-## Functions to test models
+It is to note that the audio file directory is not required when running `use_audio_to_predict_multiple.py`
+
+## Files to test models
 
 Using the edited model prediction.json file above, running:
 | Function name | Description |
