@@ -87,7 +87,7 @@ def write_tess_ravdess_csv(emotions=["sad", "neutral", "happy"], train_name="tra
     pd.DataFrame(train_target).to_csv(train_name)
 
 
-def write_custom_csv(emotions=['sad', 'neutral', 'happy'], train_name="train_custom.csv", test_name="test_custom.csv",
+def write_custom_csv(emotions=['sad', 'neutral', 'happy','angry'], train_name="train_custom.csv", test_name="test_custom.csv",
                     verbose=1):
     """
     Reads Custom Audio data from data/*-custom and then writes description files (csv)

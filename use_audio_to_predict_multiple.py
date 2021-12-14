@@ -43,8 +43,8 @@ if __name__ == "__main__":
                                         """.format(estimators_str), default=sys.argv[2])
 
     parser.add_argument("--tess_ravdess", default = True)
-    parser.add_argument("--classification", default = False)
-    parser.add_argument("--custome_db", default = False)
+    parser.add_argument("--classification", default = True)
+    parser.add_argument("--custome_db", default = True)
     parser.add_argument("--emodb", default = False)
     parser.add_argument("--balance", default = True)
     
@@ -61,6 +61,7 @@ if __name__ == "__main__":
     
 
     detector.train()
+    print(detector.confusion_matrix())
     print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
     

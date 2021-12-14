@@ -22,8 +22,8 @@
             "console": "integratedTerminal",
             "args": [
                 "angry,happy,neutral,sad",
-                "GradientBoostingClassifier",
-                "predict_from_audio/emotion testing audio 44k/disgust/d1_DC_d08.wav"
+                "KNeighborsClassifier",
+                "predict_from_audio/emotion testing audio 44k/angry/a1_high_Dervla_emottsangry_0376.wav"
             ]
         }
     ]
