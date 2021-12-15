@@ -34,7 +34,7 @@
             "console": "integratedTerminal",
             "args": [
                 "angry,happy,neutral,sad",
-                "RNN",
+                "KNeighborsClassifier",
                 "excel"
             ]
         }

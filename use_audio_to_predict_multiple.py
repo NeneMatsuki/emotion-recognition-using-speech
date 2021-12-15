@@ -49,14 +49,14 @@ if __name__ == "__main__":
     parser.add_argument("--tess_ravdess", default = True)       # use tess/ravdess dataset
     parser.add_argument("--classification", default = True)     # use classification
     parser.add_argument("--custom_db", default = True)          # use custom dataset
-    #parser.add_argument("--emodb", default = True)              # use emodb
+    parser.add_argument("--emodb", default = True)              # use emodb
 
     
 
     # Parse the arguments passed
     args, unknown = parser.parse_known_args()
 
-    features = ["mfcc", "chroma", "mel"]
+    features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
 
       # Random Forest, Adaboost  Classifier not working
 

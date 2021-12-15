@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # Parse the arguments passed
     args, unknown = parser.parse_known_args()
 
-    features = ["mfcc", "chroma", "mel"]
+    features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
     
     # Random Forest, Adaboost  Classifier not working
 
