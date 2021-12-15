@@ -87,7 +87,7 @@ if __name__ == "__main__":
     if(sys.argv[3] == "excel"):
 
         # initialise workbook 
-        wb = load_workbook('prediction.xlsx')
+        wb = load_workbook('predict_from_audio/prediction.xlsx')
         wb.remove(wb['predictions'])
         wb.create_sheet('predictions')
         sheet = wb['predictions']
@@ -121,7 +121,7 @@ if __name__ == "__main__":
                 rows += 1
                 cols = 1
 
-        wb.save('prediction.xlsx')
+        wb.save('predict_from_audio/prediction.xlsx')
     
     else:
         # open file to write predictions on 
