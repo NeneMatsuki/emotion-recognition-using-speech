@@ -92,7 +92,7 @@ Then please run `use_audio_to_predict.py` using this configuration
 ## Testing the sentiment of multiple audio files
 
 Please go into the folder `predict_from_audio/emotion testing audio 44k` and put audio representing that emotion in the corresponding folder
-    .
+        
     ├── ...
     ├── predict_from_audio                    
     │   ├── emotion testing audio 44k          
@@ -104,7 +104,10 @@ Please go into the folder `predict_from_audio/emotion testing audio 44k` and put
     |       ├── neutral
     |       ├── pleasant suprise
     |       ├── sad
-    │   └── ...                
+    │       └── ...
+    │   └── ...  
+    └── ...      
+    
 
 In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, print to excel]
 
