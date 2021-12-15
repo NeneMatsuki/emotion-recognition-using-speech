@@ -22,6 +22,7 @@ Summary of model performance found in this [spreadsheet](https://docs.google.com
 - **tqdm==4.28.1**
 - **matplotlib==2.2.3**
 - **pyaudio==0.2.11**
+- **openpyxl**
 - **[ffmpeg](https://ffmpeg.org/) (optional)**: used if you want to add more sample audio by converting to 16000Hz sample rate and mono channel which is provided in ``convert_wavs.py``
 
 Install these libraries by the following command:
@@ -66,15 +67,10 @@ In this repository, we have used the most used features that are available in [l
 - BaggingRegressor
 - Recurrent Neural Networks (Keras)
 
-
-## Configuring model, emotions, and audio file test the audio
-
+## Testing the sentiment of a single audio file 
 Please configure by going into the .json file `.vscode/launch.json`
 
 In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, audio file directory]
-
-For example, below configuration uses the Bagging Classifier model to predict emotions neutral,calm,happy,sad,angry,fear,disgust,ps,boredom from the file predict_from_audio/emotion testing audio 44k/d1_DC_d08.wav
-
 
 ```.json
         {
@@ -91,14 +87,49 @@ For example, below configuration uses the Bagging Classifier model to predict em
         }
 
 ```
+Then please run `use_audio_to_predict.py` using this configuration
 
-It is to note that the audio file directory is not required when running `use_audio_to_predict_multiple.py`
+## Testing the sentiment of multiple audio files
 
-Using this configuration, please run scripts that predict audio sentiment which are:
+Please go into the folder `predict_from_audio/emotion testing audio 44k` and put audio representing that emotion in the corresponding folder
+        
+    ├── ...
+    ├── predict_from_audio                    
+    │   ├── emotion testing audio 44k          
+    │       ├── angry         
+    |       ├── boredom
+    |       ├── disgust
+    |       ├── fear
+    |       ├── happy
+    |       ├── neutral
+    |       ├── pleasant suprise
+    |       ├── sad
+    │       └── ...
+    │   └── ...  
+    └── ...      
+    
 
-| File name | Description |
-| --- | --- |
-| `use_audio_to_predict.py` | Outputs the predicted emotion for the audio file along with probability distribution of audio using the given model |
-| `use_audio_to_predict_deep.py` | Outputs the predicted emotion for the audio file along with probability distribution of audio using an RNN model |
-| `use_audio_to_predict_multiple.py` | Predicts emotion from all audio files in the folder `predict_from_audio/emotion testing audio 44k` and writes the probability distribution to the file `predict_from_audio/emotion testing audio 44k/predictions.txt`. I used this to make this [spreadsheet](https://docs.google.com/spreadsheets/d/1eKX86JusWnL_1YBtDadtsKyx1cQiSuedk0V_xlTiHLw/edit?usp=sharing). |
+In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, print to excel]
+
+```.json
+        {
+            "name": "Python: model prediction",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "neutral,calm,happy,sad,angry,fear,disgust,ps,boredom",
+                "BaggingClassifier",
+                "yes"
+            ]
+        }
+
+```
+
+**If printing to excel is yes**, The output for the emotion probability distribution is printed to an excel file which is saved in `predict_from_audio/emotion testing audio 44k/predictions.xlsx`( so it is easy to copy to another spreadsheet, need to pip install openpyxl for this. **otherwise** The distributions are recorded in a .txt file in `predict_from_audio/emotion testing audio 44k/predictions.txt`
+
+Please run `use_audio_to_predict.py` using this configuration
+
+Results of performance of different models are stored here[spreadsheet](https://docs.google.com/spreadsheets/d/1eKX86JusWnL_1YBtDadtsKyx1cQiSuedk0V_xlTiHLw/edit?usp=sharing). |
 
