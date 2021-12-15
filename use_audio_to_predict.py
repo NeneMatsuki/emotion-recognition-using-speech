@@ -1,4 +1,5 @@
 from emotion_recognition import EmotionRecognizer
+from deep_emotion_recognition import DeepEmotionRecognizer
 import pyaudio
 import os
 import wave
@@ -7,6 +8,7 @@ import sys
 from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
@@ -40,19 +42,34 @@ if __name__ == "__main__":
                                         is "BaggingClassifier"
                                         """.format(estimators_str), default=sys.argv[2])
 
-    parser.add_argument("-t","--tess_ravdess", help= True)
-    parser.add_argument("-c","--classification", help= False)
+    parser.add_argument("-t","--tess_ravdess", help= True)      # using tess and ravdess to train
+    parser.add_argument("-c","--classification", help= True)    # using classification method
 
 
     # Parse the arguments passed
     args, unknown = parser.parse_known_args()
 
     features = ["mfcc", "chroma", "mel"]
-    detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), features=features, verbose=0)
     
-    if(sys.argv[2]=="SVC"):
+    # Random Forest, Adaboost  Classifier not working
+
+    # if classifier is SVC need to parse probability as true to display probability
+    if(sys.argv[2] == "SVC"):
         detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), features=features, verbose=0)
+
+    # similar for decision tree classifier 
+    elif(sys.argv[2] == "DecisionTreeClassifier"):
+        detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), features=features, verbose=0)
+    
+    elif(sys.argv[2] == "RNN"):
+        detector = DeepEmotionRecognizer(emotions=(sys.argv[1]).split(","), emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
+
+    else:
+        detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), features=features, verbose=0)
+
+    # train the model and print the confusion matrix
     detector.train()
+    print(detector.confusion_matrix())
     print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
     #predict from filename passed in args
