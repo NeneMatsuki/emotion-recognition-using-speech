@@ -14,6 +14,7 @@ import tqdm
 import os
 import random
 import pandas as pd
+import pickle
 
 
 class EmotionRecognizer:
@@ -68,6 +69,8 @@ class EmotionRecognizer:
         self.custom_db_name = kwargs.get("custom_db_name", "custom.csv")
 
         self.verbose = kwargs.get("verbose", 1)
+
+        self.model_name = kwargs.get("model_name", "KNeighborsClassifier")
 
         # set metadata path file names
         self._set_metadata_filenames()
@@ -167,15 +170,19 @@ class EmotionRecognizer:
             self.load_data()
         if not self.model_trained:
             self.model.fit(X=self.X_train, y=self.y_train)
+            filename = os.path.join("models",f"{self.model_name}.sav")
+            pickle.dump(self.model, open(filename, 'wb'))
             self.model_trained = True
-            if verbose:
-                print("[+] Model trained")
+            # if verbose:
+            #     print("[+] Model trained")
 
     def predict(self, audio_path):
         """
         given an `audio_path`, this method extracts the features
         and predicts the emotion
         """
+        filename = os.path.join("models",f"{self.model_name}.sav")
+        self.model = pickle.load(open(filename, 'rb'))
         feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
         return self.model.predict(feature)[0]
 
@@ -183,6 +190,8 @@ class EmotionRecognizer:
         """
         Predicts the probability of each emotion.
         """
+        filename = os.path.join("models",f"{self.model_name}.sav")
+        self.model = pickle.load(open(filename, 'rb'))
         if self.classification:
             feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
             proba = self.model.predict_proba(feature)[0]

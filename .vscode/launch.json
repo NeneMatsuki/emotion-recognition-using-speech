@@ -22,8 +22,9 @@
             "console": "integratedTerminal",
             "args": [
                 "angry,happy,neutral,sad",
-                "MLPClassifier",
-                "predict_from_audio/emotion testing audio 44k/angry/a1_high_Dervla_emottsangry_0376.wav"
+                "MLP",
+                "predict_from_audio/emotion testing audio 44k/angry/a1_high_Dervla_emottsangry_0376.wav",
+                "yes"
             ]
         },
         {
@@ -34,7 +35,7 @@
             "console": "integratedTerminal",
             "args": [
                 "angry,happy,neutral,sad",
-                "BaggingClassifier",
+                "MLPClassifier",
                 "excel"
             ]
         }

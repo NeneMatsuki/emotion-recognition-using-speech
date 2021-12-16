@@ -50,6 +50,7 @@ if __name__ == "__main__":
     parser.add_argument("--classification", default = True)     # use classification
     parser.add_argument("--custom_db", default = True)          # use custom dataset
     parser.add_argument("--emodb", default = True)              # use emodb
+    parser.add_argument('--model_name', default = sys.argv[2])
 
     
 
@@ -73,12 +74,6 @@ if __name__ == "__main__":
 
     else:
         detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), features=features, verbose=0)
-    
-    # train the model and print the confusion matrix
-    detector.train()
-    print(detector.confusion_matrix())
-    print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
-
 
     # record emotions to be predicted 
     emotions = emotions=args.emotions.split(",")

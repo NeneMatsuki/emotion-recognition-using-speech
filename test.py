@@ -15,7 +15,7 @@ CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 16000
 
-SILENCE = 30
+SILENCE = 3
 
 def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"

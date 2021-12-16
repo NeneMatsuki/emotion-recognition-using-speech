@@ -12,6 +12,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+import time
 
 from utils import get_best_estimators
 
@@ -44,6 +45,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-t","--tess_ravdess", help= True)      # using tess and ravdess to train
     parser.add_argument("-c","--classification", help= True)    # using classification method
+    parser.add_argument('--model_name', default = sys.argv[2])
 
 
     # Parse the arguments passed
@@ -68,12 +70,13 @@ if __name__ == "__main__":
         detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), features=features, verbose=0)
 
     # train the model and print the confusion matrix
-    detector.train()
-    print(detector.confusion_matrix())
-    print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
     #predict from filename passed in args
-    result = detector.predict(sys.argv[3])
+    start_predict = time.perf_counter()
+    result = detector.predict_proba(sys.argv[3])
+    end_predict = time.perf_counter()
     print(result)
-    print((detector.predict_proba(sys.argv[3])))
+    print(max(result, key=result.get))
+
+    print("Time it took to predict:", end_predict - start_predict)
     
