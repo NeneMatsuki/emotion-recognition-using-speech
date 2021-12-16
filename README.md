@@ -22,7 +22,7 @@ Summary of model performance found in this [spreadsheet](https://docs.google.com
 - **tqdm==4.28.1**
 - **matplotlib==2.2.3**
 - **pyaudio==0.2.11**
-- **openpyxl**
+- **openpyxl (optional)** : used if preffered method of output after predicting multiple audio is excel
 - **[ffmpeg](https://ffmpeg.org/) (optional)**: used if you want to add more sample audio by converting to 16000Hz sample rate and mono channel which is provided in ``convert_wavs.py``
 
 Install these libraries by the following command:
@@ -67,7 +67,33 @@ In this repository, we have used the most used features that are available in [l
 - BaggingRegressor
 - Recurrent Neural Networks (Keras)
 
-## Testing the sentiment of a single audio file 
+## 1. Training the models 
+When predicting with a new combination of emotions or any new dataset is added (i.e model has not been trained yet) Please train the models first. This can be done by:
+
+In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotions]
+
+```.json
+        {
+            "name": "Python: model prediction",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "neutral,calm,happy,sad,angry,fear,disgust,ps,boredom"
+            ]
+        }
+
+```
+
+Then run `train.py` using this configuration
+
+This will also print the confusion matrix of each model
+
+.
+
+
+## 2. Testing the sentiment of a single audio file 
 Please configure by going into the .json file `.vscode/launch.json`
 
 In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, audio file directory]
@@ -87,9 +113,12 @@ In the "Python: model prediction" configuration, edit args in such a way that it
         }
 
 ```
+
 Then please run `use_audio_to_predict.py` using this configuration
 
-## Testing the sentiment of multiple audio files
+.
+
+## 3. Testing the sentiment of multiple audio files
 
 Please go into the folder `predict_from_audio/emotion testing audio 44k` and put audio representing that emotion in the corresponding folder
         
