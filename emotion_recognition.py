@@ -271,11 +271,14 @@ class EmotionRecognizer:
         if `self.classification` is True, the metric used is accuracy,
         Mean-Squared-Error is used otherwise (regression)
         """
+        filename = os.path.join("models",f"{self.model_name}.sav")
+        self.model = pickle.load(open(filename, 'rb'))
         y_pred = self.model.predict(self.X_test)
         if self.classification:
             return accuracy_score(y_true=self.y_test, y_pred=y_pred)
         else:
             return mean_squared_error(y_true=self.y_test, y_pred=y_pred)
+        
 
     def train_score(self):
         """

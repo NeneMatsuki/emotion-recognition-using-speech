@@ -1,5 +1,4 @@
-data/
+data/*
 .idea/
 .vscode/
 __pycache__/
-emottshappy_0011.wav

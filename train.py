@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     # iterate through all models
 
-    models = ["SVC","AdaBoostClassifier","RandomForestClassifier","GradientBoostingClassifier","DecisionTreeClassifier","KNeighborsClassifier","MLPClassifier","BaggingClassifier"]
+    models = ["SVC","AdaBoostClassifier","RandomForestClassifier","GradientBoostingClassifier","DecisionTreeClassifier","KNeighborsClassifier","MLPClassifier","BaggingClassifier", "RNN"]
     
     for model in models:
 

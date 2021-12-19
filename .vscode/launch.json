@@ -22,9 +22,8 @@
             "console": "integratedTerminal",
             "args": [
                 "angry,happy,neutral,sad",
-                "MLP",
-                "predict_from_audio/emotion testing audio 44k/angry/a1_high_Dervla_emottsangry_0376.wav",
-                "yes"
+                "KNeighborsClassifier",
+                "01_01_01_02_dogs-sitting_happy.wav",
             ]
         },
         {
@@ -35,7 +34,7 @@
             "console": "integratedTerminal",
             "args": [
                 "angry,happy,neutral,sad",
-                "MLPClassifier",
+                "SVC",
                 "excel"
             ]
         }
