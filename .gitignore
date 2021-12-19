@@ -1,5 +1,11 @@
-data/*
+data/
 .idea/
 .vscode/
 __pycache__/
-predict_from_audio/*
+predict_from_audio/
+test_custom.csv
+train_custom.csv
+test_emodb.csv
+train_emodb.csv
+train_tess_ravdess.csv
+test_tess_ravdess.csv
