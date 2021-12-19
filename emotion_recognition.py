@@ -15,6 +15,7 @@ import os
 import random
 import pandas as pd
 import pickle
+from sklearn.datasets import make_classification
 
 
 class EmotionRecognizer:

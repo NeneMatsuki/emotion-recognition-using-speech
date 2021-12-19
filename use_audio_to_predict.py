@@ -57,17 +57,17 @@ if __name__ == "__main__":
 
     # if classifier is SVC need to parse probability as true to display probability
     if(sys.argv[2] == "SVC"):
-        detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), features=features, verbose=0)
+        detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), model_name = args.model_name,  features=features , verbose=0)
 
     # similar for decision tree classifier 
     elif(sys.argv[2] == "DecisionTreeClassifier"):
-        detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), features=features, verbose=0)
+        detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
     
     elif(sys.argv[2] == "RNN"):
         detector = DeepEmotionRecognizer(emotions=(sys.argv[1]).split(","), emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
 
     else:
-        detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), features=features, verbose=0)
+        detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
 
     # train the model and print the confusion matrix
 

@@ -61,20 +61,19 @@ if __name__ == "__main__":
 
       # Random Forest, Adaboost  Classifier not working
 
-    # if classifier is SVC need to parse probability as true to display probability
+       # if classifier is SVC need to parse probability as true to display probability
     if(sys.argv[2] == "SVC"):
-        detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), features=features, verbose=0)
+        detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), model_name = args.model_name,  features=features , verbose=0)
 
     # similar for decision tree classifier 
     elif(sys.argv[2] == "DecisionTreeClassifier"):
-        detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), features=features, verbose=0)
+        detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
     
     elif(sys.argv[2] == "RNN"):
         detector = DeepEmotionRecognizer(emotions=(sys.argv[1]).split(","), emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
 
     else:
-        detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), features=features, verbose=0)
-
+        detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
     # record emotions to be predicted 
     emotions = emotions=args.emotions.split(",")
 
@@ -124,15 +123,15 @@ if __name__ == "__main__":
 
             # iterate through all the files
             file.write("results," + str(emotions) + "\n")
-            for i in range(len(emotions)):
+            for emotion in emotions:
 
                 # record emotions to predict to write to the putput file later
-                to_predict = emotions[i] + (8-len(emotions[i]))*(" ")
+                to_predict = emotion + (8-len(emotions))*(" ")
 
-                for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 44k" + os.sep + emotions[i] + os.sep + "/*"):
+                for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 44k" + os.sep + emotions + os.sep + "/*"):
                     
                     # write if prediction was correct
-                    if(emotions[i]==detector.predict(filepath).lower()):
+                    if(emotions==detector.predict(filepath).lower()):
                         file.write(to_predict + " correct  :" )
                     else:
                         file.write(to_predict + " incorrect:" )
