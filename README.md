@@ -10,24 +10,26 @@ Summary of model performance found in this [spreadsheet](https://docs.google.com
 - This is useful for many industry fields such as making product recommendations, affective computing, etc.
 - Check this [tutorial](https://www.thepythoncode.com/article/building-a-speech-emotion-recognizer-using-sklearn) for more information.
 ## Requirements
-- **Python 3.6+**
+- **Python 3.6+, tried and works with Python 3.8, 3.9**
 ### Python Packages
 - **tensorflow**
-- **librosa==0.6.3**
+- **librosa**
 - **numpy**
 - **pandas**
-- **soundfile==0.9.0**
+- **soundfile**
 - **wave**
 - **sklearn**
-- **tqdm==4.28.1**
-- **matplotlib==2.2.3**
-- **pyaudio==0.2.11**
+- **tqdm**
+- **matplotlib**
+- **pipwin**
+- **librosa**
 - **openpyxl (optional)** : used if preffered method of output after predicting multiple audio is excel
 - **[ffmpeg](https://ffmpeg.org/) (optional)**: used if you want to add more sample audio by converting to 16000Hz sample rate and mono channel which is provided in ``convert_wavs.py``
 
-Install these libraries by the following command:
+Install these libraries and pyaudio by the following command:
 ```
 pip3 install -r requirements.txt
+pipwin install pyaudio
 ```
 
 ### Dataset
