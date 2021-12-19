@@ -56,6 +56,7 @@ if __name__ == "__main__":
     # Random Forest, Adaboost  Classifier not working
 
     # if classifier is SVC need to parse probability as true to display probability
+ # if classifier is SVC need to parse probability as true to display probability
     if(sys.argv[2] == "SVC"):
         detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), model_name = args.model_name,  features=features , verbose=0)
 

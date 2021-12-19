@@ -15,7 +15,7 @@ CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 16000
 
-SILENCE = 3
+SILENCE = 5
 
 def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
@@ -77,7 +77,7 @@ def record():
         input=True, output=True,
         frames_per_buffer=CHUNK_SIZE)
 
-    num_silent = 0
+    num_silent = 4
     snd_started = False
 
     r = array('h')
@@ -140,24 +140,25 @@ if __name__ == "__main__":
                                             """Emotions to recognize separated by a comma ',', available emotions are
                                             "neutral", "calm", "happy" "sad", "angry", "fear", "disgust", "ps" (pleasant surprise)
                                             and "boredom", default is "sad,neutral,happy"
-                                            """, default="sad,neutral,happy")
+                                            """, default="sad,neutral,happy,angry")
     parser.add_argument("-m", "--model", help=
                                         """
                                         The model to use, 8 models available are: {},
                                         default is "BaggingClassifier"
                                         """.format(estimators_str), default="BaggingClassifier")
+    parser.add_argument('--model_name', default = "BaggingClassifier")
 
 
     # Parse the arguments passed
     args = parser.parse_args()
 
     features = ["mfcc", "chroma", "mel"]
-    detector = EmotionRecognizer(estimator_dict[args.model], emotions=args.emotions.split(","), features=features, verbose=0)
-    detector.train()
-    print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
+    detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+    #detector.train()
+    #print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
     print("Please talk")
     
     filename = "test.wav"
     record_to_file(filename)
-    result = detector.predict(filename)
+    result = detector.predict_proba(filename)
     print(result)
