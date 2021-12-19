@@ -21,8 +21,8 @@ if __name__ == "__main__":
 
     # iterate through all models
 
-    #models = ["SVC","AdaBoostClassifier","RandomForestClassifier","GradientBoostingClassifier","DecisionTreeClassifier","KNeighborsClassifier","MLPClassifier","BaggingClassifier"]
-    models = ["RandomForestClassifier"]
+    models = ["SVC","AdaBoostClassifier","RandomForestClassifier","GradientBoostingClassifier","DecisionTreeClassifier","KNeighborsClassifier","MLPClassifier","BaggingClassifier"]
+    #models = ["RandomForestClassifier"]
     for model in models:
 
         estimators = get_best_estimators(True)

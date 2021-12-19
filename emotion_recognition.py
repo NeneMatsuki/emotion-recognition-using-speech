@@ -1,5 +1,5 @@
 from data_extractor import load_data
-from utils import extract_feature, AVAILABLE_EMOTIONS
+from utils import extract_feature, AVAILABLE_EMOTIONS, extract_feature_audio
 from create_csv import write_emodb_csv, write_tess_ravdess_csv, write_custom_csv
 
 from sklearn.metrics import accuracy_score, make_scorer, fbeta_score, mean_squared_error, mean_absolute_error
@@ -195,6 +195,22 @@ class EmotionRecognizer:
         self.model = pickle.load(open(filename, 'rb'))
         if self.classification:
             feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
+            proba = self.model.predict_proba(feature)[0]
+            result = {}
+            for emotion, prob in zip(self.model.classes_, proba):
+                result[emotion] = prob
+            return result
+        else:
+            raise NotImplementedError("Probability prediction doesn't make sense for regression")
+
+    def predict_proba_audio(self, audio):
+        """
+        Predicts the probability of each emotion.
+        """
+        filename = os.path.join("models",f"{self.model_name}.sav")
+        self.model = pickle.load(open(filename, 'rb'))
+        if self.classification:
+            feature = extract_feature_audio(np.array(audio, "float32"), **self.audio_config).reshape(1, -1)
             proba = self.model.predict_proba(feature)[0]
             result = {}
             for emotion, prob in zip(self.model.classes_, proba):

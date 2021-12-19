@@ -121,6 +121,12 @@ def record_to_file(path):
     wf.writeframes(data)
     wf.close()
 
+def record_and_predict():
+    "Records from the microphone and outputs the resulting data to 'path'"
+    sample_width, data = record()
+    return data
+
+
 
 def get_estimators_name(estimators):
     result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
@@ -129,6 +135,9 @@ def get_estimators_name(estimators):
 
 
 if __name__ == "__main__":
+
+    model = "MLPClassifier"
+
     estimators = get_best_estimators(True)
     estimators_str, estimator_dict = get_estimators_name(estimators)
     import argparse
@@ -145,20 +154,22 @@ if __name__ == "__main__":
                                         """
                                         The model to use, 8 models available are: {},
                                         default is "BaggingClassifier"
-                                        """.format(estimators_str), default="BaggingClassifier")
-    parser.add_argument('--model_name', default = "BaggingClassifier")
+                                        """.format(estimators_str), default=model)
+    parser.add_argument('--model_name', default = model)
 
 
     # Parse the arguments passed
     args = parser.parse_args()
 
-    features = ["mfcc", "chroma", "mel"]
+    features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
     detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
     #detector.train()
     #print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
     print("Please talk")
     
-    filename = "test.wav"
-    record_to_file(filename)
-    result = detector.predict_proba(filename)
+    # filename = "test.wav"
+    # record_to_file(filename)
+    # result = detector.predict_proba(filename)
+    data = record_and_predict()
+    result = detector.predict_proba_audio(data)
     print(result)
