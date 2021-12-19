@@ -3,3 +3,5 @@ data/*
 .vscode/
 __pycache__/
 predict_from_audio/*
+*.csv
+test.wav
