@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     # iterate through all models
 
-    models = ["SVC","AdaBoostClassifier","RandomForestClassifier","GradientBoostingClassifier","DecisionTreeClassifier","KNeighborsClassifier","MLPClassifier","BaggingClassifier"]
+    models = ["KNeighborsClassifier","SVC","AdaBoostClassifier","RandomForestClassifier","GradientBoostingClassifier","DecisionTreeClassifier","MLPClassifier","BaggingClassifier"]
     #models = ["RandomForestClassifier"]
     for model in models:
 
@@ -36,7 +36,7 @@ if __name__ == "__main__":
                                                 """Emotions to recognize separated by a comma ',', available emotions are
                                                 "neutral", "calm", "happy" "sad", "angry", "fear", "disgust", "ps" (pleasant surprise)
                                                 and "boredom", default is "sad,neutral,happy"
-                                                """, default=sys.argv[1] )
+                                                """, default= "angry,happy,neutral,sad" )
         parser.add_argument("-m", "--model", help=
                                             """
                                             The model to use, 8 models available are: "SVC","AdaBo
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
             
             elif(model == "RNN"):
-                detector = DeepEmotionRecognizer(emotions=(sys.argv[1]).split(","), emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
+                detector = DeepEmotionRecognizer(emotions=(sys.argv[1]).split(","), model_name = args.model_name,  emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
 
             else:
                 detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
