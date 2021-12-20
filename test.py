@@ -7,6 +7,7 @@ from sys import byteorder
 from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier
+import time
 
 from utils import get_best_estimators
 
@@ -121,11 +122,6 @@ def record_to_file(path):
     wf.writeframes(data)
     wf.close()
 
-def record_and_predict():
-    "Records from the microphone and outputs the resulting data to 'path'"
-    sample_width, data = record()
-    return data
-
 
 
 def get_estimators_name(estimators):
@@ -170,6 +166,11 @@ if __name__ == "__main__":
     # filename = "test.wav"
     # record_to_file(filename)
     # result = detector.predict_proba(filename)
-    data = record_and_predict()
+    sample_width, data = record()
+
+    start_predict = time.perf_counter()
     result = detector.predict_proba_audio(data)
+    end_predict = time.perf_counter()
+
+    print("Time it took to predict:", end_predict - start_predict)
     print(result)
