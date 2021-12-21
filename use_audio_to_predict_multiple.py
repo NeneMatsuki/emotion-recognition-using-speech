@@ -50,7 +50,7 @@ if __name__ == "__main__":
     parser.add_argument("--classification", default = True)     # use classification
     parser.add_argument("--custom_db", default = True)          # use custom dataset
     parser.add_argument("--emodb", default = True)              # use emodb
-    parser.add_argument('--model_name', default = sys.argv[2])
+    parser.add_argument('--model_name', default = os.path.join(sys.argv[4],sys.argv[2]))
 
     
 

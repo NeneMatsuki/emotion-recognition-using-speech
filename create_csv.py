@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 
-def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name="train_emo.csv",
+def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name=os.path.join("data","train_emo.csv"),
                     test_name="test_emo.csv", train_size=0.8, verbose=1):
     """
     Reads speech emodb dataset from directory and write it to a metadata CSV file.
@@ -54,8 +54,8 @@ def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name="train_emo.
     pd.DataFrame({"path": X_test, "emotion": y_test}).to_csv(test_name)
 
 
-def write_tess_ravdess_csv(emotions=["sad", "neutral", "happy"], train_name="train_tess_ravdess.csv",
-                            test_name="test_tess_ravdess.csv", verbose=1):
+def write_tess_ravdess_csv(emotions=["sad", "neutral", "happy"], train_name= os.path.join("data","train_tess_ravdess.csv"),
+                            test_name= os.path.join("data","test_tess_ravdess.csv"), verbose=1):
     """
     Reads speech TESS & RAVDESS datasets from directory and write it to a metadata CSV file.
     params:
@@ -87,7 +87,7 @@ def write_tess_ravdess_csv(emotions=["sad", "neutral", "happy"], train_name="tra
     pd.DataFrame(train_target).to_csv(train_name)
 
 
-def write_custom_csv(emotions=['sad', 'neutral', 'happy','angry'], train_name="train_custom.csv", test_name="test_custom.csv",
+def write_custom_csv(emotions=['sad', 'neutral', 'happy','angry'], train_name= os.path.join("data", "train_custom.csv"), test_name= os.path.join("data", "test_custom.csv"),
                     verbose=1):
     """
     Reads Custom Audio data from data/*-custom and then writes description files (csv)
