@@ -1,6 +1,6 @@
 from emotion_recognition import EmotionRecognizer
 from deep_emotion_recognition import DeepEmotionRecognizer
-import pyaudio
+import librosa
 import os
 import wave
 import glob
@@ -16,6 +16,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
+import matplotlib.pyplot as plt
+import time
 
 from utils import get_best_estimators
 
@@ -59,6 +61,9 @@ if __name__ == "__main__":
 
     features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
 
+    time_taken = []
+    duration = []
+
       # Random Forest, Adaboost  Classifier not working
 
        # if classifier is SVC need to parse probability as true to display probability
@@ -96,10 +101,20 @@ if __name__ == "__main__":
 
             # for the filepath containing that emotion
             for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 44k" + os.sep + emotions[i] + os.sep + "/*"):
+                # record the emotion in the excel sheet
                 sheet[get_column_letter(i + 3) + "1"] =  emotions[i]
 
                 # record emotion to be predicted and if the prediction was correct
-                if(emotions[i]==detector.predict(filepath).lower()):
+
+                duration.append(librosa.get_duration(filename = filepath))
+
+                # record prediction probability
+                start_predict = time.perf_counter()
+                predictions = detector.predict_proba(filepath)
+                end_predict = time.perf_counter()
+
+
+                if(emotions[i]==max(predictions, key=predictions.get).lower()):
                     sheet[get_column_letter(cols) + str(rows)] = str(emotions[i])
                     sheet[get_column_letter(cols + 1) + str(rows)] = "correct"
                     cols += 2        
@@ -107,9 +122,10 @@ if __name__ == "__main__":
                     sheet[get_column_letter(cols) + str(rows)] = str(emotions[i])
                     sheet[get_column_letter(cols + 1) + str(rows)] = "incorrect"
                     cols += 2
-                
-                # record prediction probability
-                for value in (detector.predict_proba(filepath)).values():
+
+                time_taken.append(end_predict - start_predict)
+
+                for value in (predictions).values():
                     sheet[get_column_letter(cols) + str(rows)] = value
                     cols += 1
                 rows += 1
@@ -140,6 +156,8 @@ if __name__ == "__main__":
                     for value in (detector.predict_proba(filepath)).values():
                         file.write(str(value) + ",")
                     file.write(str(filepath) + "\n")
+    
+
 
 
 

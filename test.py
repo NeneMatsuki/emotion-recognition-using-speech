@@ -165,7 +165,7 @@ if __name__ == "__main__":
     
     # filename = "test.wav"
     # record_to_file(filename)
-    # result = detector.predict_proba(filename)
+    # result = detector.predict_proba(filename
     sample_width, data = record()
 
     start_predict = time.perf_counter()

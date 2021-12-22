@@ -73,6 +73,8 @@ class EmotionRecognizer:
 
         self.model_name = kwargs.get("model_name", "KNeighborsClassifier")
 
+
+
         # set metadata path file names
         self._set_metadata_filenames()
         # write csv's anyway
@@ -86,7 +88,9 @@ class EmotionRecognizer:
         if not model:
             self.determine_best_model()
         else:
-            self.model = model
+            #self.model = model
+            filename = os.path.join("models",f"{self.model_name}.sav")
+            self.model = pickle.load(open(filename, 'rb'))
 
     def _set_metadata_filenames(self):
         """
@@ -182,8 +186,6 @@ class EmotionRecognizer:
         given an `audio_path`, this method extracts the features
         and predicts the emotion
         """
-        filename = os.path.join("models",f"{self.model_name}.sav")
-        self.model = pickle.load(open(filename, 'rb'))
         feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
         return self.model.predict(feature)[0]
 
@@ -191,15 +193,13 @@ class EmotionRecognizer:
         """
         Predicts the probability of each emotion.
         """
-        filename = os.path.join("models",f"{self.model_name}.sav")
-        self.model = pickle.load(open(filename, 'rb'))
         if self.classification:
             feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
             proba = self.model.predict_proba(feature)[0]
-            result = {}
-            for emotion, prob in zip(self.model.classes_, proba):
-                result[emotion] = prob
-            return result
+            # result = {}
+            # for emotion, prob in zip(self.model.classes_, proba):
+            #     result[emotion] = prob
+            return dict(zip(self.emotions, proba))
         else:
             raise NotImplementedError("Probability prediction doesn't make sense for regression")
 
@@ -207,8 +207,6 @@ class EmotionRecognizer:
         """
         Predicts the probability of each emotion.
         """
-        filename = os.path.join("models",f"{self.model_name}.sav")
-        self.model = pickle.load(open(filename, 'rb'))
         if self.classification:
             feature = extract_feature_audio(np.array(audio, "float32"), **self.audio_config).reshape(1, -1)
             proba = self.model.predict_proba(feature)[0]
@@ -288,8 +286,6 @@ class EmotionRecognizer:
         if `self.classification` is True, the metric used is accuracy,
         Mean-Squared-Error is used otherwise (regression)
         """
-        filename = os.path.join("models",f"{self.model_name}.sav")
-        self.model = pickle.load(open(filename, 'rb'))
         y_pred = self.model.predict(self.X_test)
         if self.classification:
             return accuracy_score(y_true=self.y_test, y_pred=y_pred)
