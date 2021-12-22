@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--model_name', default = os.path.join(sys.argv[4],sys.argv[2]))
     # Parse the arguments passed
-    args = parser.parse_args()
+    args = parser.parse_known_args()
 
     features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
     detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
