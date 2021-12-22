@@ -12,19 +12,19 @@ Summary of model performance found in this [spreadsheet](https://docs.google.com
 ## Requirements
 - **Python 3.6+, tried and works with Python 3.8, 3.9**
 ### Python Packages
-- **tensorflow**
-- **librosa**
-- **numpy**
-- **pandas**
-- **soundfile**
-- **wave**
-- **sklearn**
-- **tqdm**
-- **matplotlib**
-- **pipwin**
-- **librosa**
-- **openpyxl (optional)** : used if preffered method of output after predicting multiple audio is excel
-- **[ffmpeg](https://ffmpeg.org/) (optional)**: used if you want to add more sample audio by converting to 16000Hz sample rate and mono channel which is provided in ``convert_wavs.py``
+- librosa==0.8.1
+- numpy==1.18.5
+- pandas==1.3.4
+- soundfile==0.10.3.post1
+- wave==0.0.2
+- sklearn==0.0
+- tqdm==4.62.3
+- matplotlib==3.5.0
+- tensorflow==2.3.0
+- pyaudio==0.2.11
+- scikit-learn==1.0.1
+- openpyxl==3.0.9 (optional) : used if preffered method of output after predicting multiple audio is excel
+- [ffmpeg](https://ffmpeg.org/) (optional): used if you want to add more sample audio by converting to 16000Hz sample rate and mono channel which is provided in ``convert_wavs.py``
 
 Install these libraries and pyaudio by the following command:
 ```
@@ -98,19 +98,21 @@ This will also print the confusion matrix of each model
 ## 2. Testing the sentiment of a single audio file 
 Please configure by going into the .json file `.vscode/launch.json`
 
-In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, audio file directory]
+In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, audio file directory, audio resolution to use]
+models for 16k and 44k are available.
 
 ```.json
         {
-            "name": "Python: model prediction",
+            "name": "Python: model prediction single",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "neutral,calm,happy,sad,angry,fear,disgust,ps,boredom",
-                "BaggingClassifier",
-                "predict_from_audio/emotion testing audio 44k/d1_DC_d08.wav"
+                "angry,happy,neutral,sad",
+                "KNeighborsClassifier",
+                "a1_high_Dervla_emottsangry_0376.wav",
+                "16k"
             ]
         }
 
@@ -140,11 +142,11 @@ Please go into the folder `predict_from_audio/emotion testing audio 44k` and put
     └── ...      
     
 
-In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, print to excel]
+In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, print to excel (yes if excel), model resolution to use]
 
 ```.json
         {
-            "name": "Python: model prediction",
+            "name": "Python: model prediction multiple",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -152,7 +154,8 @@ In the "Python: model prediction" configuration, edit args in such a way that it
             "args": [
                 "neutral,calm,happy,sad,angry,fear,disgust,ps,boredom",
                 "BaggingClassifier",
-                "yes"
+                "excel",
+                "16k"
             ]
         }
 
