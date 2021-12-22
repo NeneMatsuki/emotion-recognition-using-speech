@@ -100,7 +100,7 @@ if __name__ == "__main__":
         for i in range(len(emotions)):
 
             # for the filepath containing that emotion
-            for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 44k" + os.sep + emotions[i] + os.sep + "/*"):
+            for filepath in glob.iglob("predict_from_audio" + os.sep + "emotion testing audio 16k" + os.sep + emotions[i] + os.sep + "/*"):
                 # record the emotion in the excel sheet
                 sheet[get_column_letter(i + 3) + "1"] =  emotions[i]
 

@@ -8,6 +8,7 @@ from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier
 import time
+import sys
 
 from utils import get_best_estimators
 
@@ -132,7 +133,7 @@ def get_estimators_name(estimators):
 
 if __name__ == "__main__":
 
-    model = "MLPClassifier"
+    model = sys.argv[2]
 
     estimators = get_best_estimators(True)
     estimators_str, estimator_dict = get_estimators_name(estimators)
@@ -151,9 +152,8 @@ if __name__ == "__main__":
                                         The model to use, 8 models available are: {},
                                         default is "BaggingClassifier"
                                         """.format(estimators_str), default=model)
-    parser.add_argument('--model_name', default = model)
 
-
+    parser.add_argument('--model_name', default = os.path.join(sys.argv[4],sys.argv[2]))
     # Parse the arguments passed
     args = parser.parse_args()
 
