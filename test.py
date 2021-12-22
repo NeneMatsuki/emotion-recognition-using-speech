@@ -133,10 +133,9 @@ def get_estimators_name(estimators):
 
 if __name__ == "__main__":
 
-    model = sys.argv[2]
-
     estimators = get_best_estimators(True)
     estimators_str, estimator_dict = get_estimators_name(estimators)
+    print(estimators_str)
     import argparse
     parser = argparse.ArgumentParser(description="""
                                     Testing emotion recognition system using your voice, 
@@ -146,16 +145,26 @@ if __name__ == "__main__":
                                             """Emotions to recognize separated by a comma ',', available emotions are
                                             "neutral", "calm", "happy" "sad", "angry", "fear", "disgust", "ps" (pleasant surprise)
                                             and "boredom", default is "sad,neutral,happy"
-                                            """, default="sad,neutral,happy,angry")
+                                            """, default=sys.argv[1] )
     parser.add_argument("-m", "--model", help=
                                         """
-                                        The model to use, 8 models available are: {},
-                                        default is "BaggingClassifier"
-                                        """.format(estimators_str), default=model)
+                                        The model to use, 8 models available are: "SVC","AdaBo
+                                        ostClassifier","RandomForestClassifier","GradientBoost
+                                        ingClassifier","DecisionTreeClassifier","KNeighborsCla
+                                        ssifier","MLPClassifier","BaggingClassifier", default
+                                        is "BaggingClassifier"
+                                        """.format(estimators_str), default=sys.argv[2])
 
+    parser.add_argument("--tess_ravdess", default = True)       # use tess/ravdess dataset
+    parser.add_argument("--classification", default = True)     # use classification
+    parser.add_argument("--custom_db", default = True)          # use custom dataset
+    parser.add_argument("--emodb", default = True)              # use emodb
     parser.add_argument('--model_name', default = os.path.join(sys.argv[4],sys.argv[2]))
+
+    
+
     # Parse the arguments passed
-    args = parser.parse_known_args()
+    args, unknown = parser.parse_known_args()
 
     features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
     detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
