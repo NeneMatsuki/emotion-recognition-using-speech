@@ -17,7 +17,7 @@ CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 16000
 
-SILENCE = 5
+SILENCE = 3
 
 def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
@@ -79,7 +79,7 @@ def record():
         input=True, output=True,
         frames_per_buffer=CHUNK_SIZE)
 
-    num_silent = 4
+    num_silent = 0
     snd_started = False
 
     r = array('h')
@@ -123,6 +123,16 @@ def record_to_file(path):
     wf.writeframes(data)
     wf.close()
 
+def recording_to_file(sample_width, data, path):
+    "Records from the microphone and outputs the resulting data to 'path'"
+    data = pack('<' + ('h'*len(data)), *data)
+
+    wf = wave.open(path, 'wb')
+    wf.setnchannels(1)
+    wf.setsampwidth(sample_width)
+    wf.setframerate(RATE)
+    wf.writeframes(data)
+    wf.close()
 
 
 def get_estimators_name(estimators):
@@ -168,18 +178,21 @@ if __name__ == "__main__":
 
     features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
     detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
-    detector.train()
-    print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
+    # detector.train()
+    # print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
     print("Please talk")
-    
-    # filename = "test.wav"
-    # record_to_file(filename)
-    # result = detector.predict_proba(filename
     sample_width, data = record()
 
+    filename = "test.wav"
+    recording_to_file(sample_width, data, filename)
     start_predict = time.perf_counter()
-    result = detector.predict_proba_audio(data)
+    result_file = detector.predict_proba(filename)
     end_predict = time.perf_counter()
 
+    # start_predict = time.perf_counter()
+    #result_audio = detector.predict_proba_audio(data)
+    # end_predict = time.perf_counter()
+
     print("Time it took to predict:", end_predict - start_predict)
-    print(result)
+    print(f"from file {result_file}")
+    #print(f"from audio {result_audio}")
