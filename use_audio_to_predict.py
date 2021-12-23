@@ -26,12 +26,12 @@ if __name__ == "__main__":
     with open('predict_single.json') as config_file:
         data = json.load(config_file)
         model =     data["model"].format(estimators_str)
+        model_ver = data["model_ver"]
         emotions =  data['emotions'].split(",")
         audio =     data["audio"]
-        frequency = data["frequency"]
         features =  data["features"].split(",")
     
-    model_name = os.path.join(frequency,model)
+    model_name = os.path.join(model_ver,model)
     
     # Random Forest, Adaboost  Classifier not working
     # if classifier is SVC need to parse probability as true to display probability
