@@ -1,7 +1,10 @@
 {
     "model"     :"MLPClassifier",
+    "model_ver" :"16k_3feat",
     "emotions"  :"angry,happy,neutral,sad",
-    "audio"     :"predict_from_audio/emotion testing audio 16k/angry/a1_high_Dervla_emottsangry_0376.wav",
     "frequency" :"16k",
-    "features"  :"mfcc,chroma,mel,contrast,tonnetz"
+    "features"  :"mfcc,chroma,mel",
+
+    "__comment": "for single predictions",
+    "audio"     :"predict_from_audio/emotion testing audio 16k/angry/a1_high_Dervla_emottsangry_0376.wav"
 }
