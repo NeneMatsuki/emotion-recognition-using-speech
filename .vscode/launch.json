@@ -22,9 +22,9 @@
             "console": "integratedTerminal",
             "args": [
                 "angry,happy,neutral,sad",
-                "KNeighborsClassifier",
+                "MLPClassifier",
                 "a1_high_Dervla_emottsangry_0376.wav",
-                "44k"
+                "16k"
              
             ]
         },
@@ -36,7 +36,7 @@
             "console": "integratedTerminal",
             "args": [
                 "angry,happy,neutral,sad",
-                "KNeighborsClassifier",
+                "SVC",
                 "excel",
                 "16k"
             ]

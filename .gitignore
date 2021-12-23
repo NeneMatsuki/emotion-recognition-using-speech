@@ -2,6 +2,6 @@ data/*
 .idea/
 .vscode/
 __pycache__/
-predict_from_audio/*
+predict_from_audio/emotion testing audio 22k
 *.csv
 test.wav

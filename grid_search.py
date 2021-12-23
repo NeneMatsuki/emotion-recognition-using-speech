@@ -13,7 +13,8 @@ from emotion_recognition import EmotionRecognizer
 from parameters import classification_grid_parameters, regression_grid_parameters
 
 # emotion classes you want to perform grid search on
-emotions = ['sad', 'neutral', 'happy']
+emotions = ["angry",'happy','neutral','sad']
+features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
 # number of parallel jobs during the grid search
 n_jobs = 4
 
@@ -24,7 +25,7 @@ for model, params in classification_grid_parameters.items():
         # in case of a K-Nearest neighbors algorithm
         # set number of neighbors to the length of emotions
         params['n_neighbors'] = [len(emotions)]
-    d = EmotionRecognizer(model, emotions=emotions)
+    d = EmotionRecognizer(model, emotions=emotions,model_name = f"grid/{model.__class__.__name__}", features = features)
     d.load_data()
     best_estimator, best_params, cv_best_score = d.grid_search(params=params, n_jobs=n_jobs)
     best_estimators.append((best_estimator, best_params, cv_best_score))

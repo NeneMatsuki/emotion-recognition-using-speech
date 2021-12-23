@@ -87,7 +87,7 @@ if __name__ == "__main__":
     #predictions = detector.predict_proba('01_01_01_02_dogs-sitting_happy.wav')
 
     for emotion in emotions:
-        for filepath in glob.iglob(os.path.join("predict_from_audio", f"emotion testing audio {sys.argv[4]}", f"{emotion}/*")):
+        for filepath in glob.iglob(os.path.join("predict_from_audio", f"emotion testing audio 16k", f"{emotion}/*")):
 
             # record emotion to be predicted and if the prediction was correct
             duration.append(librosa.get_duration(filename = filepath))

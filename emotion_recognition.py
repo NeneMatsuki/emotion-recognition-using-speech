@@ -74,7 +74,6 @@ class EmotionRecognizer:
         self.model_name = kwargs.get("model_name", "KNeighborsClassifier")
 
 
-
         # set metadata path file names
         self._set_metadata_filenames()
         # write csv's anyway
@@ -90,7 +89,11 @@ class EmotionRecognizer:
         else:
             #self.model = model
             filename = os.path.join("models",f"{self.model_name}.sav")
-            self.model = pickle.load(open(filename, 'rb'))
+            try:
+                self.model = pickle.load(open(filename, 'rb'))
+            except Exception as e:
+
+                self.model = model
 
     def _set_metadata_filenames(self):
         """
@@ -196,9 +199,6 @@ class EmotionRecognizer:
         if self.classification:
             feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
             proba = self.model.predict_proba(feature)[0]
-            # result = {}
-            # for emotion, prob in zip(self.model.classes_, proba):
-            #     result[emotion] = prob
             return dict(zip(self.emotions, proba))
         else:
             raise NotImplementedError("Probability prediction doesn't make sense for regression")

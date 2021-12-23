@@ -176,10 +176,13 @@ if __name__ == "__main__":
     # Parse the arguments passed
     args, unknown = parser.parse_known_args()
 
-    features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
-    detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
-    # detector.train()
-    # print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
+    #features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
+    #detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+    
+    features = ["mfcc", "chroma", "mel"]
+    detector = EmotionRecognizer(estimator_dict["MLPClassifier"] , emotions=args.emotions.split(","), model_name = "16k_3feat/MLPClassifier", features=features, verbose=0)
+    detector.train()
+    print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
     print("Please talk")
     sample_width, data = record()
 
