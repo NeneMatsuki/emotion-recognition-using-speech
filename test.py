@@ -152,20 +152,13 @@ if __name__ == "__main__":
         model =     data["model"].format(estimators_str)
         model_ver = data["model_ver"]
         emotions =  data['emotions'].split(",")
-        audio =     data["audio"]
         features =  data["features"].split(",")
 
     model_name = os.path.join(model_ver,model)
     
-
- 
-
-    #features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
-    #detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
     
     detector = EmotionRecognizer(estimator_dict[model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
-    detector.train()
-    print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
+    
     print("Please talk")
     sample_width, data = record()
 
@@ -179,6 +172,16 @@ if __name__ == "__main__":
     #result_audio = detector.predict_proba_audio(data)
     # end_predict = time.perf_counter()
 
-    print("Time it took to predict:", end_predict - start_predict)
-    print(f"from file {result_file}")
+    print(f"{result_file}")
     #print(f"from audio {result_audio}")
+
+    maximum = max(result_file, key=result_file.get)
+    max_value = result_file[maximum]
+    del result_file[maximum]
+
+    second = max(result_file, key=result_file.get)
+    second_value = result_file[second]
+
+    print(f"\nfirst prediction  : {maximum} \nsecond prediction : {second} \ndifference is {(max_value - second_value)*100} %")
+
+    print(f"\nTime it took to predict: {end_predict - start_predict} s")
