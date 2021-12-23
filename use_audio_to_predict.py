@@ -23,7 +23,7 @@ if __name__ == "__main__":
     estimators_str, estimator_dict = get_estimators_name(estimators)
     print(estimators_str)
 
-    with open('predict_single.json') as config_file:
+    with open('predict.json') as config_file:
         data = json.load(config_file)
         model =     data["model"].format(estimators_str)
         model_ver = data["model_ver"]

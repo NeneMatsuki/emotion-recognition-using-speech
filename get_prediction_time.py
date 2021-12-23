@@ -29,7 +29,7 @@ if __name__ == "__main__":
     estimators_str, estimator_dict = get_estimators_name(estimators)
     print(estimators_str)
 
-    with open('predict_single.json') as config_file:
+    with open('predict.json') as config_file:
         data = json.load(config_file)
         model =     data["model"].format(estimators_str)
         emotions =  data['emotions'].split(",")
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     emotions = ["neutral","calm","happy","sad","angry","fear",'disgust','ps','boredom']
 
     for emotion in emotions:
-        for filepath in glob.iglob(os.path.join("predict_from_audio", f"emotion testing audio 16k", f"{emotion}/*")):
+        for filepath in glob.iglob(os.path.join("predict_from_audio", f"emotion testing audio {frequency}", f"{emotion}/*")):
 
             # record emotion to be predicted and if the prediction was correct
             duration.append(librosa.get_duration(filename = filepath))

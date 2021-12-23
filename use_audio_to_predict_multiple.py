@@ -1,12 +1,8 @@
 from emotion_recognition import EmotionRecognizer
 from deep_emotion_recognition import DeepEmotionRecognizer
-import librosa
 import os
-import wave
 import glob
-import re
-from sys import byteorder
-import sys
+import json
 from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier, AdaBoostClassifier
@@ -29,61 +25,39 @@ if __name__ == "__main__":
     estimators = get_best_estimators(True)
     estimators_str, estimator_dict = get_estimators_name(estimators)
     print(estimators_str)
-    import argparse
-    parser = argparse.ArgumentParser(description="""
-                                    Testing emotion recognition system using your voice, 
-                                    please consider changing the model and/or parameters as you wish.
-                                    """)
-    parser.add_argument("-e", "--emotions", help=
-                                            """Emotions to recognize separated by a comma ',', available emotions are
-                                            "neutral", "calm", "happy" "sad", "angry", "fear", "disgust", "ps" (pleasant surprise)
-                                            and "boredom", default is "sad,neutral,happy"
-                                            """, default=sys.argv[1] )
-    parser.add_argument("-m", "--model", help=
-                                        """
-                                        The model to use, 8 models available are: "SVC","AdaBo
-                                        ostClassifier","RandomForestClassifier","GradientBoost
-                                        ingClassifier","DecisionTreeClassifier","KNeighborsCla
-                                        ssifier","MLPClassifier","BaggingClassifier", default
-                                        is "BaggingClassifier"
-                                        """.format(estimators_str), default=sys.argv[2])
-
-    parser.add_argument("--tess_ravdess", default = True)       # use tess/ravdess dataset
-    parser.add_argument("--classification", default = True)     # use classification
-    parser.add_argument("--custom_db", default = True)          # use custom dataset
-    parser.add_argument("--emodb", default = True)              # use emodb
-    parser.add_argument('--model_name', default = os.path.join(sys.argv[4],sys.argv[2]))
+    with open('predict.json') as config_file:
+        data = json.load(config_file)
+        model =     data["model"].format(estimators_str)
+        emotions =  data['emotions'].split(",")
+        frequency = data["frequency"]
+        features =  data["features"].split(",")
+        model_ver = data["model_ver"]
+        output  =   data["output"]
 
     
 
     # Parse the arguments passed
-    args, unknown = parser.parse_known_args()
+    model_name = os.path.join(model_ver,model)
 
-    features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
 
-    time_taken = []
-    duration = []
-
-      # Random Forest, Adaboost  Classifier not working
-
-       # if classifier is SVC need to parse probability as true to display probability
-    if(sys.argv[2] == "SVC"):
-        detector = EmotionRecognizer(model = SVC(probability = True) , emotions=args.emotions.split(","), model_name = args.model_name,  features=features , verbose=0)
+    # if classifier is SVC need to parse probability as true to display probability
+    if(model == "SVC"):
+        detector = EmotionRecognizer(model = SVC(probability = True) , emotions=emotions, model_name = model_name,  features=features , verbose=0)
 
     # similar for decision tree classifier 
-    elif(sys.argv[2] == "DecisionTreeClassifier"):
-        detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+    elif(model == "DecisionTreeClassifier"):
+        detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_name = model_name, features=features, verbose=0)
     
-    elif(sys.argv[2] == "RNN"):
-        detector = DeepEmotionRecognizer(emotions=(sys.argv[1]).split(","), emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
+    elif(model == "RNN"):
+        detector = DeepEmotionRecognizer(emotions, emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
 
     else:
-        detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+        detector = EmotionRecognizer(estimator_dict[model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
     # record emotions to be predicted 
-    emotions = emotions=args.emotions.split(",")
+    emotions = emotions=emotions
 
     # if form of output is excel
-    if(sys.argv[3] == "excel"):
+    if(output == "excel"):
 
         # initialise workbook 
         wb = load_workbook('predict_from_audio/prediction.xlsx')
@@ -104,15 +78,8 @@ if __name__ == "__main__":
                 # record the emotion in the excel sheet
                 sheet[get_column_letter(i + 3) + "1"] =  emotions[i]
 
-                # record emotion to be predicted and if the prediction was correct
-
-                duration.append(librosa.get_duration(filename = filepath))
-
                 # record prediction probability
-                start_predict = time.perf_counter()
                 predictions = detector.predict_proba(filepath)
-                end_predict = time.perf_counter()
-
 
                 if(emotions[i]==max(predictions, key=predictions.get).lower()):
                     sheet[get_column_letter(cols) + str(rows)] = str(emotions[i])
@@ -123,8 +90,6 @@ if __name__ == "__main__":
                     sheet[get_column_letter(cols + 1) + str(rows)] = "incorrect"
                     cols += 2
 
-                time_taken.append(end_predict - start_predict)
-
                 for value in (predictions).values():
                     sheet[get_column_letter(cols) + str(rows)] = value
                     cols += 1
@@ -132,6 +97,7 @@ if __name__ == "__main__":
                 cols = 1
 
         wb.save('predict_from_audio/prediction.xlsx')
+        print('predictions saved to predict_from_audio/prediction.xlsx')
     
     else:
         # open file to write predictions on 
@@ -156,6 +122,8 @@ if __name__ == "__main__":
                     for value in (detector.predict_proba(filepath)).values():
                         file.write(str(value) + ",")
                     file.write(str(filepath) + "\n")
+                
+        print('predictions saved to predict_from_audio/prediction.txt')
     
 
 
