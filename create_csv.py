@@ -1,7 +1,11 @@
 import glob
 import pandas as pd
 import os
+import json
 
+with open('predict.json') as config_file:
+    data = json.load(config_file)
+    frequency = data["frequency"]
 
 def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name="train_emo.csv",
                     test_name="test_emo.csv", train_size=0.8, verbose=1):
@@ -29,7 +33,7 @@ def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name="train_emo.
     for emotion, code in categories_reversed.items():
         if emotion not in emotions:
             del categories[code]
-    for file in glob.glob("data/emodb/wav/*.wav"):
+    for file in glob.glob(f"data/{frequency}/emodb/wav/*.wav"):
         try:
             emotion = categories[os.path.basename(file)[5]]
         except KeyError:
@@ -69,7 +73,7 @@ def write_tess_ravdess_csv(emotions=["sad", "neutral", "happy"], train_name="tra
     
     for category in emotions:
         # for training speech directory
-        total_files = glob.glob(f"data/training/Actor_*/*_{category}.wav")
+        total_files = glob.glob(f"data/{frequency}/training/Actor_*/*_{category}.wav")
         for i, path in enumerate(total_files):
             train_target["path"].append(path)
             train_target["emotion"].append(category)
@@ -77,7 +81,7 @@ def write_tess_ravdess_csv(emotions=["sad", "neutral", "happy"], train_name="tra
             print(f"[TESS&RAVDESS] There are {len(total_files)} training audio files for category:{category}")
     
         # for validation speech directory
-        total_files = glob.glob(f"data/validation/Actor_*/*_{category}.wav")
+        total_files = glob.glob(f"data/{frequency}/validation/Actor_*/*_{category}.wav")
         for i, path in enumerate(total_files):
             test_target["path"].append(path)
             test_target["emotion"].append(category)
@@ -101,7 +105,7 @@ def write_custom_csv(emotions=['sad', 'neutral', 'happy','angry'], train_name="t
     test_target = {"path": [], "emotion": []}
     for category in emotions:
         # train data
-        for i, file in enumerate(glob.glob(f"data/train-custom/*_{category}.wav")):
+        for i, file in enumerate(glob.glob(f"data/{frequency}/train-custom/*_{category}.wav")):
             train_target["path"].append(file)
             train_target["emotion"].append(category)
         if verbose:
@@ -112,7 +116,7 @@ def write_custom_csv(emotions=['sad', 'neutral', 'happy','angry'], train_name="t
                 pass
         
         # test data
-        for i, file in enumerate(glob.glob(f"data/test-custom/*_{category}.wav")):
+        for i, file in enumerate(glob.glob(f"data/{frequency}/test-custom/*_{category}.wav")):
             test_target["path"].append(file)
             test_target["emotion"].append(category)
         if verbose:

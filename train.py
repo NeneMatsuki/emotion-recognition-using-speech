@@ -1,8 +1,8 @@
 from emotion_recognition import EmotionRecognizer
 from deep_emotion_recognition import DeepEmotionRecognizer
 from sys import byteorder
-import sys
-from array import array
+import json
+import os
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -22,58 +22,37 @@ if __name__ == "__main__":
     # iterate through all models
 
     models = ["KNeighborsClassifier","SVC","GradientBoostingClassifier","DecisionTreeClassifier","MLPClassifier","BaggingClassifier"]
+
+    estimators = get_best_estimators(True)
+    estimators_str, estimator_dict = get_estimators_name(estimators)
+
+    with open('predict.json') as config_file:
+        data = json.load(config_file)
+        model_ver = data["model_ver"]
+        emotions =  data['emotions'].split(",")
+        features =  data["features"].split(",")
+
     #models = ["RandomForestClassifier"]
     for model in models:
-
-        estimators = get_best_estimators(True)
-        estimators_str, estimator_dict = get_estimators_name(estimators)
+        model_name = os.path.join(model_ver,model)
         
-        parser = argparse.ArgumentParser(description="""
-                                        Testing emotion recognition system using your voice, 
-                                        please consider changing the model and/or parameters as you wish.
-                                        """)
-        parser.add_argument("-e", "--emotions", help=
-                                                """Emotions to recognize separated by a comma ',', available emotions are
-                                                "neutral", "calm", "happy" "sad", "angry", "fear", "disgust", "ps" (pleasant surprise)
-                                                and "boredom", default is "sad,neutral,happy"
-                                                """, default= "angry,happy,neutral,sad" )
-        parser.add_argument("-m", "--model", help=
-                                            """
-                                            The model to use, 8 models available are: "SVC","AdaBo
-                                            ostClassifier","RandomForestClassifier","GradientBoost
-                                            ingClassifier","DecisionTreeClassifier","KNeighborsCla
-                                            ssifier","MLPClassifier","BaggingClassifier", default
-                                            is "BaggingClassifier"
-                                            """.format(estimators_str), default=model)
-
-        parser.add_argument("--tess_ravdess", default = True)       # use tess/ravdess dataset
-        parser.add_argument("--classification", default = True)     # use classification
-        parser.add_argument("--custom_db", default = True)          # use custom dataset
-        parser.add_argument("--emodb", default = True)              # use emodb
-        parser.add_argument("-n", '--model_name', default = "16k_3feat/" + model)
-
-
-        # Parse the arguments passed
-        args, unknown = parser.parse_known_args()
-
-        features = ["mfcc", "chroma", "mel"]
-        
+       
         # Random Forest, Adaboost  Classifier not working so display models that fail to train
 
         # try:
         #     # if classifier is SVC need to parse probability as true to display probability
         #     if(model == "SVC"):
-        #         detector = EmotionRecognizer(model = SVC(probability = True),emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+        #         detector = EmotionRecognizer(model = SVC(probability = True),emotions=emotions, model_name = model_name, features=features, verbose=0)
 
         #     # similar for decision tree classifier 
         #     elif(model == "DecisionTreeClassifier"):
-        #         detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+        #         detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_name = model_name, features=features, verbose=0)
             
         #     elif(model == "RNN"):
-        #         detector = DeepEmotionRecognizer(emotions=(sys.argv[1]).split(","), model_name = args.model_name,  emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
+        #         detector = DeepEmotionRecognizer(emotions=(sys.argv[1]).split(","), model_name = model_name,  emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
 
         #     else:
-        #         detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+        #         detector = EmotionRecognizer(estimator_dict[args.model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
             
         #     # train the model and display status
         #     detector.train()
@@ -86,21 +65,21 @@ if __name__ == "__main__":
         #     continue
 
         if(model == "SVC"):
-            detector = EmotionRecognizer(model = SVC(probability = True),emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+            detector = EmotionRecognizer(model = SVC(probability = True),emotions=emotions, model_name = model_name, features=features, verbose=0)
 
         # similar for decision tree classifier 
         elif(model == "DecisionTreeClassifier"):
-            detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+            detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_name = model_name, features=features, verbose=0)
         
         elif(model == "RNN"):
-            detector = DeepEmotionRecognizer(emotions=args.emotions.split(","), model_name = args.model_name,  emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
+            detector = DeepEmotionRecognizer(emotions=emotions, model_name = model_name,  emodb = True, customdb = True, n_rnn_layers=2, n_dense_layers=2, rnn_units=128, dense_units=128)
 
         else:
-            detector = EmotionRecognizer(estimator_dict[args.model] , emotions=args.emotions.split(","), model_name = args.model_name, features=features, verbose=0)
+            detector = EmotionRecognizer(estimator_dict[model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
         
         # train the model and display status
         detector.train()
         print(f"\n{model} trained")
         print(detector.confusion_matrix())
         print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
-            
+        
