@@ -65,18 +65,35 @@ if __name__ == "__main__":
     # for the filepath containing that emotion
     emotions = ["neutral","calm","happy","sad","angry","fear",'disgust','ps','boredom']
 
-    for emotion in emotions:
-        for filepath in glob.iglob(os.path.join("predict_from_audio", f"emotion testing audio {frequency}", f"{emotion}/*")):
+    # for emotion in emotions:
+    #     for filepath in glob.iglob(os.path.join("predict_from_audio", f"emotion testing audio {frequency}", f"{emotion}/*")):
+
+    #         # record emotion to be predicted and if the prediction was correct
+    #         duration.append(librosa.get_duration(filename = filepath))
+
+    #         # record prediction probability and time
+    #         start_predict = time.perf_counter()
+    #         predictions = detector.predict_proba(filepath)
+    #         end_predict = time.perf_counter() 
+
+    #         time_taken.append(end_predict - start_predict)
+
+
+    for filepath in os.listdir(os.path.join('data','training')):
+
+        for audio in os.listdir(os.path.join('data','training',filepath)):
 
             # record emotion to be predicted and if the prediction was correct
-            duration.append(librosa.get_duration(filename = filepath))
+            audio = os.path.join('data','training',filepath,audio)
+            duration.append(librosa.get_duration(filename = audio))
 
             # record prediction probability and time
             start_predict = time.perf_counter()
-            predictions = detector.predict_proba(filepath)
+            predictions = detector.predict_proba(audio)
             end_predict = time.perf_counter() 
 
             time_taken.append(end_predict - start_predict)
+
 
     # record medfians
     median_time = statistics.median(time_taken)
@@ -102,7 +119,6 @@ if __name__ == "__main__":
     
 
     bars = 30
-    samples = list(range(1,42))
 
     #fig = plt.figure()
     
@@ -135,8 +151,8 @@ if __name__ == "__main__":
     #ax3 = fig.add_subplot(gs[2, :])
     ax3 = axd['lower']
     ax4 = ax3.twinx()
-    lns1 = ax3.plot(samples, time_taken, label = "Time taken to predict audio")
-    lns2 = ax4.plot(samples, sorted_duration, '-r', label = "length of audio")
+    lns1 = ax3.plot(list(range(1,len(time_taken)+1)), time_taken, label = "Time taken to predict audio")
+    lns2 = ax4.plot(list(range(1,len(time_taken)+1)), sorted_duration, '-r', label = "length of audio")
     ax4.set_ylabel("length of audio (seconds)")
     ax3.set_xlabel("Audio in ascending order by length")
     ax3.set_ylabel("time taken to predicr(seconds)")
