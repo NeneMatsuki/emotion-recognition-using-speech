@@ -10,6 +10,7 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 import argparse
+import time
 
 from utils import get_best_estimators
 
@@ -20,6 +21,8 @@ def get_estimators_name(estimators):
 if __name__ == "__main__":
 
     # iterate through all models
+
+    start_train = time.perf_counter()
 
     models = ["KNeighborsClassifier","SVC","GradientBoostingClassifier","DecisionTreeClassifier","MLPClassifier","BaggingClassifier"]
 
@@ -82,4 +85,7 @@ if __name__ == "__main__":
         print(f"\n{model} trained")
         print(detector.confusion_matrix())
         print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
+
+    end_train = time.perf_counter()
+    print(f"\nThis process took {end_train - start_train} seconds")
         
