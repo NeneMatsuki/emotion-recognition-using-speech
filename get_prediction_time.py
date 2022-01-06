@@ -28,10 +28,11 @@ def get_estimators_name(estimators):
     return ','.join(result), {estimator_name.strip('"'): estimator for estimator_name, (estimator, _, _) in zip(result, estimators)}
 
 if __name__ == "__main__":
+    # gets tuned parameters from gridsearch 
     estimators = get_best_estimators(True)
     estimators_str, estimator_dict = get_estimators_name(estimators)
-    print(estimators_str)
 
+    # get details from predict.json file
     with open('predict.json') as config_file:
         data = json.load(config_file)
         model =     data["model"].format(estimators_str)
@@ -42,10 +43,9 @@ if __name__ == "__main__":
     
     model_name = os.path.join(model_ver,model)
 
-    # initialise array to start time talen and 
+    # initialise list to start time taken and 
     time_taken = []
     duration = []
-
 
     # if classifier is SVC need to parse probability as true to display probability
     if(model == "SVC"):
@@ -60,7 +60,6 @@ if __name__ == "__main__":
 
     else:
         detector = EmotionRecognizer(estimator_dict[model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
-
 
     # for the filepath containing that emotion
     emotions = ["neutral","calm","happy","sad","angry","fear",'disgust','ps','boredom']
@@ -78,21 +77,38 @@ if __name__ == "__main__":
 
             time_taken.append(end_predict - start_predict)
 
-    # record medfians
+    # for filepath in os.listdir(os.path.join('data','training')):
+
+    #     for audio in os.listdir(os.path.join('data','training',filepath)):
+
+    #         # record emotion to be predicted and if the prediction was correct
+    #         audio = os.path.join('data','training',filepath,audio)
+    #         duration.append(librosa.get_duration(filename = audio))
+
+    #         # record prediction probability and time
+    #         start_predict = time.perf_counter()
+    #         predictions = detector.predict_proba(audio)
+    #         end_predict = time.perf_counter() 
+
+    #         time_taken.append(end_predict - start_predict)
+
+    # record medians
     median_time = statistics.median(time_taken)
     mean_time = statistics.mean(time_taken)
 
     median_length = statistics.median(duration)
     mean_length = statistics.mean(duration)
 
+    # sort sample length and in ascending order of audio length
     index = np.argsort(duration)
-    sorted_duration = np.sort(duration)
+    sorted_duration = np.zeros(len(duration))
     sorted_time_taken = np.zeros(len(index))
-    for n in index:
-        sorted_time_taken[n] = time_taken[n]
 
+    for i in range(len(index)):
+        sorted_time_taken[i] = time_taken[index[i]]
+        sorted_duration[i] = duration[index[i]]
 
-    #gs = gridspec.GridSpec(3, 1)
+    # create subplot axes to plot on 
     gs = dict(width_ratios=[1, 1], height_ratios=[1, 1, 2])
     fig, axd = plt.subplot_mosaic([['upper left', 'right'],
                                ['mid left', 'right'],
@@ -100,17 +116,9 @@ if __name__ == "__main__":
                               gridspec_kw=gs,
                               constrained_layout=True)
     
-
-    bars = 30
-    samples = list(range(1,42))
-
-    #fig = plt.figure()
-    
-
+    # plot histogram and probability density of the time taken to predict
     ax1  = axd['upper left']
-    #y, x, _ = ax1.hist(x = time_taken, density = True, bins = bars)
-    sns.kdeplot(x = time_taken, ax = ax1)
-    sns.histplot(x = time_taken, stat = 'density', bins = 15, ax = ax1)
+    sns.distplot(a = time_taken, bins = 20, ax = ax1)
 
     ax1.axvline(x = median_time, color = 'y' , label = f"median: {round(median_time,2)} seconds")
     ax1.axvline(x = mean_time, color = 'm', label = f"mean: {round(mean_time,2)} seconds")
@@ -118,11 +126,9 @@ if __name__ == "__main__":
     ax1.set_ylabel("Probability density")
     ax1.legend(loc="upper right")
 
-    # plot for duration of audio
-    #ax2 = fig.add_subplot(gs[1, 0])
+    # plot histogram and probability density for the duration of audio
     ax2 = axd['mid left']
-    sns.kdeplot(x = duration, ax = ax2)
-    sns.histplot(x = duration, bins = 10, ax = ax2)
+    sns.distplot(x = duration, bins = 20, ax = ax2)
 
     ax2.axvline(x = median_length, color = 'y', label = f"median: {round(median_length,2)} seconds")
     ax2.axvline(x = mean_length, color = 'm', label = f"mean: {round(mean_length,2)} seconds")
@@ -130,13 +136,12 @@ if __name__ == "__main__":
     ax2.set_ylabel("Probability Density")
     ax2.legend(loc="upper right")
 
-    # plot for each audio and the length it tool to predict 
-
-    #ax3 = fig.add_subplot(gs[2, :])
+    # plot time it took to predict and the length of the audio together, in ascending order of the length of audio
     ax3 = axd['lower']
     ax4 = ax3.twinx()
-    lns1 = ax3.plot(samples, time_taken, label = "Time taken to predict audio")
-    lns2 = ax4.plot(samples, sorted_duration, '-r', label = "length of audio")
+    lns1 = ax3.plot(list(range(1,len(time_taken)+1)), sorted_time_taken, '-b.', label = "Time taken to predict audio")
+    lns2 = ax4.plot(list(range(1,len(time_taken)+1)), sorted_duration, '-r.', label = "length of audio")
+
     ax4.set_ylabel("length of audio (seconds)")
     ax3.set_xlabel("Audio in ascending order by length")
     ax3.set_ylabel("time taken to predicr(seconds)")
@@ -144,13 +149,13 @@ if __name__ == "__main__":
     labs = [l.get_label() for l in lns]
     ax3.legend(lns, labs, loc="upper left")
 
-    fig.suptitle(f"Time taken to predict audio at {frequency} using {model}")
-
-
+    # plot a scatter plot of the time taken to predict and the length of the corresponding audio
     ax5 = axd['right']
     ax5.plot(time_taken, duration, 'r.')
     ax5.set_xlabel('time taken to predict audio (s)')
     ax5.set_ylabel('length of audio (s)')
-    
+
+    # add a title and lplot
+    fig.suptitle(f"Time taken to predict audio at {frequency} using {model}")
     plt.tight_layout()
     plt.show()
