@@ -4,10 +4,10 @@
     "emotions"  :"angry,happy,neutral,sad",
     "features"  :"mfcc,chroma,mel",
 
-    "__comment_single": "for single predictions",
+    "comment_single": "for single predictions",
     "audio"     :"predict_from_audio/emotion testing audio 16k/angry/a1_high_Dervla_emottsangry_0376.wav",
 
-    "__comment_multiple": "for multiple predictions",
+    "comment_multiple": "for multiple predictions",
     "frequency" :"16k",
     "output"    :"excel"
 

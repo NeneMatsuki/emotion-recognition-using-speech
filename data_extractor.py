@@ -4,10 +4,14 @@ import pandas as pd
 import pickle
 import tqdm
 import os
+import json
 
 from utils import get_label, extract_feature, get_first_letters
 from collections import defaultdict
 
+with open('predict.json') as config_file:
+    data = json.load(config_file)
+    model_ver = data["model_ver"]
 
 class AudioExtractor:
     """A class that is used to featurize audio clips, and provide
@@ -99,7 +103,7 @@ class AudioExtractor:
         # construct features file name
         n_samples = len(audio_paths)
         first_letters = get_first_letters(self.emotions)
-        name = os.path.join(self.features_folder_name, f"{partition}_{label}_{first_letters}_{n_samples}.npy")
+        name = os.path.join(self.features_folder_name, f"{model_ver}/{partition}_{label}_{first_letters}_{n_samples}.npy")
         if os.path.isfile(name):
             # if file already exists, just load then
             if self.verbose:
