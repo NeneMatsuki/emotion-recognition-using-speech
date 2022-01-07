@@ -68,63 +68,114 @@ In this repository, we have used the most used features that are available in [l
 - MLPRegressor
 - BaggingRegressor
 - Recurrent Neural Networks (Keras)
+-
 
-## 1. Training the models 
-When predicting with a new combination of emotions or any new dataset is added (i.e model has not been trained yet) Please train the models first. This can be done by:
+# Base Configuration
+> This description of configuring `predict.json` would be reffered to in further steps on training and testing the models.
 
-In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotions]
+The Base configuration file will look like this:
+```.json
+{
+    "comment_general": "for general predictions, training, testing",
+    "model"     :"",
+    "model_ver" :"16k_3feat",
+    "emotions"  :"angry,happy,neutral,sad",
+    "features"  :"mfcc,chroma,mel",
+    "frequency" :"16k",
+
+    "comment_single": "for single predictions",
+    "audio"     :"",
+
+    "comment_multiple": "for multiple predictions",
+    "output"    :""
+}
+```
+where:
+
+| Configuration | Description | Used in |
+| --- | --- | --- |
+| model_ver  | name of folder where the model is saved | 
+| emotions | emotions to predict, test, and train on |
+| features | audio features used to predict, test, and train on |
+| frequency | audio frequency to predict, test and train on | 
+
+This configuration would be used to test, train, and predict on audio. 
+
+## 1. Training the models using train.py 
+
+> When predicting with a new combination of emotions or awith any dataset is added (i.e model has not been trained yet) Please train the models first. 
+> Train.py extracts features from audio in the folder data and then trains and saves the specified models. The output is a confusion matrix of the models trained
+
+Models available that are pre-trained and saved are in the folder `models`. available models are:
+
+- 16k_3feat : model trained on 16k using mel spectogram, mfcc, chromagram
+- 44k_3feat : model trained on 16k using mel spectogram, mfcc, chromagram
+- 16k_5feat : model trained on 16k using mel spectogram, mfcc, chromagram, contrast, tonnetz
+- 44k_5feat : model trained on 16k using mel spectogram, mfcc, chromagram, contrast, tonnetz
+
+You do not need to run `train.py` to use the models listed above, but you can if you wish to print the confusion matrices
+
+To train a new model, create a new sub folder in the `models` folder and structure it like the ones that exist ( create folders within it with models to train)
+
+Before running `train.py`, configure `predict.json` with the [base configuration](#base-configuration) , but change model_ver to the folder created if training a new model.
+
+Example:
 
 ```.json
-        {
-            "name": "Python: model prediction",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "args": [
-                "neutral,calm,happy,sad,angry,fear,disgust,ps,boredom"
-            ]
-        }
+{
+    "comment_general": "for general predictions, training, testing",
+    "model"     :"",
+    "model_ver" :"16k_3feat",
+    "emotions"  :"angry,happy,neutral,sad",
+    "features"  :"mfcc,chroma,mel",
+    "frequency" :"16k",
 
+    "comment_single": "for single predictions",
+    "audio"     :"",
+
+    "comment_multiple": "for multiple predictions",
+    "output"    :""
+}
 ```
-
-Then run `train.py` using this configuration
-
-This will also print the confusion matrix of each model
-
-.
 
 
 ## 2. Testing the sentiment of a single audio file 
-Please configure by going into the .json file `.vscode/launch.json`
 
-In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, audio file directory, audio resolution to use]
-models for 16k and 44k are available.
+> `use_audio_to_predict.py` predicts the sentiment of a single audio file from the specified emotions 
+
+Configure `predict.json` before running `use_audio_to_predict.py` with the [base configuration](#base-configuration)
+Then add:
+
+| Configuration | Description | 
+| --- | --- | 
+| model | classifier used to predict |
+| audio | directory to predict the sinfgle audio file |
+
+example:
 
 ```.json
-        {
-            "name": "Python: model prediction single",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "args": [
-                "angry,happy,neutral,sad",
-                "KNeighborsClassifier",
-                "a1_high_Dervla_emottsangry_0376.wav",
-                "16k"
-            ]
-        }
+{
+    "comment_general": "for general predictions, training, testing",
+    "model"     :"MLPClassifier",
+    "model_ver" :"16k_3feat",
+    "emotions"  :"angry,happy,neutral,sad",
+    "features"  :"mfcc,chroma,mel",
+    "frequency" :"16k",
 
+    "comment_single": "for single predictions",
+    "audio"     :"predict_from_audio/emotion testing audio 16k/angry/a1_high_Dervla_emottsangry_0376.wav",
+
+    "comment_multiple": "for multiple predictions",
+    "output"    :""
+}
 ```
 
-Then please run `use_audio_to_predict.py` using this configuration
-
-.
-
 ## 3. Testing the sentiment of multiple audio files
+> `use_audio_to_predict_multiple.py` predicts multriple audio files for the specified emotions 
 
-Please go into the folder `predict_from_audio/emotion testing audio 44k` and put audio representing that emotion in the corresponding folder
+> `get_prediction_time.py` creates a visualisation of the performance of the model that is selected predicting the specified emotions.
+
+Please go into the folder `predict_from_audio/emotion testing audio {frequency to predict at}` and put audio representing that emotion in the corresponding folder. (There are already 40 audio files available in various emotions)
         
     ├── ...
     ├── predict_from_audio                    
@@ -142,28 +193,33 @@ Please go into the folder `predict_from_audio/emotion testing audio 44k` and put
     └── ...      
     
 
-In the "Python: model prediction" configuration, edit args in such a way that it is formatted as [emotion, model, print to excel (yes if excel), model resolution to use]
+Configure `predict.json` before running `use_audio_to_predict.py` with the [base configuration](#base-configuration)
+Then add:
+
+| Configuration | Description | 
+| --- | --- | 
+| model | classifier used to predict |
+| output | If "excel" then the  output for the emotion probability distribution is printed to an excel file which is saved in `predict_from_audio/emotion testing audio 44k/predictions.xlsx`( so it is easy to copy to another spreadsheet, need to pip install openpyxl for this. **otherwise** The distributions are recorded in a .txt file in `predict_from_audio/emotion testing audio 44k/predictions.txt`|
+
+example:
 
 ```.json
-        {
-            "name": "Python: model prediction multiple",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "args": [
-                "neutral,calm,happy,sad,angry,fear,disgust,ps,boredom",
-                "BaggingClassifier",
-                "excel",
-                "16k"
-            ]
-        }
+{
+    "comment_general": "for general predictions, training, testing",
+    "model"     :"MLPClassifier",
+    "model_ver" :"16k_3feat",
+    "emotions"  :"angry,happy,neutral,sad",
+    "features"  :"mfcc,chroma,mel",
+    "frequency" :"16k",
+
+    "comment_single": "for single predictions",
+    "audio"     :"",
+
+    "comment_multiple": "for multiple predictions",
+    "output"    :"excel"
+}
 
 ```
+running `get_prediction_time.py` will give this output:
 
-**If printing to excel is yes**, The output for the emotion probability distribution is printed to an excel file which is saved in `predict_from_audio/emotion testing audio 44k/predictions.xlsx`( so it is easy to copy to another spreadsheet, need to pip install openpyxl for this. **otherwise** The distributions are recorded in a .txt file in `predict_from_audio/emotion testing audio 44k/predictions.txt`
-
-Please run `use_audio_to_predict.py` using this configuration
-
-Results of performance of different models are stored here[spreadsheet](https://docs.google.com/spreadsheets/d/1eKX86JusWnL_1YBtDadtsKyx1cQiSuedk0V_xlTiHLw/edit?usp=sharing). |
-
+![16k MLP](https://user-images.githubusercontent.com/80789350/148462672-a5051cdf-5b1a-4302-ac8a-4cdc501ab30c.PNG)
