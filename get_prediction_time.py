@@ -1,3 +1,4 @@
+from convert_wavs import convert_audio
 from emotion_recognition import EmotionRecognizer
 from deep_emotion_recognition import DeepEmotionRecognizer
 import librosa
@@ -20,6 +21,7 @@ import json
 import pandas as pd
 from scipy.stats import gaussian_kde
 import seaborn as sns
+import soundfile as sf
 
 from utils import get_best_estimators
 
@@ -71,9 +73,17 @@ if __name__ == "__main__":
             duration.append(librosa.get_duration(filename = filepath))
 
             # record prediction probability and time
-            start_predict = time.perf_counter()
-            predictions = detector.predict_proba(filepath)
-            end_predict = time.perf_counter() 
+            if(model_ver[:3] != frequency):
+                start_predict = time.perf_counter()
+                y, s = librosa.load(filepath, sr=44100)
+                sf.write("temp.wav", y, s)
+                end_predict = time.perf_counter() 
+
+
+            else:
+                start_predict = time.perf_counter()
+                predictions = detector.predict_proba(filepath)
+                end_predict = time.perf_counter() 
 
             time_taken.append(end_predict - start_predict)
 

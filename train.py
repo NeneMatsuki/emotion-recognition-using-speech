@@ -11,6 +11,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 import argparse
 import time
+from convert_wavs import *
 
 from utils import get_best_estimators
 
