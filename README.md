@@ -10,7 +10,7 @@ Summary of model performance found in this [spreadsheet](https://docs.google.com
 - This is useful for many industry fields such as making product recommendations, affective computing, etc.
 - Check this [tutorial](https://www.thepythoncode.com/article/building-a-speech-emotion-recognizer-using-sklearn) for more information.
 ## Requirements
-- **Python 3.6+, tried and works with Python 3.8, 3.9**
+- **Python 3.8**
 ### Python Packages
 - librosa==0.8.1
 - numpy==1.18.5
@@ -28,8 +28,9 @@ Summary of model performance found in this [spreadsheet](https://docs.google.com
 
 Install these libraries and pyaudio by the following command:
 ```
-pip3 install -r requirements.txt
+pip install pipwin
 pipwin install pyaudio
+pip install -r requirements.txt
 ```
 
 ### Dataset
@@ -119,7 +120,7 @@ To train a new model, create a new sub folder in the `models` folder and structu
 
 Before running `train.py`, configure `predict.json` with the [base configuration](#base-configuration) , but change model_ver to the folder created if training a new model.
 
-Example:
+Example config:
 
 ```.json
 {
@@ -137,6 +138,9 @@ Example:
     "output"    :""
 }
 ```
+runnig `train.py` using this configuration gives an output in the format:
+
+![image](https://user-images.githubusercontent.com/80789350/148704725-4ae33d5c-db44-4f6e-94fe-1c212d9c4f26.png)
 
 
 ## 2. Testing the sentiment of a single audio file 
@@ -151,7 +155,7 @@ Then add:
 | model | classifier used to predict |
 | audio | directory to predict the sinfgle audio file |
 
-example:
+example config:
 
 ```.json
 {
@@ -169,6 +173,19 @@ example:
     "output"    :""
 }
 ```
+
+Running `use_audio_to_predict.py` with this configuration gives an output in this format:
+
+```.txt
+{'angry': 1.2644871494553761e-05, 'happy': 3.876536030931289e-05, 'neutral': 0.9570777500193833, 'sad': 0.04287083974881276}
+
+first prediction  : neutral
+second prediction : sad
+difference is 91.42069102705706 %
+
+Time it took to predict: 0.06672429999999974 s
+```
+
 
 ## 3. Testing the sentiment of multiple audio files
 > `use_audio_to_predict_multiple.py` predicts multriple audio files for the specified emotions 
@@ -201,7 +218,7 @@ Then add:
 | model | classifier used to predict |
 | output | If "excel" then the  output for the emotion probability distribution is printed to an excel file which is saved in `predict_from_audio/emotion testing audio 44k/predictions.xlsx`( so it is easy to copy to another spreadsheet, need to pip install openpyxl for this. **otherwise** The distributions are recorded in a .txt file in `predict_from_audio/emotion testing audio 44k/predictions.txt`|
 
-example:
+example config:
 
 ```.json
 {
@@ -220,6 +237,12 @@ example:
 }
 
 ```
-running `get_prediction_time.py` will give this output:
+running `get_prediction_time.py` gives an output in the format:
 
 ![16k MLP](https://user-images.githubusercontent.com/80789350/148462672-a5051cdf-5b1a-4302-ac8a-4cdc501ab30c.PNG)
+
+running `use_audio_to_predict_multiple.py` gives saves a file in `predict_from_audio/emotion testing audio 44k/predictions.txt` in the format :
+
+![table](https://user-images.githubusercontent.com/80789350/148704591-24b21b53-2f7a-4cd4-91ed-02133dde2868.PNG)
+
+
