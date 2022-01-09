@@ -3,12 +3,12 @@ from emotion_recognition import EmotionRecognizer
 import pyaudio
 import json
 import wave
+import os
+import time
 from sys import byteorder
 from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier
-import time
-import os
 
 from utils import get_best_estimators
 
@@ -17,7 +17,7 @@ CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 16000
 
-SILENCE = 3
+SILENCE = 10
 
 def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
@@ -68,7 +68,6 @@ def record():
     """
     Record a word or words from the microphone and 
     return the data as an array of signed shorts.
-
     Normalizes the audio, trims silence from the 
     start and end, and pads with 0.5 seconds of 
     blank sound to make sure VLC et al can play 
@@ -123,17 +122,6 @@ def record_to_file(path):
     wf.writeframes(data)
     wf.close()
 
-def recording_to_file(sample_width, data, path):
-    "Records from the microphone and outputs the resulting data to 'path'"
-    data = pack('<' + ('h'*len(data)), *data)
-
-    wf = wave.open(path, 'wb')
-    wf.setnchannels(1)
-    wf.setsampwidth(sample_width)
-    wf.setframerate(RATE)
-    wf.writeframes(data)
-    wf.close()
-
 
 def get_estimators_name(estimators):
     result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
@@ -142,11 +130,8 @@ def get_estimators_name(estimators):
 
 
 if __name__ == "__main__":
-
     estimators = get_best_estimators(True)
     estimators_str, estimator_dict = get_estimators_name(estimators)
-    print(estimators_str)
-
     with open('predict.json') as config_file:
         data = json.load(config_file)
         model =     data["model"].format(estimators_str)
@@ -154,33 +139,29 @@ if __name__ == "__main__":
         emotions =  data['emotions'].split(",")
         features =  data["features"].split(",")
 
-    model_name = os.path.join(model_ver,model)
-    
-    
-    detector = EmotionRecognizer(estimator_dict[model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
-    
-    print("Please talk")
-    sample_width, data = record()
 
+    model_name = os.path.join(model_ver,model)
+
+   
+    detector = EmotionRecognizer(estimator_dict[model], emotions=emotions, model_name = model_name, features=features, verbose=0)
+
+    print("Please talk")
+    
     filename = "test.wav"
-    recording_to_file(sample_width, data, filename)
+    record_to_file(filename)
+
     start_predict = time.perf_counter()
-    result_file = detector.predict_proba(filename)
+    result = detector.predict_proba(filename)
     end_predict = time.perf_counter()
 
-    # start_predict = time.perf_counter()
-    #result_audio = detector.predict_proba_audio(data)
-    # end_predict = time.perf_counter()
+    print(f"\n emotion probabilities \n{result}")
 
-    print(f"{result_file}")
-    #print(f"from audio {result_audio}")
+    maximum = max(result, key=result.get)
+    max_value = result[maximum]
+    del result[maximum]
 
-    maximum = max(result_file, key=result_file.get)
-    max_value = result_file[maximum]
-    del result_file[maximum]
-
-    second = max(result_file, key=result_file.get)
-    second_value = result_file[second]
+    second = max(result, key=result.get)
+    second_value = result[second]
 
     print(f"\nfirst prediction  : {maximum} \nsecond prediction : {second} \ndifference is {(max_value - second_value)*100} %")
 
