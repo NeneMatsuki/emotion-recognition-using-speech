@@ -85,7 +85,7 @@ if __name__ == "__main__":
                 predictions = detector.predict_proba(filepath)
                 end_predict = time.perf_counter() 
 
-            time_taken.append(end_predict - start_predict)
+            time_taken.append((end_predict - start_predict)*1000)
 
     # for filepath in os.listdir(os.path.join('data','training')):
 
@@ -128,22 +128,22 @@ if __name__ == "__main__":
     
     # plot histogram and probability density of the time taken to predict
     ax1  = axd['upper left']
-    sns.distplot(a = time_taken, bins = 20, ax = ax1)
+    sns.histplot(data = time_taken, kde = True, bins = 20, edgecolor = 'lightsteelblue', ax = ax1)
 
-    ax1.axvline(x = median_time, color = 'y' , label = f"median: {round(median_time,2)} seconds")
-    ax1.axvline(x = mean_time, color = 'm', label = f"mean: {round(mean_time,2)} seconds")
-    ax1.set_xlabel("Time taken to predict (s)")
-    ax1.set_ylabel("Probability density")
+    ax1.axvline(x = median_time, color = 'b' , label = f"median: {round(median_time,2)} ms")
+    ax1.axvline(x = mean_time, color = 'm', label = f"mean: {round(mean_time,2)} ms")
+    ax1.set_xlabel("Time taken to predict (ms)")
+    ax1.set_ylabel("Count")
     ax1.legend(loc="upper right")
 
     # plot histogram and probability density for the duration of audio
     ax2 = axd['mid left']
-    sns.distplot(x = duration, bins = 20, ax = ax2)
+    sns.histplot(x = duration, kde = True, bins = 20, edgecolor = 'lightsteelblue', ax = ax2)
 
-    ax2.axvline(x = median_length, color = 'y', label = f"median: {round(median_length,2)} seconds")
-    ax2.axvline(x = mean_length, color = 'm', label = f"mean: {round(mean_length,2)} seconds")
+    ax2.axvline(x = median_length, color = 'b', label = f"median: {round(median_length,2)} s")
+    ax2.axvline(x = mean_length, color = 'm', label = f"mean: {round(mean_length,2)} s")
     ax2.set_xlabel("Length of audio (s)")
-    ax2.set_ylabel("Probability Density")
+    ax2.set_ylabel("Count")
     ax2.legend(loc="upper right")
 
     # plot time it took to predict and the length of the audio together, in ascending order of the length of audio
@@ -152,9 +152,9 @@ if __name__ == "__main__":
     lns1 = ax3.plot(list(range(1,len(time_taken)+1)), sorted_time_taken, '-b.', label = "Time taken to predict audio")
     lns2 = ax4.plot(list(range(1,len(time_taken)+1)), sorted_duration, '-r.', label = "length of audio")
 
-    ax4.set_ylabel("length of audio (seconds)")
+    ax4.set_ylabel("length of audio (s)")
     ax3.set_xlabel("Audio in ascending order by length")
-    ax3.set_ylabel("time taken to predicr(seconds)")
+    ax3.set_ylabel("time taken to predicr(s)")
     lns = lns1 + lns2
     labs = [l.get_label() for l in lns]
     ax3.legend(lns, labs, loc="upper left")

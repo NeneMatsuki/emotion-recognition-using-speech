@@ -52,7 +52,7 @@ if __name__ == "__main__":
     result = detector.predict_proba(audio)
     end_predict = time.perf_counter()
 
-    print(result)
+    print(f'\n{result}')
     maximum = max(result, key=result.get)
     max_value = result[maximum]
     del result[maximum]

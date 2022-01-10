@@ -1,6 +1,7 @@
 from emotion_recognition import EmotionRecognizer
 
 import pyaudio
+import librosa
 import json
 import wave
 import os
@@ -149,6 +150,7 @@ if __name__ == "__main__":
     
     filename = "test.wav"
     record_to_file(filename)
+    print(f'\nLength of audio recorded: {librosa.get_duration(filename = filename)} seconds')
 
     start_predict = time.perf_counter()
     result = detector.predict_proba(filename)
