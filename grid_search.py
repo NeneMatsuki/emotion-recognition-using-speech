@@ -14,7 +14,7 @@ from parameters import classification_grid_parameters, regression_grid_parameter
 
 # emotion classes you want to perform grid search on
 emotions = ["angry",'happy','neutral','sad']
-features = ["mfcc", "chroma", "mel", "contrast", "tonnetz"]
+features = ["mfcc", "chroma", "mel"]
 # number of parallel jobs during the grid search
 n_jobs = 4
 

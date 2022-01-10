@@ -65,7 +65,7 @@ if __name__ == "__main__":
         wb.create_sheet('predictions')
         sheet = wb['predictions']
         sheet["A1"] = "emotion to predict"
-        sheet["B1"] = "result"
+        #sheet["B1"] = "result"
 
         rows = 2
         cols = 1
@@ -95,6 +95,25 @@ if __name__ == "__main__":
                     cols += 1
                 rows += 1
                 cols = 1
+        
+        for audio in os.listdir('predict_from_audio/JL_16'):
+            gender, sentiment, _1, _2 = audio.split("_")
+            predictions = detector.predict_proba(f'predict_from_audio/JL_16/{audio}')
+            sheet[get_column_letter(cols) + str(rows)] = str(sentiment)
+
+            if(sentiment==max(predictions, key=predictions.get).lower()):
+                sheet[get_column_letter(cols + 1) + str(rows)] = "correct"
+                cols += 2        
+            else:
+                sheet[get_column_letter(cols + 1) + str(rows)] = "incorrect"
+                cols += 2
+
+            for value in (predictions).values():
+                sheet[get_column_letter(cols) + str(rows)] = value
+                cols += 1
+
+            rows += 1
+            cols = 1
 
         wb.save('predict_from_audio/prediction.xlsx')
         print('predictions saved to predict_from_audio/prediction.xlsx')
