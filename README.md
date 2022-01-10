@@ -10,7 +10,7 @@ Summary of model performance found in this [spreadsheet](https://docs.google.com
 - This is useful for many industry fields such as making product recommendations, affective computing, etc.
 - Check this [tutorial](https://www.thepythoncode.com/article/building-a-speech-emotion-recognizer-using-sklearn) for more information.
 ## Requirements
-- **Python 3.6+, tried and works with Python 3.8, 3.9**
+- **Python 3.8**
 ### Python Packages
 - librosa==0.8.1
 - numpy==1.18.5
@@ -28,8 +28,9 @@ Summary of model performance found in this [spreadsheet](https://docs.google.com
 
 Install these libraries and pyaudio by the following command:
 ```
-pip3 install -r requirements.txt
+pip install pipwin
 pipwin install pyaudio
+pip install -r requirements.txt
 ```
 
 ### Dataset
@@ -119,7 +120,7 @@ To train a new model, create a new sub folder in the `models` folder and structu
 
 Before running `train.py`, configure `predict.json` with the [base configuration](#base-configuration) , but change model_ver to the folder created if training a new model.
 
-Example:
+Example config:
 
 ```.json
 {
@@ -137,6 +138,60 @@ Example:
     "output"    :""
 }
 ```
+runnig `train.py` using this configuration gives an output in the format:
+
+
+```.txt
+KNeighborsClassifier trained
+              predicted_angry  predicted_happy  predicted_neutral  predicted_sad
+true_angry          92.956558         3.542809           0.042176       3.458456
+true_happy           4.470687        92.197380           0.168705       3.163222
+true_neutral         0.126529         0.126529          99.325180       0.421763
+true_sad             3.838043         5.314213           0.210881      90.636864
+Test accuracy score: 93.779%
+
+SVC trained
+              predicted_angry  predicted_happy  predicted_neutral  predicted_sad
+true_angry          86.461411         5.567271           0.000000       7.971320
+true_happy          10.080135        74.314636           0.000000      15.605229
+true_neutral         0.210881         0.253058          97.511604       2.024462
+true_sad             8.393083         4.765922           0.000000      86.840996
+Test accuracy score: 86.282%
+
+GradientBoostingClassifier trained
+              predicted_angry  predicted_happy  predicted_neutral  predicted_sad
+true_angry          96.372833         2.024462           0.210881       1.391818
+true_happy           3.838043        93.968788           0.000000       2.193167
+true_neutral         0.210881         0.295234          98.987770       0.506116
+true_sad             1.940110         2.150991           0.168705      95.740196
+Test accuracy score: 96.267%
+
+DecisionTreeClassifier trained
+              predicted_angry  predicted_happy  predicted_neutral  predicted_sad
+true_angry          80.303665        10.839308           0.590468       8.266554
+true_happy           8.814846        80.556725           0.210881      10.417545
+true_neutral         0.716997         0.801350          96.921127       1.560523
+true_sad             8.730494         9.363138           1.223113      80.683258
+Test accuracy score: 84.616%
+
+MLPClassifier trained
+              predicted_angry  predicted_happy  predicted_neutral  predicted_sad
+true_angry          96.246307         1.771404           0.000000       1.982286
+true_happy           2.825812        94.643608           0.042176       2.488401
+true_neutral         0.210881         0.379587          98.945595       0.463939
+true_sad             1.180936         2.572754           0.084353      96.161957
+Test accuracy score: 96.499%
+
+BaggingClassifier trained
+              predicted_angry  predicted_happy  predicted_neutral  predicted_sad
+true_angry          93.378326         3.331928           0.253058       3.036693
+true_happy           4.808098        91.564735           0.042176       3.584985
+true_neutral         0.210881         0.421763          98.861244       0.506116
+true_sad             2.867988         2.994517           0.126529      94.010963
+Test accuracy score: 94.454%
+
+This process took 5398.4667956 seconds
+```
 
 
 ## 2. Testing the sentiment of a single audio file 
@@ -151,7 +206,7 @@ Then add:
 | model | classifier used to predict |
 | audio | directory to predict the sinfgle audio file |
 
-example:
+example config:
 
 ```.json
 {
@@ -169,6 +224,19 @@ example:
     "output"    :""
 }
 ```
+
+Running `use_audio_to_predict.py` with this configuration gives an output in this format:
+
+```.txt
+{'angry': 1.2644871494553761e-05, 'happy': 3.876536030931289e-05, 'neutral': 0.9570777500193833, 'sad': 0.04287083974881276}
+
+first prediction  : neutral
+second prediction : sad
+difference is 91.42069102705706 %
+
+Time it took to predict: 0.06672429999999974 s
+```
+
 
 ## 3. Testing the sentiment of multiple audio files
 > `use_audio_to_predict_multiple.py` predicts multriple audio files for the specified emotions 
@@ -201,7 +269,7 @@ Then add:
 | model | classifier used to predict |
 | output | If "excel" then the  output for the emotion probability distribution is printed to an excel file which is saved in `predict_from_audio/emotion testing audio 44k/predictions.xlsx`( so it is easy to copy to another spreadsheet, need to pip install openpyxl for this. **otherwise** The distributions are recorded in a .txt file in `predict_from_audio/emotion testing audio 44k/predictions.txt`|
 
-example:
+example config:
 
 ```.json
 {
@@ -220,6 +288,12 @@ example:
 }
 
 ```
-running `get_prediction_time.py` will give this output:
+running `get_prediction_time.py` gives an output in the format:
 
 ![16k MLP](https://user-images.githubusercontent.com/80789350/148462672-a5051cdf-5b1a-4302-ac8a-4cdc501ab30c.PNG)
+
+running `use_audio_to_predict_multiple.py` gives saves a file in `predict_from_audio/emotion testing audio 44k/predictions.txt` in the format :
+
+![table](https://user-images.githubusercontent.com/80789350/148704591-24b21b53-2f7a-4cd4-91ed-02133dde2868.PNG)
+
+
