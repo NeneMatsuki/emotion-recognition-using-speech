@@ -3,9 +3,12 @@ import pandas as pd
 import os
 import json
 
+
 with open('predict.json') as config_file:
     data = json.load(config_file)
-    frequency = data["frequency"]
+    mandatory_settings =    data["Mandatory Settings"][0]
+    model_ver =    mandatory_settings["model_ver"]
+    frequency = model_ver[:3]
 
 def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name="train_emo.csv",
                     test_name="test_emo.csv", train_size=0.8, verbose=1):

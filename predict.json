@@ -1,14 +1,36 @@
 {
-    "model"     :"MLPClassifier",
-    "model_ver" :"16k_3feat",
-    "emotions"  :"angry,happy,neutral,sad",
-    "features"  :"mfcc,chroma,mel",
+    "Mandatory Settings": [{
+        
+        "Section Description":
+        "",
 
-    "comment_single": "for single predictions",
-    "audio"     :"predict_from_audio/emotion testing audio 16k/angry/a1_high_Dervla_emottsangry_0376.wav",
+        "model"     :"MLPClassifier",
+        "model_ver" :"16k_3feat",
+        "emotions"  :"angry,happy,neutral,sad",
+        "features"  :"mfcc,chroma,mel",
+        "Test or Train" : "Test"
+        
+    }],
 
-    "comment_multiple": "for multiple predictions",
-    "frequency" :"16k",
-    "output"    :"excel"
+    "Testing settings" : [{
+
+        "Section description": 
+        "Use these fields to cofigure you tessting setting", 
+
+        "Test mode" : "single",
+
+        "Testing single":[{
+
+            "Audio directory": "01_01_01_02_dogs-sitting_happy.wav"
+        }],
+        
+        "Testing multiple":[{
+
+            "output": "excel"
+        }]
+
+    }]
+
+    
 
 }
