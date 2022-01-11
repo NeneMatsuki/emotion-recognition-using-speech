@@ -70,6 +70,10 @@ if __name__ == "__main__":
         rows = 2
         cols = 1
 
+
+        sheet[get_column_letter(cols) + str(rows)] = "sm audio"
+        rows += 1
+
         # for emotions to be predicted 
         for i in range(len(emotions)):
 
@@ -87,7 +91,7 @@ if __name__ == "__main__":
                     cols += 2        
                 else:
                     sheet[get_column_letter(cols) + str(rows)] = str(emotions[i])
-                    sheet[get_column_letter(cols + 1) + str(rows)] = "incorrect"
+                    sheet[get_column_letter(cols + 1) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
                     cols += 2
 
                 for value in (predictions).values():
@@ -95,6 +99,31 @@ if __name__ == "__main__":
                     cols += 1
                 rows += 1
                 cols = 1
+        
+        sheet[get_column_letter(cols) + str(rows)] = "Nene audio"
+        rows += 1
+
+        for audio in os.listdir('predict_from_audio/Nene_16'):
+            sentiment, _ = audio.split("_")
+            predictions = detector.predict_proba(f'predict_from_audio/Nene_16/{audio}')
+            sheet[get_column_letter(cols) + str(rows)] = str(sentiment)
+
+            if(sentiment==max(predictions, key=predictions.get).lower()):
+                sheet[get_column_letter(cols + 1) + str(rows)] = "correct"
+                cols += 2        
+            else:
+                sheet[get_column_letter(cols + 1) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
+                cols += 2
+
+            for value in (predictions).values():
+                sheet[get_column_letter(cols) + str(rows)] = value
+                cols += 1
+
+            rows += 1
+            cols = 1
+        
+        sheet[get_column_letter(cols) + str(rows)] = "JLCorpus audio"
+        rows += 1
         
         for audio in os.listdir('predict_from_audio/JL_16'):
             gender, sentiment, _1, _2 = audio.split("_")
@@ -105,7 +134,7 @@ if __name__ == "__main__":
                 sheet[get_column_letter(cols + 1) + str(rows)] = "correct"
                 cols += 2        
             else:
-                sheet[get_column_letter(cols + 1) + str(rows)] = "incorrect"
+                sheet[get_column_letter(cols + 1) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
                 cols += 2
 
             for value in (predictions).values():
