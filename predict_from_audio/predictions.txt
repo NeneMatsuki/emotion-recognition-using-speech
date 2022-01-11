@@ -1,26 +1,26 @@
 results,['angry', 'happy', 'neutral', 'sad']
-angry    correct  :0.9999999804136462,1.9586352537969058e-08,5.0416348896100606e-18,1.0866839077141188e-15,predict_from_audio\emotion testing audio 44k\angry\a1_high_Dervla_emottsangry_0376.wav
-angry    correct  :0.9999999971040301,1.9126727771568737e-09,9.832968325382675e-10,3.5547105121058086e-16,predict_from_audio\emotion testing audio 44k\angry\a2_high_Rachel_emottsangry_0101.wav
-angry    correct  :0.7766341949518214,2.115335024967952e-05,0.22334329128505417,1.3604128746092975e-06,predict_from_audio\emotion testing audio 44k\angry\a3_med_Erica_emottsangry_0275.wav
-angry    correct  :0.9906922982170097,1.811523455807198e-06,0.009127618274219006,0.00017827198531560255,predict_from_audio\emotion testing audio 44k\angry\a4_med_Marshall_emottsangry_0941.wav
-angry    correct  :0.9999999692637661,3.038643399574021e-08,2.78485050508379e-10,7.131493899329975e-11,predict_from_audio\emotion testing audio 44k\angry\a5_low_Erica_emottsangry_0001.wav
-angry    correct  :0.9999999999822544,1.7611339008572285e-11,1.3436867518892686e-13,7.254358720736418e-18,predict_from_audio\emotion testing audio 44k\angry\a6_low_Rachel_emottsangry_0100.wav
-happy    incorrect:0.9974114509027351,0.002493172259688077,9.348457987058277e-05,1.8922577060895119e-06,predict_from_audio\emotion testing audio 44k\happy\h1_high_Marshall_emottshappy_0416.wav
-happy    incorrect:0.9998839783385476,4.402834161551262e-05,3.1070621201328365e-06,6.888625771674369e-05,predict_from_audio\emotion testing audio 44k\happy\h2_high_Erica_emottshappy_0611.wav
-happy    correct  :0.000764542551265977,0.9992323213133911,4.526256170123616e-08,3.090872781235224e-06,predict_from_audio\emotion testing audio 44k\happy\h3_med_Dervla_emottshappy_0024.wav
-happy    incorrect:0.7485869033865296,1.8376073570850085e-08,0.20970746174657598,0.041705616490820954,predict_from_audio\emotion testing audio 44k\happy\h4_med_John_emottshappy_0111.wav
-happy    incorrect:0.5802232586074842,1.9521349661729345e-08,0.4195686028162718,0.00020811905489435668,predict_from_audio\emotion testing audio 44k\happy\h5_low_Marshall_emottshappy_0031.wav
-happy    correct  :0.00966057625016042,0.9903391461433341,2.7396309758525827e-07,3.643408088005986e-09,predict_from_audio\emotion testing audio 44k\happy\h6_low_Dervla_emottshappy_0196.wav
-neutral  correct  :1.4050677915169824e-06,3.062987252394485e-09,0.9999985829867644,8.882456927670159e-09,predict_from_audio\emotion testing audio 44k\neutral\n1_Mary_northandsouth_04_f000200.wav
-neutral  correct  :1.4482843405961522e-08,1.8801688279674287e-14,0.999611074849673,0.0003889106674648837,predict_from_audio\emotion testing audio 44k\neutral\n2_Roman_arctic_a0033.wav
-neutral  correct  :2.1218359635650336e-07,1.397783979417382e-17,0.9999997878163991,4.657564941924849e-15,predict_from_audio\emotion testing audio 44k\neutral\n3_Shaun_arca_5551.wav
-neutral  correct  :0.0002851228306722162,1.2148419131044758e-15,0.9997148519587676,2.5210558900914944e-08,predict_from_audio\emotion testing audio 44k\neutral\n3_Teah_tcorpus_0565.wav
-neutral  correct  :1.7220992344676022e-09,9.83290588848906e-12,0.9999988988942433,1.0993738244685402e-06,predict_from_audio\emotion testing audio 44k\neutral\n4_Amy_tcorpus_0447.wav
-neutral  correct  :1.8007977741672257e-12,0.00036121249628431857,0.9996122671348705,2.6520367044376287e-05,predict_from_audio\emotion testing audio 44k\neutral\n5_Emily_arca_0621.wav
-neutral  incorrect:0.9083425707217924,0.012953741032777504,0.049536243621746294,0.029167444623683935,predict_from_audio\emotion testing audio 44k\neutral\n6_Fadi_tcorpus_0403.wav
-sad      incorrect:0.9990637610900638,9.036112061586596e-07,0.0009349959126980884,3.393860318518895e-07,predict_from_audio\emotion testing audio 44k\sad\s1_high_Marshall_emottssad_0596.wav
-sad      incorrect:0.9939295328694615,0.0014951803756778476,0.002912478410650251,0.0016628083442104308,predict_from_audio\emotion testing audio 44k\sad\s2_high_Erica_emottssad_0105.wav
-sad      correct  :5.550558257052014e-12,3.6042181733526256e-05,2.0113164968272878e-07,0.9999637566810663,predict_from_audio\emotion testing audio 44k\sad\s3 med_Dervlas_emottssad_0516.wav
-sad      incorrect:0.8748656040217306,0.12059610685514667,0.004532285915987807,6.003207135067363e-06,predict_from_audio\emotion testing audio 44k\sad\s4_med_Rachel_emottssad_0051.wav
-sad      incorrect:0.11999519816547992,9.498810457462288e-12,0.879932923099316,7.187872570533108e-05,predict_from_audio\emotion testing audio 44k\sad\s5_low_Marshall_emottssad_0317.wav
-sad      incorrect:1.4776999804226923e-09,1.3430755293853072e-17,0.9999999898431576,8.679142526485807e-09,predict_from_audio\emotion testing audio 44k\sad\s6_low_Erica_emottssad_0121.wav
+angry    correct  :0.9999999980980949,1.9019049954617465e-09,6.241174249799297e-28,3.2406824174457937e-26,predict_from_audio\emotion testing audio 16k\angry\a1_high_D.wav
+angry    correct  :0.999999998841965,1.1580349964110245e-09,6.980722501337461e-32,9.205532364011098e-28,predict_from_audio\emotion testing audio 16k\angry\a2_high_R.wav
+angry    incorrect:0.07978859980044345,0.9159502409144837,4.032831793283457e-12,0.004261159281039986,predict_from_audio\emotion testing audio 16k\angry\a3_med_E.wav
+angry    correct  :0.7317210975447825,0.2682698110611456,3.7006997285818614e-13,9.091393701826096e-06,predict_from_audio\emotion testing audio 16k\angry\a4_med_M.wav
+angry    correct  :0.9999998682229603,1.3177250424601826e-07,3.596487446349577e-18,4.535386877627977e-12,predict_from_audio\emotion testing audio 16k\angry\a5_low_E.wav
+angry    correct  :1.0,7.247266196792305e-27,1.8255532601325323e-28,1.4436682987798187e-23,predict_from_audio\emotion testing audio 16k\angry\a6_low_R.wav
+happy    correct  :2.0764390834398488e-07,0.7552216971032443,4.2585007520607705e-15,0.24477809525284316,predict_from_audio\emotion testing audio 16k\happy\h1_high_M.wav
+happy    correct  :1.3590802613517679e-11,0.9974690360061493,8.168701301367645e-17,0.002530963980259865,predict_from_audio\emotion testing audio 16k\happy\h2_high_E.wav
+happy    correct  :1.3411445134299113e-06,0.9999986427478598,6.620799574074445e-14,1.6107560606077944e-08,predict_from_audio\emotion testing audio 16k\happy\h3_med_D.wav
+happy    correct  :8.159914519369728e-05,0.9998922519225758,1.263083087686047e-18,2.6148932230407507e-05,predict_from_audio\emotion testing audio 16k\happy\h4_med_J.wav
+happy    correct  :3.6118111842301297e-06,0.9999363203517819,5.290326597065848e-15,6.006783702848341e-05,predict_from_audio\emotion testing audio 16k\happy\h5_low_M.wav
+happy    correct  :1.1368069240381181e-08,0.99999988369745,1.04934478614327e-07,2.213139182359058e-15,predict_from_audio\emotion testing audio 16k\happy\h6_low_D.wav
+neutral  correct  :1.7889073385482947e-06,2.324238200162452e-07,0.9989152986799213,0.0010826799889199466,predict_from_audio\emotion testing audio 16k\neutral\n1_M.wav
+neutral  correct  :4.825025453316284e-13,4.755995859410626e-06,0.9999925942100356,2.649793622348031e-06,predict_from_audio\emotion testing audio 16k\neutral\n2_R.wav
+neutral  correct  :5.2673985571220417e-14,5.913860667544247e-14,0.9999999997338693,2.6601879228001455e-10,predict_from_audio\emotion testing audio 16k\neutral\n3_S.wav
+neutral  incorrect:9.167844830720351e-07,1.3802577210799597e-12,0.21702151380070098,0.7829775694134358,predict_from_audio\emotion testing audio 16k\neutral\n3_T.wav
+neutral  incorrect:0.0025212913588931983,0.0003114562656439268,1.201148901863175e-05,0.9971552408864441,predict_from_audio\emotion testing audio 16k\neutral\n4_A.wav
+neutral  correct  :1.6272332660341368e-28,1.1081537748465147e-15,0.9999999999999989,4.8475913277978e-24,predict_from_audio\emotion testing audio 16k\neutral\n5_E.wav
+neutral  incorrect:9.872791293575983e-05,0.9996306604091083,1.885074527408338e-07,0.00027042317050331686,predict_from_audio\emotion testing audio 16k\neutral\n6_F.wav
+sad      correct  :1.0439992715861924e-13,2.563088381796272e-08,1.4190792351468762e-17,0.9999999743690118,predict_from_audio\emotion testing audio 16k\sad\s1_high_M.wav
+sad      correct  :7.864135314491153e-08,1.207827015908761e-05,8.623843746223741e-10,0.9999878422261035,predict_from_audio\emotion testing audio 16k\sad\s2_high_E.wav
+sad      correct  :9.441797537633337e-05,0.0009011411857433194,1.8016172169299278e-06,0.9990026392216633,predict_from_audio\emotion testing audio 16k\sad\s3 med_D.wav
+sad      correct  :0.0005691957211546235,0.011572714732500038,2.117646833810993e-09,0.9878580874286984,predict_from_audio\emotion testing audio 16k\sad\s4_med_R.wav
+sad      correct  :0.0004299863567192703,6.17178834904341e-05,3.5305658689313476e-16,0.9995082957597899,predict_from_audio\emotion testing audio 16k\sad\s5_low_M.wav
+sad      incorrect:0.0005401626535553298,0.00019837831131488265,0.9991767881512397,8.46708838901057e-05,predict_from_audio\emotion testing audio 16k\sad\s6_low_E.wav
