@@ -79,7 +79,6 @@ if __name__ == "__main__":
                 sf.write("temp.wav", y, s)
                 end_predict = time.perf_counter() 
 
-
             else:
                 start_predict = time.perf_counter()
                 predictions = detector.predict_proba(filepath)
@@ -124,48 +123,64 @@ if __name__ == "__main__":
                                ['mid left', 'right'],
                                ['lower','lower']],
                               gridspec_kw=gs,
+                              figsize = (15,8),
+                              dpi = 200,
                               constrained_layout=True)
+    
     
     # plot histogram and probability density of the time taken to predict
     ax1  = axd['upper left']
-    sns.histplot(data = time_taken, kde = True, bins = 20, edgecolor = 'lightsteelblue', ax = ax1)
+    sns.set(style = 'ticks')
+    hist1 = sns.histplot(data = time_taken, kde = True, bins = 20,edgecolor = 'lightsteelblue', ax = ax1)
+    start, end = hist1.get_ylim()
+    hist1.set_yticks(np.arange(start,end,1))
 
-    ax1.axvline(x = median_time, color = 'b' , label = f"median: {round(median_time,2)} ms")
+
+    ax1.axvline(x = median_time, color = 'g' , label = f"median: {round(median_time,2)} ms")
     ax1.axvline(x = mean_time, color = 'm', label = f"mean: {round(mean_time,2)} ms")
-    ax1.set_xlabel("Time taken to predict (ms)")
-    ax1.set_ylabel("Count")
+    ax1.set_xlabel("Time taken to predict (ms)", fontsize = 12)
+    ax1.set_ylabel("Count", fontsize = 12)
     ax1.legend(loc="upper right")
+    ax1.text(15, 10, f'number of samples:{len(duration)}', style='italic', fontsize = 12,
+        bbox={'facecolor': 'grey', 'alpha': 0.5, 'pad': 5})
 
     # plot histogram and probability density for the duration of audio
     ax2 = axd['mid left']
-    sns.histplot(x = duration, kde = True, bins = 20, edgecolor = 'lightsteelblue', ax = ax2)
+    hist2 = sns.histplot(x = duration, kde = True, bins = 20, edgecolor = 'lightsteelblue', ax = ax2)
+    start, end = hist2.get_ylim()
+    hist2.set_yticks(np.arange(start,end,1))
 
-    ax2.axvline(x = median_length, color = 'b', label = f"median: {round(median_length,2)} s")
+
+    ax2.axvline(x = median_length, color = 'g', label = f"median: {round(median_length,2)} s")
     ax2.axvline(x = mean_length, color = 'm', label = f"mean: {round(mean_length,2)} s")
-    ax2.set_xlabel("Length of audio (s)")
-    ax2.set_ylabel("Count")
+    ax2.set_xlabel("Duration Of Audio (s)", fontsize = 12)
+    ax2.set_ylabel("Count", fontsize = 12)
     ax2.legend(loc="upper right")
+
+
 
     # plot time it took to predict and the length of the audio together, in ascending order of the length of audio
     ax3 = axd['lower']
     ax4 = ax3.twinx()
     lns1 = ax3.plot(list(range(1,len(time_taken)+1)), sorted_time_taken, '-b.', label = "Time taken to predict audio")
-    lns2 = ax4.plot(list(range(1,len(time_taken)+1)), sorted_duration, '-r.', label = "length of audio")
+    lns2 = ax4.plot(list(range(1,len(time_taken)+1)), sorted_duration, '-r.', label = "Duration of audio")
 
-    ax4.set_ylabel("length of audio (s)")
-    ax3.set_xlabel("Audio in ascending order by length")
-    ax3.set_ylabel("time taken to predicr(s)")
+    ax4.set_ylabel("Duration Of Audio (s)", fontsize = 12)
+    ax3.set_xlabel("Audio Samples", fontsize = 12)
+    ax3.set_ylabel("Time Taken To Predict Audio (ms)", fontsize = 12)
     lns = lns1 + lns2
     labs = [l.get_label() for l in lns]
     ax3.legend(lns, labs, loc="upper left")
+    ax3.grid(True)
 
     # plot a scatter plot of the time taken to predict and the length of the corresponding audio
     ax5 = axd['right']
     ax5.plot(time_taken, duration, 'r.')
-    ax5.set_xlabel('time taken to predict audio (s)')
-    ax5.set_ylabel('length of audio (s)')
+    ax5.set_xlabel('Time Taken To Predict Audio (ms)', fontsize = 12)
+    ax5.set_ylabel('Duration Of Audio (s)', fontsize = 12)
+    ax5.grid(True)
 
     # add a title and lplot
-    fig.suptitle(f"Time taken to predict audio at {frequency} using {model}")
+    fig.suptitle(f"Time taken to predict {len(duration)} samples of audio at {model_ver} using {model}", fontsize = 20)
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f'performance_plots/{model_ver}_{model}.png')
