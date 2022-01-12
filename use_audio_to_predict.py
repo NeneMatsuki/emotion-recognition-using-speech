@@ -38,16 +38,16 @@ if __name__ == "__main__":
     
         # load mandatory settings
         model =     mandatory_settings["model"].format(estimators_str)
-        model_ver = mandatory_settings["model_ver"]
+        frequency_features = mandatory_settings["frequency_features"]
         emotions =  mandatory_settings['emotions'].split(",")
         features =  mandatory_settings["features"].split(",")
-        model_name = os.path.join(model_ver,model)
+        model_name = os.path.join(frequency_features,model)
 
         # if testing
         if(Test_or_train_mode == "test"):
 
             # load testing settings
-            test_settings = data["Testing settings"][0]
+            test_settings = data["Test settings"][0]
             test_mode =     test_settings["Test mode"].lower()
 
             # create detector instance
@@ -60,9 +60,9 @@ if __name__ == "__main__":
             if(test_mode == 'single'):
 
                 # load settings and record length odf audio
-                single_settings = test_settings["Testing single"][0]
+                single_settings = test_settings["Test single"][0]
                 audio = single_settings["Audio directory"]
-                print(f'\nChosen to test a single audio using {model} trained on {model_ver}')
+                print(f'\nChosen to test a single audio using {model} trained on {frequency_features}')
                 print(f'Length of audio: {librosa.get_duration(filename = audio)} seconds')
 
                 #predict from filename passed in args
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
             # if predicting multiple audio
             elif(test_mode == 'multiple'):
-                multiple_settings = test_settings["Testing multiple"][0]
+                multiple_settings = test_settings["Test multiple"][0]
                 output = multiple_settings["output"]
 
                 if(output == "excel"):
@@ -99,9 +99,9 @@ if __name__ == "__main__":
                     for i in range(len(emotions)):
                         sheet[get_column_letter(i + 4) + "1"] =  emotions[i]
 
-                    rows = sm_predict_excel(frequency = model_ver[:3], detector = detector, emotions = emotions, rows = 2, cols = 1, sheet = sheet)                  
-                    rows = predict_excel(frequency = model_ver[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet)
-                    rows = predict_excel(frequency = model_ver[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet)
+                    rows = sm_predict_excel(frequency = frequency_features[:3], detector = detector, emotions = emotions, rows = 2, cols = 1, sheet = sheet)                  
+                    rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet)
+                    rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet)
 
                     wb.save('predict_from_audio/prediction.xlsx')
                     print('predictions saved to predict_from_audio/prediction.xlsx')

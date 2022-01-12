@@ -49,11 +49,11 @@ if __name__ == "__main__":
     
         # load mandatory settings
         model =     mandatory_settings["model"].format(estimators_str)
-        model_ver = mandatory_settings["model_ver"]
+        frequency_features = mandatory_settings["frequency_features"]
         emotions =  mandatory_settings['emotions'].split(",")
         features =  mandatory_settings["features"].split(",")
-        frequency = model_ver[:3]
-        model_name = os.path.join(model_ver,model)
+        frequency = frequency_features[:3]
+        model_name = os.path.join(frequency_features,model)
     
  
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
             duration.append(librosa.get_duration(filename = filepath))
 
             # record prediction probability and time
-            if(model_ver[:3] != frequency):
+            if(frequency_features[:3] != frequency):
                 start_predict = time.perf_counter()
                 y, s = librosa.load(filepath, sr=44100)
                 sf.write("temp.wav", y, s)
@@ -194,6 +194,6 @@ if __name__ == "__main__":
 
     # add a title and lplot
     #Prediction time(s) for 16KHz speech audio files using the MLP classifier
-    fig.suptitle(f"Prediction time(s) for {model_ver[:3]}Hz speech audio usin {model}", fontsize = 20)
+    fig.suptitle(f"Prediction time(s) for {frequency_features[:3]}Hz speech audio usin {model}", fontsize = 20)
     plt.tight_layout()
-    plt.savefig(f'performance_plots/{model_ver}_{model}.png')
+    plt.savefig(f'performance_plots/{frequency_features}_{model}.png')

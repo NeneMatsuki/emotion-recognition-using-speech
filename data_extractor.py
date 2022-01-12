@@ -12,7 +12,7 @@ from collections import defaultdict
 with open('predict.json') as config_file:
     data = json.load(config_file)
     mandatory_settings =    data["Mandatory Settings"][0]
-    model_ver =    mandatory_settings["model_ver"]
+    frequency_features =    mandatory_settings["frequency_features"]
 
 class AudioExtractor:
     """A class that is used to featurize audio clips, and provide
@@ -104,7 +104,7 @@ class AudioExtractor:
         # construct features file name
         n_samples = len(audio_paths)
         first_letters = get_first_letters(self.emotions)
-        name = os.path.join(self.features_folder_name, f"{model_ver}/{partition}_{label}_{first_letters}_{n_samples}.npy")
+        name = os.path.join(self.features_folder_name, f"{frequency_features}/{partition}_{label}_{first_letters}_{n_samples}.npy")
         if os.path.isfile(name):
             # if file already exists, just load then
             if self.verbose:

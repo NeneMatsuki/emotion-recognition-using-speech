@@ -135,13 +135,13 @@ if __name__ == "__main__":
     estimators_str, estimator_dict = get_estimators_name(estimators)
     with open('predict.json') as config_file:
         data = json.load(config_file)
-        model =     data["model"].format(estimators_str)
-        model_ver = data["model_ver"]
-        emotions =  data['emotions'].split(",")
-        features =  data["features"].split(",")
+        mandatory_settings =    data["Mandatory Settings"][0]
+        model =     mandatory_settings["model"].format(estimators_str)
+        frequency_features = mandatory_settings["frequency_features"]
+        emotions =  mandatory_settings['emotions'].split(",")
+        features =  mandatory_settings["features"].split(",")
+        model_name = os.path.join(frequency_features,model)
 
-
-    model_name = os.path.join(model_ver,model)
 
    
     detector = EmotionRecognizer(estimator_dict[model], emotions=emotions, model_name = model_name, features=features, verbose=0)
