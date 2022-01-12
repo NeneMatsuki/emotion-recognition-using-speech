@@ -2,10 +2,8 @@ from emotion_recognition import EmotionRecognizer
 from deep_emotion_recognition import DeepEmotionRecognizer
 import json
 import os
-import glob
 from sys import byteorder
 import sys
-from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -16,6 +14,7 @@ import time
 import librosa
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
+from multiple_functions import *
 
 from utils import get_best_estimators
 
@@ -81,9 +80,9 @@ if __name__ == "__main__":
 
                 print(f"\nfirst prediction  : {maximum} \nsecond prediction : {second} \ndifference is {(max_value - second_value)*100} %")
                 print(f"\nTime it took to predict: {(end_predict - start_predict)*1000} ms")
-        
+
             # if predicting multiple audio
-            else:
+            elif(test_mode == 'multiple'):
                 multiple_settings = test_settings["Testing multiple"][0]
                 output = multiple_settings["output"]
 
@@ -93,125 +92,28 @@ if __name__ == "__main__":
                     wb.remove(wb['predictions'])
                     wb.create_sheet('predictions')
                     sheet = wb['predictions']
-                    sheet["A1"] = "emotion to predict"
-                    sheet["B1"] = "result"
+                    sheet["A1"] = "True emotion"
+                    sheet["B1"] = "Intensity"
+                    sheet["C1"] = "Result"
 
-                    rows = 2
-                    cols = 1
-
-                    sheet[get_column_letter(cols) + str(rows)] = "sm audio"
-                    rows += 1
-
-                    # Predict SM audio 
                     for i in range(len(emotions)):
+                        sheet[get_column_letter(i + 4) + "1"] =  emotions[i]
 
-                        # for the filepath containing that emotion
-                        for filepath in glob.iglob("predict_from_audio" + os.sep + f"emotion testing audio {model_ver[:3]}" + os.sep + emotions[i] + os.sep + "/*"):
-                            # record the emotion in the excel sheet
-                            sheet[get_column_letter(i + 3) + "1"] =  emotions[i]
-
-                            # calculate probability
-                            predictions = detector.predict_proba(filepath)
-                            sheet[get_column_letter(cols) + str(rows)] = str(emotions[i])
-
-                            # record if the perediction is correct
-                            if(emotions[i]==max(predictions, key=predictions.get).lower()):
-                                sheet[get_column_letter(cols + 1) + str(rows)] = "correct"
-                                cols += 2        
-                            else:
-                                sheet[get_column_letter(cols + 1) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
-                                cols += 2
-
-                            # record the result
-                            for value in (predictions).values():
-                                sheet[get_column_letter(cols) + str(rows)] = value
-                                cols += 1
-
-                            rows += 1
-                            cols = 1
-                    
-                    sheet[get_column_letter(cols) + str(rows)] = "Nene audio"
-                    rows += 1
-
-                    # Predict Nene audio
-                    for audio in os.listdir(f'predict_from_audio/Nene_{model_ver[:3]}'):
-                        sentiment, _ = audio.split("_")
-
-                        # Get prediction and record the correct sentiment
-                        predictions = detector.predict_proba(f'predict_from_audio/Nene_{model_ver[:3]}/{audio}')
-                        sheet[get_column_letter(cols) + str(rows)] = str(sentiment)
-
-                        # record if the perediction is correct
-                        if(sentiment==max(predictions, key=predictions.get).lower()):
-                            sheet[get_column_letter(cols + 1) + str(rows)] = "correct"
-                            cols += 2        
-                        else:
-                            sheet[get_column_letter(cols + 1) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
-                            cols += 2
-  
-                        # record the result
-                        for value in (predictions).values():
-                            sheet[get_column_letter(cols) + str(rows)] = value
-                            cols += 1
-
-                        rows += 1
-                        cols = 1
-                    
-                    # predict JL corpus audio
-                    sheet[get_column_letter(cols) + str(rows)] = "JLCorpus audio"
-                    rows += 1
-                    
-                    for audio in os.listdir(f'predict_from_audio/JL_{model_ver[:3]}'):
-                        gender, sentiment, _1, _2 = audio.split("_")
-                        # predict
-                        predictions = detector.predict_proba(f'predict_from_audio/JL_{model_ver[:3]}/{audio}')
-                        sheet[get_column_letter(cols) + str(rows)] = str(sentiment)
-
-                        # check if prediction is correcyt
-                        if(sentiment==max(predictions, key=predictions.get).lower()):
-                            sheet[get_column_letter(cols + 1) + str(rows)] = "correct"
-                            cols += 2        
-                        else:
-                            sheet[get_column_letter(cols + 1) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
-                            cols += 2
-
-                        # record prediction
-                        for value in (predictions).values():
-                            sheet[get_column_letter(cols) + str(rows)] = value
-                            cols += 1
-
-                        rows += 1
-                        cols = 1
+                    rows = sm_predict_excel(frequency = model_ver[:3], detector = detector, emotions = emotions, rows = 2, cols = 1, sheet = sheet)                  
+                    rows = predict_excel(frequency = model_ver[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet)
+                    rows = predict_excel(frequency = model_ver[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet)
 
                     wb.save('predict_from_audio/prediction.xlsx')
                     print('predictions saved to predict_from_audio/prediction.xlsx')
         
                 # else if outputting to text
                 else:
-                    # open file to write predictions on 
-                    with open(file = 'predict_from_audio' + os.sep + 'predictions.txt', mode  = 'w') as file:
+                    print('to implement')
 
-                        # iterate through all the files
-                        file.write("results," + str(emotions) + "\n")
-                        for emotion in emotions:
-
-                            # record emotions to predict to write to the putput file later
-                            to_predict = emotion + (8-len(emotion))*(" ")
-
-                            for filepath in glob.iglob(os.path.join("predict_from_audio",f"emotion testing audio {model_ver[:3]}", f"{emotion}/*")):
-                                
-                                # write if prediction was correct
-                                if(emotion == detector.predict(filepath).lower()):
-                                    file.write(to_predict + " correct   :" )
-                                else:
-                                    file.write(to_predict + " incorrect :" )
-                                
-                                # Write probabiltiy distribution
-                                for value in (detector.predict_proba(filepath)).values():
-                                    file.write(str(value) + ",")
-                                file.write(str(filepath) + "\n")
-                            
-                    print('predictions saved to predict_from_audio/prediction.txt')
+            # if single or multiple is not chosen
+            else:
+                sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")
+        
         else:
             print('Training not implemented here yet')
     

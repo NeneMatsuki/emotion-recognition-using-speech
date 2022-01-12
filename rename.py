@@ -1,9 +1,9 @@
 import os
-folder = "data/test-custom"
+folder = "predict_from_audio/emotion testing audio 44k/neutral"
 files = os.listdir(folder)
 
 
-for i in range(len(files)):
-    name,wave = files[i].split(".")
+for file in files:
+    senti,person = file.split("_")
     #os.rename(folder + "/" + files[i], folder + "/" + name + "_happy." + wave)
-    os.rename(folder + "/" + files[i], folder + "/" + "Erica_" + files[i])
+    os.rename(folder + "/" + file, f"{folder}/{senti}_med_{person}")
