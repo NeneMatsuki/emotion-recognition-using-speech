@@ -34,16 +34,28 @@ if __name__ == "__main__":
     estimators = get_best_estimators(True)
     estimators_str, estimator_dict = get_estimators_name(estimators)
 
-    # get details from predict.json file
-    with open('predict.json') as config_file:
-        data = json.load(config_file)
-        model =     data["model"].format(estimators_str)
-        emotions =  data['emotions'].split(",")
-        frequency = data["frequency"]
-        features =  data["features"].split(",")
-        model_ver = data["model_ver"]
+    # # get details from predict.json file
+    # with open('predict.json') as config_file:
+    #     data = json.load(config_file)
+    #     model =     data["model"].format(estimators_str)
+    #     emotions =  data['emotions'].split(",")
+    #     frequency = data["frequency"]
+    #     features =  data["features"].split(",")
+    #     model_ver = data["model_ver"]
     
-    model_name = os.path.join(model_ver,model)
+    with open('predict.json', 'r') as config_file:
+        data = json.load(config_file)
+        mandatory_settings =    data["Mandatory Settings"][0]
+    
+        # load mandatory settings
+        model =     mandatory_settings["model"].format(estimators_str)
+        model_ver = mandatory_settings["model_ver"]
+        emotions =  mandatory_settings['emotions'].split(",")
+        features =  mandatory_settings["features"].split(",")
+        frequency = model_ver[:3]
+        model_name = os.path.join(model_ver,model)
+    
+ 
 
     # initialise list to start time taken and 
     time_taken = []
@@ -181,6 +193,7 @@ if __name__ == "__main__":
     ax5.grid(True)
 
     # add a title and lplot
-    fig.suptitle(f"Time taken to predict {len(duration)} samples of audio at {model_ver} using {model}", fontsize = 20)
+    #Prediction time(s) for 16KHz speech audio files using the MLP classifier
+    fig.suptitle(f"Prediction time(s) for {model_ver[:3]}Hz speech audio usin {model}", fontsize = 20)
     plt.tight_layout()
     plt.savefig(f'performance_plots/{model_ver}_{model}.png')

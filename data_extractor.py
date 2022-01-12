@@ -11,7 +11,8 @@ from collections import defaultdict
 
 with open('predict.json') as config_file:
     data = json.load(config_file)
-    model_ver = data["model_ver"]
+    mandatory_settings =    data["Mandatory Settings"][0]
+    model_ver =    mandatory_settings["model_ver"]
 
 class AudioExtractor:
     """A class that is used to featurize audio clips, and provide

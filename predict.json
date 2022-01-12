@@ -1,14 +1,50 @@
 {
-    "model"     :"MLPClassifier",
-    "model_ver" :"16k_3feat_JL",
-    "emotions"  :"angry,happy,neutral,sad",
-    "features"  :"mfcc,chroma,mel",
+    "Mandatory Settings": [{
+        
+        "Section Description":[
+            "Use these fields to cofigure settings required to test and train a model",
 
-    "comment_single": "for single predictions",
-    "audio"     :"predict_from_audio/emotion testing audio 16k/angry/a1_high_Dervla_emottsangry_0376.wav",
+            "model         : Classifier to usechosen from [KNeighborsClassifier,SVC,GradientBoostingClassifier,DecisionTreeClassifier,MLPClassifier,BaggingClassifier]",
+            "model_ver     : Version of model (frequency of audio and features it uses to train to test). Available models are located in the models folder",
+            "emotions      : emotions to test/train, available for testing are [angry,happy,neutral,sad] ",
+            "features      : Features to extract from audio, the number of features must equal the number specified in model_ver ",
+            "Test or Train : whether to test or train. If test, please configure Testing settings. If train, please configure Training settings"      
+        ],   
 
-    "comment_multiple": "for multiple predictions",
-    "frequency" :"16k",
-    "output"    :"excel"
+        "model"     :"MLPClassifier",
+        "model_ver" :"16k_3feat_JL",
+        "emotions"  :"angry,happy,neutral,sad",
+        "features"  :"mfcc,chroma,mel",
+        "Test or Train" : "Test"
+        
+    }],
+
+    "Testing settings" : [{
+
+        "Section description":[
+        "Use these fields to cofigure your tessting setting",
+
+        "Testing single will predict and print the emotion of a single audio file. To configure this:",
+            "Test mode      : single",
+            "Testing Single : Audio dierctory : the directory of the audio file to test",
+        
+        "Testing multiple will predict emotions from all audio in the directory predict_from_audio. The results are outputted to an excel or text file. To configure this:",
+            "Test mode        : multiple",
+            "Testing multiple : output : where to output the predictions, choose from [excel, text]"
+        ],
+
+        "Test mode" : "multiple",
+
+        "Testing single":[{
+        "Audio directory": "predict_from_audio/Nene_16/happy_Nene.wav"
+        }],
+        
+        "Testing multiple":[{
+            "output": "excel"
+        }]
+
+    }]
+
+    
 
 }
