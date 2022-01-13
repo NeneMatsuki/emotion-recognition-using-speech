@@ -32,9 +32,10 @@ if __name__ == "__main__":
 
     with open('predict.json') as config_file:
         data = json.load(config_file)
-        model_ver = data["model_ver"]
-        emotions =  data['emotions'].split(",")
-        features =  data["features"].split(",")
+        mandatory_settings =    data["Mandatory Settings"][0]
+        model_ver = mandatory_settings["frequency_features"]
+        emotions =  mandatory_settings['emotions'].split(",")
+        features =  mandatory_settings["features"].split(",")
 
     #models = ["RandomForestClassifier"]
     for model in models:

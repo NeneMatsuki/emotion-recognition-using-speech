@@ -84,6 +84,9 @@ if __name__ == "__main__":
             # record emotion to be predicted and if the prediction was correct
             duration.append(librosa.get_duration(filename = filepath))
 
+            start_predict = time.perf_counter()
+            predictions = detector.predict_proba(filepath)
+            end_predict = time.perf_counter() 
             # record prediction probability and time
             start_predict = time.perf_counter()
             predictions = detector.predict_proba(filepath)

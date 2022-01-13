@@ -1,5 +1,6 @@
 import os
-folder = "predict_from_audio/emotion testing audio 44k/neutral"
+sentiment = "angry"
+folder = f"predict_from_audio/emotion testing audio 16k/{sentiment}"
 files = os.listdir(folder)
 
 
