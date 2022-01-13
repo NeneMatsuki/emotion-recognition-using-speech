@@ -84,17 +84,20 @@ if __name__ == "__main__":
             # record emotion to be predicted and if the prediction was correct
             duration.append(librosa.get_duration(filename = filepath))
 
+            start_predict = time.perf_counter()
+            predictions = detector.predict_proba(filepath)
+            end_predict = time.perf_counter() 
             # record prediction probability and time
-            if(frequency_features[:3] != frequency):
-                start_predict = time.perf_counter()
-                y, s = librosa.load(filepath, sr=44100)
-                sf.write("temp.wav", y, s)
-                end_predict = time.perf_counter() 
+            # if(frequency_features[:3] != frequency):
+            #     start_predict = time.perf_counter()
+            #     y, s = librosa.load(filepath, sr=44100)
+            #     sf.write("temp.wav", y, s)
+            #     end_predict = time.perf_counter() 
 
-            else:
-                start_predict = time.perf_counter()
-                predictions = detector.predict_proba(filepath)
-                end_predict = time.perf_counter() 
+            # else:
+            #     start_predict = time.perf_counter()
+            #     predictions = detector.predict_proba(filepath)
+            #     end_predict = time.perf_counter() 
 
             time_taken.append((end_predict - start_predict)*1000)
 
