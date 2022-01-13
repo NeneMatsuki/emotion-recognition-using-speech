@@ -150,7 +150,41 @@ def sm_predict_all_excel(detector, rows, cols, sheet):
 
     return(rows)
 
+def predict_all_excel(detector, rows, cols, sheet, file):
+    sheet[get_column_letter(cols) + str(rows)] = file
+    rows += 1
 
+    with open(file, 'r') as test_file:
+        csv_reader = reader(test_file)
+        header = next(csv_reader)
 
+        if header != None:
+            for row in csv_reader:
+                audio = row[1]
+                emotion = row[2]
+
+                predictions = detector.predict_proba(audio)
+
+                # record correct emotion
+                sheet[get_column_letter(cols) + str(rows)] = emotion
+
+                cols += 2
+
+                # record if the perediction is correct
+                if(emotion==max(predictions, key=predictions.get).lower()):
+                    sheet[get_column_letter(cols) + str(rows)] = "correct"
+                    cols += 1        
+                else:
+                    sheet[get_column_letter(cols) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
+                    cols += 1
+                
+                for value in (predictions).values():
+                    sheet[get_column_letter(cols) + str(rows)] = value
+                    cols += 1
+
+                rows += 1
+                cols = 1
+
+    return(rows)
 
         

@@ -1,3 +1,4 @@
+from charset_normalizer import models
 from emotion_recognition import EmotionRecognizer
 from deep_emotion_recognition import DeepEmotionRecognizer
 import json
@@ -99,7 +100,9 @@ if __name__ == "__main__":
                     for i in range(len(emotions)):
                         sheet[get_column_letter(i + 4) + "1"] =  emotions[i]
 
-                    rows = sm_predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet)                  
+                    rows = sm_predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet)
+                    rows = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'test_tess_ravdess.csv')
+                    rows = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'test_emodb.csv')                    
                     # rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet)
                     # rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet)
 
@@ -117,7 +120,27 @@ if __name__ == "__main__":
                 sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")
         
         else:
-            print('Training not implemented here yet')
+            test_settings = data["Test settings"][0]
+            train_classifiers = test_settings['Classifiers to train']
+            start_train = time.perf_counter()
+            
+            for model in train_classifiers:
+                    for model in models:
+
+                        if(model == "DecisionTreeClassifier"):
+                            detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_name = model_name, features=features, verbose=0)
+                        
+                        else:
+                            detector = EmotionRecognizer(estimator_dict[model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
+                        
+                        # train the model and display status
+                        detector.train()
+                        print(f"\n{model} trained")
+                        print(detector.confusion_matrix())
+                        print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
+
+            end_train = time.perf_counter()
+            print(f"\nThis process took {end_train - start_train} seconds")
     
 
 
