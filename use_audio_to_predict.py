@@ -108,8 +108,10 @@ if __name__ == "__main__":
         
                 # else if outputting to text
                 else:
-                    print('to implement')
-
+                    with open(file = 'predict_from_audio' + os.sep + 'predictions.txt', mode  = 'w') as file:
+                        sm_predict_text(frequency= frequency_features[:3], detector = detector, emotions = emotions, file = file)
+                        print('predictions saved to predict_from_audio/prediction.txt')
+            
             # if single or multiple is not chosen
             else:
                 sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")

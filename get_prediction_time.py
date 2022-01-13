@@ -85,16 +85,9 @@ if __name__ == "__main__":
             duration.append(librosa.get_duration(filename = filepath))
 
             # record prediction probability and time
-            if(frequency_features[:3] != frequency):
-                start_predict = time.perf_counter()
-                y, s = librosa.load(filepath, sr=44100)
-                sf.write("temp.wav", y, s)
-                end_predict = time.perf_counter() 
-
-            else:
-                start_predict = time.perf_counter()
-                predictions = detector.predict_proba(filepath)
-                end_predict = time.perf_counter() 
+            start_predict = time.perf_counter()
+            predictions = detector.predict_proba(filepath)
+            end_predict = time.perf_counter() 
 
             time_taken.append((end_predict - start_predict)*1000)
 
