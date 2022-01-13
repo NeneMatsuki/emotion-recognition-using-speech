@@ -15,6 +15,7 @@ from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 import matplotlib.pyplot as plt
 import time
+from csv import reader
 
 def sm_predict_excel(frequency, detector, emotions, rows, cols, sheet):
     sheet[get_column_letter(cols) + str(rows)] = "sm audio"
@@ -106,3 +107,50 @@ def sm_predict_text(frequency, detector, emotions, file):
                     file.write('%.2f' % value)
                     file.write(',')
                 
+def sm_predict_all_excel(detector, rows, cols, sheet):
+
+    sheet[get_column_letter(cols) + str(rows)] = "sm audio"
+    rows += 1
+
+
+    with open('test_custom.csv', 'r') as test_file:
+        csv_reader = reader(test_file)
+        header = next(csv_reader)
+
+        if header != None:
+            for row in csv_reader:
+                audio = row[1]
+                emotion = row[2]
+
+                predictions = detector.predict_proba(audio)
+
+                # record correct emotion
+                sheet[get_column_letter(cols) + str(rows)] = emotion
+
+                # get intensity if applicable
+                audio_info = audio.split("_")
+                if ((audio_info[1] == "high") or (audio_info[1] == "med") or (audio_info[1] == "low")):
+                    sheet[get_column_letter(cols + 1) + str(rows)] = audio_info[1]
+                cols += 2
+
+                # record if the perediction is correct
+                if(emotion==max(predictions, key=predictions.get).lower()):
+                    sheet[get_column_letter(cols) + str(rows)] = "correct"
+                    cols += 1        
+                else:
+                    sheet[get_column_letter(cols) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()} : "
+                    cols += 1
+                
+                for value in (predictions).values():
+                    sheet[get_column_letter(cols) + str(rows)] = value
+                    cols += 1
+
+                rows += 1
+                cols = 1
+
+    return(rows)
+
+
+
+
+        

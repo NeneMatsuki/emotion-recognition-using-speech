@@ -93,15 +93,15 @@ if __name__ == "__main__":
                     wb.create_sheet('predictions')
                     sheet = wb['predictions']
                     sheet["A1"] = "True emotion"
-                    sheet["B1"] = "Intensity"
+                    sheet["B1"] = "Intensity" 
                     sheet["C1"] = "Result"
 
                     for i in range(len(emotions)):
                         sheet[get_column_letter(i + 4) + "1"] =  emotions[i]
 
-                    rows = sm_predict_excel(frequency = frequency_features[:3], detector = detector, emotions = emotions, rows = 2, cols = 1, sheet = sheet)                  
-                    rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet)
-                    rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet)
+                    rows = sm_predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet)                  
+                    # rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet)
+                    # rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet)
 
                     wb.save('predict_from_audio/prediction.xlsx')
                     print('predictions saved to predict_from_audio/prediction.xlsx')
