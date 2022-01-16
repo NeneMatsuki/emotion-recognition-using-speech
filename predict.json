@@ -26,11 +26,17 @@
 
         "Testing single will predict and print the emotion of a single audio file. To configure this:",
             "Test mode      : single",
-            "Test Single : Audio dierctory : the directory of the audio file to test",
+                "Audio dierctory : the directory of the audio file to test",
         
         "Testing multiple will predict emotions from all audio in the directory predict_from_audio. The results are outputted to an excel or text file. To configure this:",
             "Test mode        : multiple",
-            "Test multiple : output : where to output the predictions, choose from [excel, text]"
+
+                "Display predictions : how to output the predictions choose from:",
+                                       "excel subset =  will predict a subset of the testing data and records it to an excel file; prediction.xlsx",
+                                       "excel all    =  will predict all of the testing data in a specified folder and records it to an excel file; prediction.xlsx",
+                                       "text         =  will predict a subset testing data  and records it to an text file; prection.txt",
+
+                "Plot time taken     : yes or no, whether to plot time taken to predict and the length of the audio. Will be saved in the folder performance_plots"
         ],
 
         "Test mode" : "multiple",
@@ -40,11 +46,21 @@
         }],
         
         "Test multiple":[{
-            "output": "excel"
+            "Display predictions": "excel all",
+            "Plot time taken": "Yes"
         }]
 
-    }]
+    }],
 
-    
+    "Train settings" : [{
+        "Section description":[
+            "Use these fields to cofigure your training setting",
+            "Classifier to train: A list that contains the names (string0) of all the classifiers to train and display the confusion matrix. Choose from:",
+                                  "KNeighborsClassifier, SVC, GradientBoostingClassifier, DecisionTreeClassifier, MLPClassifier, BaggingClassifier"
+        ],
+        "Classifiers to train": ["KNeighborsClassifier","SVC","GradientBoostingClassifier","DecisionTreeClassifier","MLPClassifier","BaggingClassifier"]
+
+
+    }]
 
 }

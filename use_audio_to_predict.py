@@ -38,10 +38,10 @@ if __name__ == "__main__":
             sys.exit("Please choose whether to Test or Train.\n This can be done under Mandatory Settings in predict.json")       
     
         # load mandatory settings
-        model =     mandatory_settings["model"].format(estimators_str)
-        frequency_features = mandatory_settings["frequency_features"]
-        emotions =  mandatory_settings['emotions'].split(",")
-        features =  mandatory_settings["features"].split(",")
+        model =                 mandatory_settings["model"].format(estimators_str)
+        frequency_features =    mandatory_settings["frequency_features"]
+        emotions =              mandatory_settings['emotions'].split(",")
+        features =              mandatory_settings["features"].split(",")
         model_name = os.path.join(frequency_features,model)
 
         # if testing
@@ -85,9 +85,11 @@ if __name__ == "__main__":
             # if predicting multiple audio
             elif(test_mode == 'multiple'):
                 multiple_settings = test_settings["Test multiple"][0]
-                output = multiple_settings["output"]
+                output = multiple_settings["Display predictions"]
+                plot_time = multiple_settings["Plot time taken"]
 
-                if(output == "excel"):
+                # if outputting all
+                if(output == "excel all"):
                     # initialise workbook 
                     wb = load_workbook('predict_from_audio/prediction.xlsx')
                     wb.remove(wb['predictions'])
@@ -97,47 +99,92 @@ if __name__ == "__main__":
                     sheet["B1"] = "Intensity" 
                     sheet["C1"] = "Result"
 
+                    # add labels to the workbool
                     for i in range(len(emotions)):
                         sheet[get_column_letter(i + 4) + "1"] =  emotions[i]
+                    
+                    sheet[get_column_letter(i + 4) + "1"] = "audio file"
+                    rows = 2
 
-                    rows = sm_predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet)
-                    rows = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'test_tess_ravdess.csv')
-                    rows = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'test_emodb.csv')                    
-                    # rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet)
-                    # rows = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet)
+                    # array to record time taken and duration
+                    time_taken = []
+                    duration = []
+
+                    # read through all files
+                    rows, time_taken, duration = sm_predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
+                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_tess_ravdess.csv', time_taken = time_taken, duration = duration)
+                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_emodb.csv', time_taken = time_taken, duration = duration)                    
 
                     wb.save('predict_from_audio/prediction.xlsx')
                     print('predictions saved to predict_from_audio/prediction.xlsx')
-        
+
+                    if (plot_time.lower() == 'yes'):
+                        plot_time_taken(duration = duration, time_taken = time_taken, frequency = frequency_features,model = model)
+
+                # if testing subset
+                elif(output.lower() == 'excel subset'):
+                    # initialise workbook 
+                    wb = load_workbook('predict_from_audio/prediction.xlsx')
+                    wb.remove(wb['predictions'])
+                    wb.create_sheet('predictions')
+                    sheet = wb['predictions']
+                    sheet["A1"] = "True emotion"
+                    sheet["B1"] = "Intensity" 
+                    sheet["C1"] = "Result"
+
+                    # record emotions
+                    for i in range(len(emotions)):
+                        sheet[get_column_letter(i + 4) + "1"] =  emotions[i]
+                    
+                    rows = 2
+                    time_taken = []
+                    duration = []
+
+                    # iterate through files
+                    rows, time_taken, duration = sm_predict_excel(frequency= frequency_features[:3], detector = detector, emotions = emotions, rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
+                    rows, time_taken, duration = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
+                    rows, time_taken, duration = predict_excel(frequency = frequency_features[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
+
+                    wb.save('predict_from_audio/prediction.xlsx')
+                    print('predictions saved to predict_from_audio/prediction.xlsx')
+
+                    if (plot_time == 'yes'):
+                        plot_time_taken(duration = duration, time_taken = time_taken, frequency = frequency_features[:3],model = model)
+
                 # else if outputting to text
                 else:
                     with open(file = 'predict_from_audio' + os.sep + 'predictions.txt', mode  = 'w') as file:
-                        sm_predict_text(frequency= frequency_features[:3], detector = detector, emotions = emotions, file = file)
+                        time_taken, duration = sm_predict_text(frequency= frequency_features, detector = detector, emotions = emotions, file = file)
                         print('predictions saved to predict_from_audio/prediction.txt')
+                    if (plot_time == 'yes'):
+                        plot_time_taken(duration = duration, time_taken = time_taken, frequency = frequency_features[:3],model = model)
             
             # if single or multiple is not chosen
             else:
                 sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")
         
+        # if train
         else:
-            test_settings = data["Test settings"][0]
-            train_classifiers = test_settings['Classifiers to train']
+            # get training settings
+            train_settings = data["Train settings"][0]
+            train_classifiers = train_settings['Classifiers to train']
             start_train = time.perf_counter()
-            
-            for model in train_classifiers:
-                    for model in models:
 
-                        if(model == "DecisionTreeClassifier"):
-                            detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_name = model_name, features=features, verbose=0)
-                        
-                        else:
-                            detector = EmotionRecognizer(estimator_dict[model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
-                        
-                        # train the model and display status
-                        detector.train()
-                        print(f"\n{model} trained")
-                        print(detector.confusion_matrix())
-                        print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
+            # join model name
+            for model in train_classifiers:
+                model_name = os.path.join(frequency_features,model)
+
+                # similar for decision tree classifier 
+                if(model == "DecisionTreeClassifier"):
+                    detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_name = model_name, features=features, verbose=0)
+                else:
+                    detector = EmotionRecognizer(estimator_dict[model] , emotions=emotions, model_name = model_name, features=features, verbose=0)
+                
+                # train the model and display status
+                detector.train()
+                print(f"\n{model} trained")
+                print(detector.confusion_matrix())
+                print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
             end_train = time.perf_counter()
             print(f"\nThis process took {end_train - start_train} seconds")
