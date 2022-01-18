@@ -2,7 +2,7 @@
     "MANDATORY FIELD SETTING": {
 
         "classifier name"         :"MLPClassifier",
-        "pre-saved model folder"  :"16k_withJL_mfcc_chroma_mel",
+        "pre-saved model folder"  :"16k_3feat_JL",
         "emotions"                :"angry,happy,neutral,sad",
         "features"                :"mfcc,chroma,mel",
         "Test or Train"           :"Test",
@@ -43,12 +43,12 @@
         "Test mode" : "multiple",
 
         "TEST SINGLE SETTING": {
-            "Audio directory" : "predict_from_audio/Nene_16/happy_Nene.wav"
+            "Audio directory" : "predict_from_audio/emotion testing audio 16k/sad/s2_high_E.wav"
         },
         
         "TEST MULTIPLE SETTING": {
             "Display predictions"   : "excel all",
-            "Plot time taken"       : "Yes"
+            "Plot time taken"       : "no"
         },
 
 
@@ -73,14 +73,14 @@
             ]
     },
 
-    "Train settings" : {
+    "TRAIN FIELD SETTING" : {
         "Train mode"       : "multiple",
 
-        "TRAIN MULTIPLE SETTING ": {
+        "TRAIN MULTIPLE SETTING": {
             "Multiple classifiers to train": ["KNeighborsClassifier","SVC","GradientBoostingClassifier","DecisionTreeClassifier","MLPClassifier","BaggingClassifier"]
         },
 
-        "Section description": [
+        "SECTION DESCRIPTION": [
             "Use these fields to cofigure your training settings",
             "Train mode (str) : whether to train a single classifier or MULTIPLE. If training single, it will be the one specified in the mandatory settings.",
             "                   If chosen multiple, please configure train multiple settings",

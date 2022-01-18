@@ -9,10 +9,10 @@ import json
 from utils import get_label, extract_feature, get_first_letters
 from collections import defaultdict
 
-with open('predict.json') as config_file:
+with open('test_train_config.json') as config_file:
     data = json.load(config_file)
-    mandatory_settings =    data["Mandatory Settings"][0]
-    frequency_features =    mandatory_settings["frequency_features"]
+    mandatory_settings =    data["MANDATORY FIELD SETTING"]
+    model_folder =    mandatory_settings["pre-saved model folder"]
 
 class AudioExtractor:
     """A class that is used to featurize audio clips, and provide
@@ -104,7 +104,7 @@ class AudioExtractor:
         # construct features file name
         n_samples = len(audio_paths)
         first_letters = get_first_letters(self.emotions)
-        name = os.path.join(self.features_folder_name, f"{frequency_features}/{partition}_{label}_{first_letters}_{n_samples}.npy")
+        name = os.path.join(self.features_folder_name, f"{model_folder}/{partition}_{label}_{first_letters}_{n_samples}.npy")
         if os.path.isfile(name):
             # if file already exists, just load then
             if self.verbose:

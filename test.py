@@ -11,7 +11,7 @@ from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier
 
-from utils import get_best_estimators
+from utils import get_grid_tuned_models,string_into_list
 
 THRESHOLD = 500
 CHUNK_SIZE = 1024
@@ -124,27 +124,30 @@ def record_to_file(path):
     wf.close()
 
 
-def get_estimators_name(estimators):
+def get_grid_tuned_models_dict(estimators):
     result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
     return ','.join(result), {estimator_name.strip('"'): estimator for estimator_name, (estimator, _, _) in zip(result, estimators)}
 
 
 
 if __name__ == "__main__":
-    estimators = get_best_estimators(True)
-    estimators_str, estimator_dict = get_estimators_name(estimators)
-    with open('predict.json') as config_file:
+    grid_tuned_models = get_grid_tuned_models(True)
+    grid_tuned_models_name, grid_tuned_models_dict = get_grid_tuned_models_dict(grid_tuned_models)
+
+    json_file = "test_train_config.json"
+    
+    with open(json_file, 'r') as config_file:
         data = json.load(config_file)
-        mandatory_settings =    data["Mandatory Settings"][0]
-        model =     mandatory_settings["model"].format(estimators_str)
-        frequency_features = mandatory_settings["frequency_features"]
-        emotions =  mandatory_settings['emotions'].split(",")
-        features =  mandatory_settings["features"].split(",")
-        model_name = os.path.join(frequency_features,model)
+        mandatory_settings =    data["MANDATORY FIELD SETTING"]
+        classifier_name =       mandatory_settings["classifier name"].format(grid_tuned_models_name)
+        model_folder =          mandatory_settings["pre-saved model folder"]
+        emotions =              string_into_list(mandatory_settings['emotions'])
+        features =              string_into_list(mandatory_settings["features"])
+        model_dir = os.path.join(model_folder,classifier_name)
 
 
    
-    detector = EmotionRecognizer(estimator_dict[model], emotions=emotions, model_name = model_name, features=features, verbose=0)
+    detector = EmotionRecognizer(emotions=emotions, model_name = model_dir, features=features, verbose=0)
 
     print("Please talk")
     

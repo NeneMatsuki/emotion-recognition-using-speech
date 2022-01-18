@@ -4,11 +4,11 @@ import os
 import json
 
 
-with open('predict.json') as config_file:
+with open('test_train_config.json') as config_file:
     data = json.load(config_file)
-    mandatory_settings =    data["Mandatory Settings"][0]
-    frequency_features =    mandatory_settings["frequency_features"]
-    frequency = frequency_features[:3]
+    mandatory_settings =    data["MANDATORY FIELD SETTING"]
+    model_folder =    mandatory_settings["pre-saved model folder"]
+    frequency = model_folder[:3]
 
 def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name="train_emo.csv",
                     test_name="test_emo.csv", train_size=0.8, verbose=1):

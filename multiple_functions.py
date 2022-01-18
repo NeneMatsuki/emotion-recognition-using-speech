@@ -48,7 +48,7 @@ def sm_predict_excel(frequency, detector, emotions, rows, cols, sheet, time_take
         for audio in os.listdir(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",f"{emotion}")):
 
             # calculate probability
-            duration.append(librosa.get_duration(filename = audio))
+            duration.append(librosa.get_duration(filename = os.path.join("predict_from_audio",f"emotion testing audio {frequency}",emotion, audio)))
 
             start_predict = time.perf_counter()
             predictions = detector.predict_proba(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",emotion, audio))
@@ -109,7 +109,7 @@ def predict_excel(frequency, detector, folder, rows, cols, sheet, time_taken, du
         sentiment = audio.split("_")
 
         # Get prediction and record the correct sentiment
-        duration.append(librosa.get_duration(filename = audio))
+        #duration.append(librosa.get_duration(os.path.join('predict_from_audio',f'{folder}_{frequency}',audio)))
 
         start_predict = time.perf_counter()
         predictions = detector.predict_proba(os.path.join('predict_from_audio',f'{folder}_{frequency}',audio))

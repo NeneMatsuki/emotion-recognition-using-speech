@@ -8,7 +8,7 @@ from sklearn.model_selection import GridSearchCV
 
 import matplotlib.pyplot as pl
 from time import time
-from utils import get_best_estimators, get_audio_config
+from utils import get_grid_tuned_models, get_audio_config
 import numpy as np
 import tqdm
 import os
@@ -71,7 +71,7 @@ class EmotionRecognizer:
 
         self.verbose = kwargs.get("verbose", 1)
 
-        self.model_name = kwargs.get("model_name", "KNeighborsClassifier")
+        self.model_dir = kwargs.get("model_dir", "KNeighborsClassifier")
 
 
         # set metadata path file names
@@ -88,7 +88,7 @@ class EmotionRecognizer:
             self.determine_best_model()
         else:
             #self.model = model
-            filename = os.path.join("models",f"{self.model_name}.sav")
+            filename = os.path.join("models",f"{self.model_dir}.sav")
             try:
                 self.model = pickle.load(open(filename, 'rb'))
             except Exception as e:
@@ -123,9 +123,9 @@ class EmotionRecognizer:
         for emotion in self.emotions:
             assert emotion in AVAILABLE_EMOTIONS, "Emotion not recognized."
 
-    def get_best_estimators(self):
+    def get_grid_tuned_models(self):
         """Loads estimators from grid files and returns them"""
-        return get_best_estimators(self.classification)
+        return get_grid_tuned_models(self.classification)
 
     def write_csv(self):
         """
@@ -178,7 +178,7 @@ class EmotionRecognizer:
             self.load_data()
         if not self.model_trained:
             self.model.fit(X=self.X_train, y=self.y_train)
-            filename = os.path.join("models",f"{self.model_name}.sav")
+            filename = os.path.join("models",f"{self.model_dir}.sav")
             pickle.dump(self.model, open(filename, 'wb'))
             self.model_trained = True
             # if verbose:
@@ -240,7 +240,7 @@ class EmotionRecognizer:
             self.load_data()
         
         # loads estimators
-        estimators = self.get_best_estimators()
+        estimators = self.get_grid_tuned_models()
 
         result = []
 
@@ -402,7 +402,7 @@ def plot_histograms(classifiers=True, beta=0.5, n_classes=3, verbose=1):
         n_classes (int): number of classes
     """
     # get the estimators from the performed grid search result
-    estimators = get_best_estimators(classifiers)
+    estimators = get_grid_tuned_models(classifiers)
 
     final_result = {}
     for estimator, params, cv_score in estimators:
