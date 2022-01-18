@@ -71,7 +71,7 @@ class EmotionRecognizer:
 
         self.verbose = kwargs.get("verbose", 1)
 
-        self.model_dir = kwargs.get("model_dir", "KNeighborsClassifier")
+        self.model_dir = kwargs.get("model_dir", "16k_3feat_JL/MLPClassifier")
 
 
         # set metadata path file names
@@ -83,17 +83,14 @@ class EmotionRecognizer:
         self.data_loaded = False
         self.model_trained = False
 
-        # model
-        if not model:
-            self.determine_best_model()
-        else:
-            #self.model = model
-            filename = os.path.join("models",f"{self.model_dir}.sav")
-            try:
-                self.model = pickle.load(open(filename, 'rb'))
-            except Exception as e:
 
-                self.model = model
+        #self.model = model
+        filename = os.path.join("models",f"{self.model_dir}.sav")
+        try:
+            self.model = pickle.load(open(filename, 'rb'))
+        except Exception as e:
+
+            self.model = model
 
     def _set_metadata_filenames(self):
         """

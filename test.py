@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
 
    
-    detector = EmotionRecognizer(emotions=emotions, model_name = model_dir, features=features, verbose=0)
+    detector = EmotionRecognizer(emotions=emotions, model_dir = model_dir, features=features, verbose=0)
 
     print("Please talk")
     
