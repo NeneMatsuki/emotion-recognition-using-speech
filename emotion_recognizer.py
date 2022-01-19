@@ -1,23 +1,14 @@
-from charset_normalizer import models
 from emotion_recognition import EmotionRecognizer
-from deep_emotion_recognition import DeepEmotionRecognizer
-import json
 import os
-from sys import byteorder
 import sys
-from struct import pack
-from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
 import time
 import librosa
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
-from multiple_functions import *
+from emotion_recognizer_functions import *
 
-from utils import get_grid_tuned_models,string_into_list, load_mandatory_settings, load_testing_settings, load_training_settings
+from utils import get_grid_tuned_models, load_mandatory_settings, load_testing_settings, load_training_settings
 
 def get_grid_tuned_models_dict(estimators):
     result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
@@ -52,14 +43,14 @@ if __name__ == "__main__":
         # if predicting a single audio
         if(test_mode == 'single'):
 
-            audio = test_setting[1]
+            audio_dir = test_setting[1]
 
             print(f'\nChosen to test a single audio using {classifier_name} trained on {model_folder}')
-            print(f'Length of audio: {librosa.get_duration(filename = audio)} seconds')
+            print(f'Length of audio: {librosa.get_duration(filename = audio_dir)} seconds')
 
             #predict from filename passed in args
             start_predict = time.perf_counter()
-            result = detector.predict_proba(audio)
+            result = detector.predict_proba(audio_dir)
             end_predict = time.perf_counter()
 
             # print result
@@ -90,7 +81,7 @@ if __name__ == "__main__":
                 sheet["B1"] = "Intensity" 
                 sheet["C1"] = "Result"
 
-                # add labels to the workbool
+                # add labels to the workbook
                 for i in range(len(emotions)):
                     sheet[get_column_letter(i + 4) + "1"] =  emotions[i]
                 
