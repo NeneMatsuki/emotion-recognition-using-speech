@@ -1,3 +1,4 @@
+from tracemalloc import start
 from emotion_recognition import EmotionRecognizer
 
 import pyaudio
@@ -123,6 +124,20 @@ def record_to_file(path):
     wf.writeframes(data)
     wf.close()
 
+def record_without_file():
+    sample_width, data = record()
+    return(data, sample_width)
+
+def record_to_file_check(original_data, sample_width, path):
+    data = pack('<' + ('h'*len(original_data)), *original_data)
+    wf = wave.open(path, 'wb')
+    wf.setnchannels(1)
+    wf.setsampwidth(sample_width)
+    wf.setframerate(RATE)
+    wf.writeframes(data)
+    wf.close()
+    
+
 
 def get_grid_tuned_models_dict(estimators):
     result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
@@ -144,19 +159,26 @@ if __name__ == "__main__":
         emotions =              string_into_list(mandatory_settings['emotions'])
         features =              string_into_list(mandatory_settings["features"])
         model_dir = os.path.join(model_folder,classifier_name)
-
-
    
     detector = EmotionRecognizer(emotions=emotions, model_dir = model_dir, features=features, verbose=0)
 
     print("Please talk")
     
     filename = "test.wav"
-    record_to_file(filename)
-    print(f'\nLength of audio recorded: {librosa.get_duration(filename = filename)} seconds')
+    data, sample_width  = record_without_file()
 
     start_predict = time.perf_counter()
-    result = detector.predict_proba(filename)
+    record_to_file_check(data, sample_width,filename)
+    end_predict = time.perf_counter()
+    
+    extra_time_recording_file = end_predict-start_predict
+
+    print(f'\nLength of audio recorded: {librosa.get_duration(filename = filename)} seconds')
+
+# audio buffer directly
+    print(f'\nPredicting from recording directily')
+    start_predict = time.perf_counter()
+    result = detector.predict_proba_audio(data)
     end_predict = time.perf_counter()
 
     print(f"\n emotion probabilities \n{result}")
@@ -170,4 +192,25 @@ if __name__ == "__main__":
 
     print(f"\nfirst prediction  : {maximum} \nsecond prediction : {second} \ndifference is {(max_value - second_value)*100} %")
 
-    print(f"\nTime it took to predict: {end_predict - start_predict} s")
+    print(f"\nTime it took to predict: {(end_predict - start_predict)*1000}ms")
+
+# from file
+    # print(f'\nPredicting from recording saved to file')
+    # start_predict = time.perf_counter()
+    # result = detector.predict_proba(filename)
+    # end_predict = time.perf_counter()
+
+    # print(f"\n emotion probabilities \n{result}")
+    
+    # maximum = max(result, key=result.get)
+    # max_value = result[maximum]
+    # del result[maximum]
+
+    # second = max(result, key=result.get)
+    # second_value = result[second]
+
+    # print(f"\nfirst prediction  : {maximum} \nsecond prediction : {second} \ndifference is {(max_value - second_value)*100} %")
+
+    # print(f"\nTime it took to predict: {((end_predict - start_predict) + extra_time_recording_file)*1000} s")
+
+

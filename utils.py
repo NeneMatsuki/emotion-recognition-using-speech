@@ -120,7 +120,7 @@ def extract_feature_audio(audio, **kwargs):
     contrast = kwargs.get("contrast")
     tonnetz = kwargs.get("tonnetz")
 
-    X = audio
+    X = pcm2float(audio, dtype='float32')
     sample_rate = 16000
     if chroma or contrast:
         stft = np.abs(librosa.stft(X))
@@ -265,5 +265,30 @@ def load_training_settings(json_file):
         
         else:
             sys.exit(f"Please choose whether to train single or multiple in TRAIN FIELD SETTING in {json_file}")
+
+def pcm2float(sig, dtype='float32'):
+    """Convert PCM signal to floating point with a range from -1 to 1.
+    Use dtype='float32' for single precision.
+    Parameters
+    ----------
+    sig : array_like
+        Input array, must have integral type.
+    dtype : data type, optional
+        Desired (floating point) data type.
+    Returns
+    -------
+    numpy.ndarray
+        Normalized floating point data.
+    See Also
+    --------
+    float2pcm, dtype
+    """
+    sig = np.asarray(sig)
+    dtype = np.dtype(dtype)
+
+    i = np.iinfo(sig.dtype)
+    abs_max = 2 ** (i.bits - 1)
+    offset = i.min + abs_max
+    return (sig.astype(dtype) - offset) / abs_max
         
 
