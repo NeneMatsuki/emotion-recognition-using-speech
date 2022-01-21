@@ -40,7 +40,7 @@
 
     "TEST FIELD SETTING" : {
 
-        "Test mode" : "single",
+        "Test mode" : "multiple",
 
         "TEST SINGLE SETTING": {
             "Audio directory" : "predict_from_audio/emotion testing audio 16k/sad/s2_high_E.wav"
@@ -48,7 +48,7 @@
         
         "TEST MULTIPLE SETTING": {
             "Display predictions"   : "excel all",
-            "Plot time taken"       : "no"
+            "Plot time taken"       : "yes"
         },
 
 
@@ -64,8 +64,8 @@
             
             "Configure Test multiple settings if multiple is chosen as Test mode",
             "   Display predictions (str) : how to output the predictions choose from:",
-            "                               excel subset =  will predict a subset of the testing data and records it to an excel file; prediction.xlsx",
-            "                               excel all    =  will predict all of the testing data in a specified folder and records it to an excel file; prediction.xlsx",
+            "                               excel subset =  will predict a subset of the testing data (71 files)and records the outcome it to an excel file; prediction.xlsx",
+            "                               excel all    =  will predict all of the testing data (10521 files)  and records the outcome to an excel file; prediction.xlsx",
             "                               text         =  will predict a subset testing data  and records it to an text file; prection.txt",
     
             "   Plot time taken     (str) : Whether to plot time taken to predict and the length of the audio. Will be saved in the folder performance_plots. Choose from",
@@ -89,7 +89,5 @@
                 "Multiple classifiers to train (str) : A list that contains the names (string) of all the classifiers to train and display the confusion matrix. Choose from:",
                                                       "[KNeighborsClassifier, SVC, GradientBoostingClassifier, DecisionTreeClassifier, MLPClassifier, BaggingClassifier]"
         ]
-
     }
-
 }

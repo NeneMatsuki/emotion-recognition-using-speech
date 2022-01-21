@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
 
                 audio_length = audio_length*1000
-                chunk_length = 5000
+                chunk_length = 2000
                 segments = int(audio_length/chunk_length)
 
                 for i in range(segments):

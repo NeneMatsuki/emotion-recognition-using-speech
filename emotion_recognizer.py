@@ -30,9 +30,8 @@ if __name__ == "__main__":
     # If testing
     if(Test_or_train_mode == "test"):
 
-        # check if testing setting has correct fields
-        test_setting = load_testing_settings(json_file)
-        test_mode = test_setting[0]
+        # load testing parameters
+        test_mode, audio_or_output, plot_time = load_testing_settings(json_file)
 
         # create detector instance
         if(classifier_name == "DecisionTreeClassifier"):
@@ -43,8 +42,10 @@ if __name__ == "__main__":
         # if predicting a single audio
         if(test_mode == 'single'):
 
-            audio_dir = test_setting[1]
+            # collect the audio directory
+            audio_dir = audio_or_output
 
+            # print to user what the settings are 
             print(f'\nChosen to test a single audio using {classifier_name} trained on {model_folder}')
             print(f'Length of audio: {librosa.get_duration(filename = audio_dir)} seconds')
 
@@ -53,7 +54,7 @@ if __name__ == "__main__":
             result = detector.predict_proba(audio_dir)
             end_predict = time.perf_counter()
 
-            # print result
+            # print results 
             print(f'\n{result}')
             maximum = max(result, key=result.get)
             max_value = result[maximum]
@@ -66,11 +67,11 @@ if __name__ == "__main__":
 
         # if predicting multiple audio
         elif(test_mode == 'multiple'):
-                
-            display_predictions = test_setting[1]
-            plot_time = test_setting[2]
 
-            # if display_predictionsting all
+            # get prefferend methpod of displaying predicitons   
+            display_predictions = audio_or_output
+
+            # if display is excel and predicting all 10521 testing dataset
             if(display_predictions == "excel all"):
                 # initialise workbook 
                 wb = load_workbook('predict_from_audio/prediction.xlsx')
@@ -92,18 +93,20 @@ if __name__ == "__main__":
                 time_taken = []
                 duration = []
 
-                # read through all files
+                # read through all files, and record the predicitons
                 rows, time_taken, duration = sm_predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
                 rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_tess_ravdess.csv', time_taken = time_taken, duration = duration)
                 rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_emodb.csv', time_taken = time_taken, duration = duration)                    
 
+                # save and display where the predictions ar saved
                 wb.save('predict_from_audio/prediction.xlsx')
                 print('predictions saved to predict_from_audio/prediction.xlsx')
 
+                # if plotting the time taken is selected, plot the time taken to predict with the length of the audio
                 if (plot_time.lower() == 'yes'):
                     plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = classifier_name)
 
-            # if testing subset
+            # if testing subset of testing file (71 files)
             elif(display_predictions.lower() == 'excel subset'):
                 # initialise workbook 
                 wb = load_workbook('predict_from_audio/prediction.xlsx')
@@ -122,19 +125,23 @@ if __name__ == "__main__":
                 time_taken = []
                 duration = []
 
-                # iterate through files
+                # iterate through files and record predictions
                 rows, time_taken, duration = sm_predict_excel(frequency= model_folder[:3], detector = detector, emotions = emotions, rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
                 rows, time_taken, duration = predict_excel(frequency = model_folder[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
                 rows, time_taken, duration = predict_excel(frequency = model_folder[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
 
+                # save and display where the predictions are saved
                 wb.save('predict_from_audio/prediction.xlsx')
                 print('predictions saved to predict_from_audio/prediction.xlsx')
 
+                # if plotting is selected then display plot
                 if (plot_time == 'yes'):
                     plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder[:3],model = classifier_name)
 
             # else if display_predictionsting to text
             else:
+                print("This is not implemented fully, only can predict from sm subset audio")
+
                 with open(file = 'predict_from_audio' + os.sep + 'predictions.txt', mode  = 'w') as file:
                     time_taken, duration = sm_predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file)
                     print('predictions saved to predict_from_audio/prediction.txt')
@@ -145,34 +152,43 @@ if __name__ == "__main__":
         else:
             sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")
     
-    # if train
+    # if training
     else:
         # get training settings
-        train_setting = load_training_settings(json_file)
-        train_mode = train_setting[0]
+        train_mode, classifier_list = load_training_settings(json_file)
 
+        # if training mode is multiple, get the list of classifiers that were entered
         if(train_mode == "multiple"):
-            train_classifiers = train_setting[1]
+            train_classifiers = classifier_list
+        
+        # if single, get the classifier that was chosen in the mandatory settings
         else:
-            train_classifiers = classifier_name
+            train_classifiers = [classifier_name]
+
+        # start timing in order to display the time taken to train the model(s) later on 
         start_train = time.perf_counter()
 
         # join model name
         for model in train_classifiers:
+
+            # navigate to the directory of the models in the list
             model_dir = os.path.join(model_folder,model)
 
-            # similar for decision tree classifier 
+            # If the model is decision tree classifier, Grid search was not performed on this so use the one from scikit learn
             if(model == "DecisionTreeClassifier"):
                 detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
+            
+            # else load model parameters that are saved as a dictionary returned in grid_tuned_models_dict()
             else:
                 detector = EmotionRecognizer(grid_tuned_models_dict[model.format()] , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
             
-            # train the model and display status
+            # train the model and display status, and print the confusioni matrix
             detector.train()
             print(f"\n{model} trained")
             print(detector.confusion_matrix())
             print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
 
+        # display how long the whole process took 
         end_train = time.perf_counter()
         print(f"\nThis process took {end_train - start_train} seconds")
     

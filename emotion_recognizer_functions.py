@@ -370,6 +370,9 @@ def plot_time_taken(duration, time_taken, frequency, model):
     start, end = hist1.get_ylim()
     if (end <= 10):
         hist1.set_yticks(np.arange(start,end,1))
+    start, end = hist1.get_xlim()
+    hist1.set_xticks(np.arange(0,end,5))
+    hist1.set_xlim(0,125)
 
 
     ax1.axvline(x = median_time, color = 'g' , label = f"median: {round(median_time,2)} ms")
@@ -384,6 +387,10 @@ def plot_time_taken(duration, time_taken, frequency, model):
     start, end = hist2.get_ylim()
     if (end <= 10):
         hist2.set_yticks(np.arange(start,end,1))
+    start, end = hist2.get_xlim()
+    hist2.set_xticks(np.arange(0,end,1))
+    hist2.set_xlim(0,20)
+
 
 
     ax2.axvline(x = median_length, color = 'g', label = f"median: {round(median_length,2)} s")

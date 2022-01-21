@@ -169,6 +169,10 @@ def get_audio_config(features_list):
     return audio_config
     
 def string_into_list(string):
+    """
+    Make sure the user input which could or could not be a string in a list form in a list
+    
+    """
     if(string[0] == "["):
         string = string[1:]
     if(string[-1] == "]"):
@@ -176,6 +180,10 @@ def string_into_list(string):
     return(string.split(","))
 
 def load_mandatory_settings(json_file):
+    """
+    Loads mandatory settings from the configuration json file
+
+    """
     with open(json_file, 'r') as config_file:
         data = json.load(config_file)
 
@@ -206,6 +214,10 @@ def load_mandatory_settings(json_file):
     return(Test_or_train_mode, classifier_name, model_folder, emotions, features, model_dir)
 
 def load_testing_settings(json_file):
+    """
+    Loads testing settings from the configuration json file
+    
+    """
     with open(json_file, 'r') as config_file:
         data = json.load(config_file)
 
@@ -226,7 +238,7 @@ def load_testing_settings(json_file):
 
             audio = single_settings["Audio directory"]
 
-            return(test_mode, audio)
+            return(test_mode, audio, "not needed")
         
         elif(test_mode == 'multiple'):
             multiple_settings = test_settings["TEST MULTIPLE SETTING"]
@@ -242,6 +254,10 @@ def load_testing_settings(json_file):
             sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")
 
 def load_training_settings(json_file):
+    """
+    Loads training settings from the configuration json file
+    
+    """
     with open(json_file, 'r') as config_file:
         data = json.load(config_file)
         train_setting = data["TRAIN FIELD SETTING"]
@@ -261,7 +277,7 @@ def load_training_settings(json_file):
             return(train_mode, train_classifiers)
         
         elif(train_mode == "single"):
-            return(train_mode)
+            return(train_mode, "None needed" )
         
         else:
             sys.exit(f"Please choose whether to train single or multiple in TRAIN FIELD SETTING in {json_file}")

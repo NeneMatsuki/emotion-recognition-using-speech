@@ -61,7 +61,7 @@ class EmotionRecognizer:
             self.tess_ravdess = True
     
         self.classification = kwargs.get("classification", True)
-        self.balance = kwargs.get("balance", True)
+        self.balance = kwargs.get("balance", False)
         self.override_csv = kwargs.get("override_csv", True)
         self.verbose = kwargs.get("verbose", 1)
 
@@ -330,6 +330,7 @@ class EmotionRecognizer:
         if labeled:
             matrix = pd.DataFrame(matrix, index=[ f"true_{e}" for e in self.emotions ],
                                     columns=[ f"predicted_{e}" for e in self.emotions ])
+        print(f'Number of samples: {len(y_pred)}')
         return matrix
 
     def draw_confusion_matrix(self):

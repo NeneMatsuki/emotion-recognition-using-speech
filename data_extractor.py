@@ -18,7 +18,7 @@ class AudioExtractor:
     """A class that is used to featurize audio clips, and provide
     them to the machine learning algorithms for training and testing"""
     def __init__(self, audio_config=None, verbose=1, features_folder_name="features", classification=True,
-                    emotions=['sad', 'neutral', 'happy'], balance=True):
+                    emotions=['sad', 'neutral', 'happy'], balance=False):
         """
         Params:
             audio_config (dict): the dictionary that indicates what features to extract from the audio file,
