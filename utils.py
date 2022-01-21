@@ -257,7 +257,7 @@ def load_training_settings(json_file):
             if(list(multiple_setting) != ["Multiple classifiers to train"]):
                 print(f"Field [Multiple classifiers to train] needs to be in TRAIN MULTIPLE SETTING in {json_file}")
                 sys.exit(f"Field [Multiple classifiers to train] needs to be in TRAIN MULTIPLE SETTING in {json_file}")
-            train_classifiers = string_into_list(multiple_setting['Multiple classifiers to train'])
+            train_classifiers = multiple_setting['Multiple classifiers to train']
             return(train_mode, train_classifiers)
         
         elif(train_mode == "single"):
