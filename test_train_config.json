@@ -43,7 +43,7 @@
         "Test mode" : "multiple",
 
         "TEST SINGLE SETTING": {
-            "Audio directory" : "predict_from_audio/emotion testing audio 16k/sad/s2_high_E.wav"
+            "Audio directory" : "predict_from_audio/emotion testing audio 16k/angry/a2_high_R.wav"
         },
         
         "TEST MULTIPLE SETTING": {

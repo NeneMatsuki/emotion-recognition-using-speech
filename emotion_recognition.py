@@ -205,7 +205,7 @@ class EmotionRecognizer:
         Predicts the probability of each emotion.
         """
         if self.classification:
-            feature = extract_feature_audio(np.array(audio, "float32"), **self.audio_config).reshape(1, -1)
+            feature = extract_feature_audio(audio, **self.audio_config).reshape(1, -1)
             proba = self.model.predict_proba(feature)[0]
             result = {}
             for emotion, prob in zip(self.model.classes_, proba):
