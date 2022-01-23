@@ -433,7 +433,7 @@ def plot_time_taken(duration, time_taken, frequency, model):
     print(f'Plot of time taken to predict saved to performance_plots/{frequency}_{model}.png' )
 
 def get_long_audio(files):
-    with open("long_audio.txt", "w") as long_audio_file:
+    with open(os.path.join("predict_from_audio","long_audio.txt"), "w") as long_audio_file:
         for file in files:
             with open(file, 'r') as audio_file:
                 csv_reader = reader(audio_file)

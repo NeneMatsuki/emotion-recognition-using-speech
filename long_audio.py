@@ -42,7 +42,7 @@ if __name__ == "__main__":
     time_taken = []
     duration = []
     
-    file = 'long_audio.csv'
+    file = 'predict_from_audio/long_audio.csv'
 
     with open(file, 'r') as audio_file:
         csv_reader = reader(audio_file)
@@ -70,7 +70,6 @@ if __name__ == "__main__":
                 sheet[get_column_letter(cols + 1) + str(rows)] = max(predictions, key=predictions.get)
                 sheet[get_column_letter(cols + 2) + str(rows)] = prediction_time
                 cols += 4
-
 
                 audio_length = audio_length*1000
                 chunk_length = 2000

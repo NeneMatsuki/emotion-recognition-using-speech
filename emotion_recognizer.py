@@ -1,7 +1,6 @@
 from emotion_recognition import EmotionRecognizer
 import os
 import sys
-from sklearn.tree import DecisionTreeClassifier
 import time
 import librosa
 from openpyxl import load_workbook
