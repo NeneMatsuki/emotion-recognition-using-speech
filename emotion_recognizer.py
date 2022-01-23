@@ -9,6 +9,7 @@ from openpyxl.utils import get_column_letter
 from emotion_recognizer_functions import *
 
 from utils import get_grid_tuned_models, load_mandatory_settings, load_testing_settings, load_training_settings
+from live_voice_emotion_recognizer import record_without_file
 
 def get_grid_tuned_models_dict(estimators):
     result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
@@ -145,6 +146,31 @@ if __name__ == "__main__":
                 if (plot_time == 'yes'):
                     plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder[:3],model = classifier_name)
         
+        # if predicting live audio
+        elif(test_mode == 'live'):
+
+            # record
+            print("Please talk")
+            data, sample_width  = record_without_file()
+
+            # predict
+            start_predict = time.perf_counter()
+            result = detector.predict_proba_audio(data)
+            end_predict = time.perf_counter()
+
+            # display predictions
+            print(f"\n emotion probabilities \n{result}")
+
+            maximum = max(result, key=result.get)
+            max_value = result[maximum]
+            del result[maximum]
+
+            second = max(result, key=result.get)
+            second_value = result[second]
+
+            print(f"\nmost likely to be  : {maximum} \nsecond most likely to be : {second} \ndifference is {(max_value - second_value)*100} %")
+            print(f"\nTime it took to predict: {(end_predict - start_predict)*1000}ms")
+
         # if single or multiple is not chosen
         else:
             sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")

@@ -5,7 +5,7 @@
         "pre-saved model folder"  :"16k_3feat_JL",
         "emotions"                :"angry,happy,neutral,sad",
         "features"                :"mfcc,chroma,mel",
-        "Test or Train"           :"Train",
+        "Test or Train"           :"Test",
         
         "FIELD DESCRIPTION":[
 
@@ -40,7 +40,7 @@
 
     "TEST FIELD SETTING" : {
 
-        "Test mode" : "multiple",
+        "Test mode" : "live",
 
         "TEST SINGLE SETTING": {
             "Audio directory" : "predict_from_audio/emotion testing audio 16k/angry/a2_high_R.wav"
@@ -56,8 +56,9 @@
 
             "Use these fields to cofigure settings required to test a model",
 
-            "Test mode (str) : Whether to test a single or multiple audio files. Plotting prediction times is available if predicting multiple is chosen. Choose from:",
-            "                            [single, multiple]",
+            "Test mode (str) : Whether to test pre-recorded single or multiple audio files, or predicting from your live voice from your microphone.",
+            "                  Plotting prediction times is available if predicting multiple is chosen. Choose from:",
+            "                  [live, single, multiple]",
     
             "Configure Test single settings if single is chosen as Test mode:", 
                 "Audio dierctory (str) : the directory of the audio file to test",

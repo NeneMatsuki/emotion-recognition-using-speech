@@ -250,6 +250,10 @@ def load_testing_settings(json_file):
             plot_time = multiple_settings["Plot time taken"]
 
             return(test_mode, display_predictions, plot_time)
+
+        elif(test_mode == 'live'):
+            return(test_mode, "not needed", "not needed")
+
         else:
             sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")
 
