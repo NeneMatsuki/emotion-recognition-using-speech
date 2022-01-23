@@ -34,10 +34,7 @@ if __name__ == "__main__":
         test_mode, audio_or_output, plot_time = load_testing_settings(json_file)
 
         # create detector instance
-        if(classifier_name == "DecisionTreeClassifier"):
-            detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
-        else:
-            detector = EmotionRecognizer(grid_tuned_models_dict[classifier_name] , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
+        detector = EmotionRecognizer(grid_tuned_models_dict[classifier_name] , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
 
         # if predicting a single audio
         if(test_mode == 'single'):
@@ -174,13 +171,9 @@ if __name__ == "__main__":
             # navigate to the directory of the models in the list
             model_dir = os.path.join(model_folder,model)
 
-            # If the model is decision tree classifier, Grid search was not performed on this so use the one from scikit learn
-            if(model == "DecisionTreeClassifier"):
-                detector = EmotionRecognizer(model = DecisionTreeClassifier() , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
-            
-            # else load model parameters that are saved as a dictionary returned in grid_tuned_models_dict()
-            else:
-                detector = EmotionRecognizer(grid_tuned_models_dict[model.format()] , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
+            #load model parameters that are saved as a dictionary returned in grid_tuned_models_dict()
+
+            detector = EmotionRecognizer(grid_tuned_models_dict[model.format()] , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
             
             # train the model and display status, and print the confusioni matrix
             detector.train()

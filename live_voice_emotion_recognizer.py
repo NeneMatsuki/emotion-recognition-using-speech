@@ -138,7 +138,6 @@ def record_to_file_check(original_data, sample_width, path):
     wf.close()
     
 
-
 def get_grid_tuned_models_dict(estimators):
     result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
     return ','.join(result), {estimator_name.strip('"'): estimator for estimator_name, (estimator, _, _) in zip(result, estimators)}

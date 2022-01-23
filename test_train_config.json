@@ -12,7 +12,7 @@
             "Use these fields to cofigure settings required to test and train a model",
 
             "classifier name        (str)  : Name of classifier to use. Choose from: ",                                            
-            "                                [KNeighborsClassifier,SVC,GradientBoostingClassifier,DecisionTreeClassifier,MLPClassifier,BaggingClassifier]",      
+            "                                [KNeighborsClassifier,SVC,GradientBoostingClassifier,MLPClassifier,BaggingClassifier]",      
 
             "pre-saved model folder (str)  : Under the folder [models], choose a folder which have pretrained models in it. The names describe the sampling rate and features it was trained on . Folders available are:",
             "                                [16k_3feat, 16k_3feat_JL, 16k_4feat, 16k_5feat, 44k_3feat, 44k_4feat, aak_5feat]",
@@ -77,10 +77,10 @@
         "Train mode"       : "multiple",
 
         "TRAIN MULTIPLE SETTING": {
-            "Multiple classifiers to train": ["KNeighborsClassifier","SVC","GradientBoostingClassifier","DecisionTreeClassifier","MLPClassifier","BaggingClassifier"]
+            "Multiple classifiers to train": ["KNeighborsClassifier","SVC","GradientBoostingClassifier","MLPClassifier","BaggingClassifier"]
         },
 
-        "SECTION DESCRIPTION": [
+        "FIELD DESCRIPTION": [
             "Use these fields to cofigure your training settings",
             "Train mode (str) : whether to train a single classifier or MULTIPLE. If training single, it will be the one specified in the mandatory settings.",
             "                   If chosen multiple, please configure train multiple settings",
