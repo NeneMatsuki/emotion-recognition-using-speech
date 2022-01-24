@@ -12,7 +12,7 @@ from array import array
 from struct import pack
 from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier
 
-from utils import get_grid_tuned_models,string_into_list
+from utils import get_pre_tuned_models,string_into_list
 
 THRESHOLD = 500
 CHUNK_SIZE = 1024
@@ -138,15 +138,15 @@ def record_to_file_check(original_data, sample_width, path):
     wf.close()
     
 
-def get_grid_tuned_models_dict(estimators):
+def get_pre_tuned_models_dict(estimators):
     result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
     return ','.join(result), {estimator_name.strip('"'): estimator for estimator_name, (estimator, _, _) in zip(result, estimators)}
 
 
 
 if __name__ == "__main__":
-    grid_tuned_models = get_grid_tuned_models(True)
-    grid_tuned_models_name, grid_tuned_models_dict = get_grid_tuned_models_dict(grid_tuned_models)
+    grid_tuned_models = get_pre_tuned_models(True)
+    grid_tuned_models_name, grid_tuned_models_dict = get_pre_tuned_models_dict(grid_tuned_models)
 
     json_file = "test_train_config.json"
     

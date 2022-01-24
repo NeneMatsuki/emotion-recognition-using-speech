@@ -143,7 +143,7 @@ def extract_feature_audio(audio, **kwargs):
     return result
 
 
-def get_grid_tuned_models(classification):
+def get_pre_tuned_models(classification):
     """
     Loads the estimators that are pickled in `grid` folder
     Note that if you want to use different or more estimators,
@@ -154,6 +154,10 @@ def get_grid_tuned_models(classification):
         return pickle.load(open("grid/best_classifiers.pickle", "rb"))
     else:
         return pickle.load(open("grid/best_regressors.pickle", "rb"))
+
+def get_pre_tuned_models_dict(estimators):
+    result = [ '"{}"'.format(estimator.__class__.__name__) for estimator, _, _ in estimators ]
+    return ','.join(result), {estimator_name.strip('"'): estimator for estimator_name, (estimator, _, _) in zip(result, estimators)}
 
 
 def get_audio_config(features_list):
@@ -198,11 +202,37 @@ def load_mandatory_settings(json_file):
             print((f"Some fields were deleted in MANDATORY FIELD SETTING, it should include ['classifier name', 'pre-saved model folder', 'emotions', 'features', 'Test or Train', 'FIELD DESCRIPTION'] "))
             sys.exit(f"Some fields were deleted in MANDATORY FIELD SETTING, it should include ['classifier name', 'pre-saved model folder', 'emotions', 'features', 'Test or Train', 'FIELD DESCRIPTION'] ")
 
-        # check if train or test, if not then exit
-        Test_or_train_mode =    mandatory_settings["Test or Train"].lower()
-        if((Test_or_train_mode!= "train") and (Test_or_train_mode != "test")) :
+        # check if test or train 
+        Test_or_train =    mandatory_settings["Test or Train"].lower()
+
+        # if test, load testing settings
+        if(Test_or_train == "test"):
+            test_settings = data["TEST FIELD SETTING"]
+
+            # if the config file does not have the correct fields, then exit 
+            if(list(test_settings) != ['Test mode', 'TEST SINGLE SETTING', 'TEST MULTIPLE SETTING', 'FIELD DESCRIPTION']):
+                print((f"Some fields were deleted in TEST FIELD SETTING, it should include ['Test mode', 'TEST SINGLE SETTING', 'TEST MULTIPLE SETTING', 'FIELD DESCRIPTION'] "))
+                sys.exit(f"Some fields were deleted in TEST FIELD SETTING, it should include ['Test mode', 'TEST SINGLE SETTING', 'TEST MULTIPLE SETTING', 'FIELD DESCRIPTION'] ")
+
+            test_or_train_mode =     test_settings["Test mode"].lower()
+        
+        # if train load training settings
+        elif(Test_or_train == "train"):
+            
+            train_setting = data["TRAIN FIELD SETTING"]
+
+            # if the config file does not have the correct fields, then exit 
+            if(list(train_setting) != ["Train mode", "TRAIN MULTIPLE SETTING", "SECTION DESCRIPTION"]):
+                print(f"Fields [Train mode, TRAIN MULTIPLE SETTING, SECTION DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
+                sys.exit(f"Fields [Train mode, TRAIN MULTIPLE SETTING, SECTION DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
+            
+            test_or_train_mode = train_setting["Train mode"].lower()
+        
+        # if not either, then exit
+        else:
             print("Please choose whether to Test or Train.\n This can be done under Mandatory Settings in predict.json")
-            sys.exit("Please choose whether to Test or Train.\n This can be done under Mandatory Settings in predict.json")       
+            sys.exit("Please choose whether to Test or Train.\n This can be done under Mandatory Settings in predict.json")
+
     
         # load mandatory settings
         classifier_name =       mandatory_settings["classifier name"]
@@ -210,54 +240,59 @@ def load_mandatory_settings(json_file):
         emotions =              string_into_list(mandatory_settings['emotions'])
         features =              string_into_list(mandatory_settings["features"])
         model_dir = os.path.join(model_folder,classifier_name)
-    
-    return(Test_or_train_mode, classifier_name, model_folder, emotions, features, model_dir)
+      
+    return(Test_or_train, test_or_train_mode, classifier_name, model_folder, emotions, features, model_dir)
 
-def load_testing_settings(json_file):
+def load_test_mode_settings(json_file, test_mode):
     """
     Loads testing settings from the configuration json file
-    
     """
+    # load testing settings
     with open(json_file, 'r') as config_file:
         data = json.load(config_file)
-
         test_settings = data["TEST FIELD SETTING"]
-        if(list(test_settings) != ['Test mode', 'TEST SINGLE SETTING', 'TEST MULTIPLE SETTING', 'FIELD DESCRIPTION']):
-            print((f"Some fields were deleted in TEST FIELD SETTING, it should include ['Test mode', 'TEST SINGLE SETTING', 'TEST MULTIPLE SETTING', 'FIELD DESCRIPTION'] "))
-            sys.exit(f"Some fields were deleted in TEST FIELD SETTING, it should include ['Test mode', 'TEST SINGLE SETTING', 'TEST MULTIPLE SETTING', 'FIELD DESCRIPTION'] ")
 
-        test_mode =     test_settings["Test mode"].lower()
-
+        # If testing a single audio
         if(test_mode == 'single'):
-
-            # load settings 
+            # load and check settings 
             single_settings = test_settings["TEST SINGLE SETTING"]
             if(list(single_settings) != ["Audio directory"]):
                 print((f"Field 'Audio directory' needs to be in TEST SINGLE SETTING in {json_file}"))
                 sys.exit(f"Field 'Audio directory' needs to be in TEST SINGLE SETTING in {json_file}")
 
+            # return the audio directory of the single audio 
             audio = single_settings["Audio directory"]
 
-            return(test_mode, audio, "not needed")
+            return(audio)
         
+        # If testing multiple audio files
         elif(test_mode == 'multiple'):
+            # load and check settings
             multiple_settings = test_settings["TEST MULTIPLE SETTING"]
-            if(list(multiple_settings) != ["Display predictions", "Plot time taken"]):
+            if(list(multiple_settings) != ["Display predictions", "Plot stats bool"]):
                 print((f"Fields [Display predictions, Plot time taken] needs to be in TEST SINGLE SETTING in {json_file}"))
                 sys.exit(f"Fields [Display predictions, Plot time taken] needs to be in TEST SINGLE SETTING in {json_file}")
-                
-            display_predictions = multiple_settings["Display predictions"]
-            plot_time = multiple_settings["Plot time taken"]
 
-            return(test_mode, display_predictions, plot_time)
+            # get the method to display the predictions  
+            prediction_output_mode = multiple_settings["Display predictions"]
 
+            #get boolean to plot stats
+            if(multiple_settings["Plot stats bool"].lower() == "true"):
+                is_plot_stats = True
+            elif(multiple_settings["Plot stats bool"].lower() == "false"):
+                is_plot_stats = False
+
+            return(prediction_output_mode, is_plot_stats)
+
+        # If doing live testing
         elif(test_mode == 'live'):
-            return(test_mode, "not needed", "not needed")
+            return
 
+        # is not specified
         else:
             sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")
 
-def load_training_settings(json_file):
+def load_train_mode_settings(json_file, train_mode):
     """
     Loads training settings from the configuration json file
     
@@ -266,22 +301,22 @@ def load_training_settings(json_file):
         data = json.load(config_file)
         train_setting = data["TRAIN FIELD SETTING"]
 
-        if(list(train_setting) != ["Train mode", "TRAIN MULTIPLE SETTING", "SECTION DESCRIPTION"]):
-            print(f"Fields [Train mode, TRAIN MULTIPLE SETTING, SECTION DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
-            sys.exit(f"Fields [Train mode, TRAIN MULTIPLE SETTING, SECTION DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
-            
-        train_mode = train_setting["Train mode"].lower()
+        # if train mode is multiple
         if(train_mode == "multiple"):
             multiple_setting = train_setting['TRAIN MULTIPLE SETTING']
 
+            # check if fields are correct
             if(list(multiple_setting) != ["Multiple classifiers to train"]):
                 print(f"Field [Multiple classifiers to train] needs to be in TRAIN MULTIPLE SETTING in {json_file}")
                 sys.exit(f"Field [Multiple classifiers to train] needs to be in TRAIN MULTIPLE SETTING in {json_file}")
-            train_classifiers = multiple_setting['Multiple classifiers to train']
-            return(train_mode, train_classifiers)
+            
+            # get classidfiers to train
+            train_models = multiple_setting['Multiple classifiers to train']
+            return(train_models)
         
+        # if train mode is single, don't return anythingS
         elif(train_mode == "single"):
-            return(train_mode, "None needed" )
+            return
         
         else:
             sys.exit(f"Please choose whether to train single or multiple in TRAIN FIELD SETTING in {json_file}")
