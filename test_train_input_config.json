@@ -40,15 +40,15 @@
 
     "TEST FIELD SETTING" : {
 
-        "Test mode" : "live",
+        "Test mode" : "single",
 
         "TEST SINGLE SETTING": {
             "Audio directory" : "predict_from_audio/emotion testing audio 16k/angry/a2_high_R.wav"
         },
         
         "TEST MULTIPLE SETTING": {
-            "Display predictions"   : "excel all",
-            "Plot time taken"       : "yes"
+            "Display predictions"   : "excel subset",
+            "Plot stats bool"       : "True"
         },
 
 
@@ -69,8 +69,8 @@
             "                               excel all    =  will predict all of the testing data (10521 files)  and records the outcome to an excel file; prediction.xlsx",
             "                               text         =  will predict a subset testing data  and records it to an text file; prection.txt",
     
-            "   Plot time taken     (str) : Whether to plot time taken to predict and the length of the audio. Will be saved in the folder performance_plots. Choose from",
-            "                               [yes, no]"
+            "   Plot stats bool    (bool) : Whether to plot time taken to predict and the length of the audio. Will be saved in the folder performance_plots. Choose from",
+            "                               [True, False]"
             ]
     },
 

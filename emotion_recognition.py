@@ -8,7 +8,7 @@ from sklearn.model_selection import GridSearchCV
 
 import matplotlib.pyplot as pl
 from time import time
-from utils import get_grid_tuned_models, get_audio_config
+from utils import get_pre_tuned_models, get_audio_config
 import numpy as np
 import tqdm
 import os
@@ -89,7 +89,6 @@ class EmotionRecognizer:
         try:
             self.model = pickle.load(open(filename, 'rb'))
         except Exception as e:
-
             self.model = model
 
     def _set_metadata_filenames(self):
@@ -120,9 +119,9 @@ class EmotionRecognizer:
         for emotion in self.emotions:
             assert emotion in AVAILABLE_EMOTIONS, "Emotion not recognized."
 
-    def get_grid_tuned_models(self):
+    def get_pre_tuned_models(self):
         """Loads estimators from grid files and returns them"""
-        return get_grid_tuned_models(self.classification)
+        return get_pre_tuned_models(self.classification)
 
     def write_csv(self):
         """
@@ -189,7 +188,7 @@ class EmotionRecognizer:
         feature = extract_feature(audio_path, **self.audio_config).reshape(1, -1)
         return self.model.predict(feature)[0]
 
-    def predict_proba(self, audio_path):
+    def predict_proba_file(self, audio_path):
         """
         Predicts the probability of each emotion.
         """
@@ -200,17 +199,14 @@ class EmotionRecognizer:
         else:
             raise NotImplementedError("Probability prediction doesn't make sense for regression")
 
-    def predict_proba_audio(self, audio):
+    def predict_proba_audio_buffer(self, buffer):
         """
         Predicts the probability of each emotion.
         """
         if self.classification:
-            feature = extract_feature_audio(audio, **self.audio_config).reshape(1, -1)
+            feature = extract_feature_audio(buffer, **self.audio_config).reshape(1, -1)
             proba = self.model.predict_proba(feature)[0]
-            result = {}
-            for emotion, prob in zip(self.model.classes_, proba):
-                result[emotion] = prob
-            return result
+            return dict(zip(self.emotions, proba))
         else:
             raise NotImplementedError("Probability prediction doesn't make sense for regression")
 
@@ -237,7 +233,7 @@ class EmotionRecognizer:
             self.load_data()
         
         # loads estimators
-        estimators = self.get_grid_tuned_models()
+        estimators = self.get_pre_tuned_models()
 
         result = []
 
@@ -400,7 +396,7 @@ def plot_histograms(classifiers=True, beta=0.5, n_classes=3, verbose=1):
         n_classes (int): number of classes
     """
     # get the estimators from the performed grid search result
-    estimators = get_grid_tuned_models(classifiers)
+    estimators = get_pre_tuned_models(classifiers)
 
     final_result = {}
     for estimator, params, cv_score in estimators:

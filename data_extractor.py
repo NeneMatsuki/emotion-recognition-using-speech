@@ -9,7 +9,7 @@ import json
 from utils import get_label, extract_feature, get_first_letters
 from collections import defaultdict
 
-with open('test_train_config.json') as config_file:
+with open('test_train_input_config.json') as config_file:
     data = json.load(config_file)
     mandatory_settings =    data["MANDATORY FIELD SETTING"]
     model_folder =    mandatory_settings["pre-saved model folder"]
