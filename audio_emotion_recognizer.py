@@ -209,7 +209,7 @@ if __name__ == "__main__":
 
         # display how long the whole process took 
         end_train = time.perf_counter()
-        print(f"\nThis process took {end_train - start_train} second_likely_emotion_keys")
+        print(f"\nThis process took {end_train - start_train} seconds")
     
 
 
