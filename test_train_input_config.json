@@ -5,7 +5,7 @@
         "pre-saved model folder"  :"16k_3feat_JL",
         "emotions"                :"angry,happy,neutral,sad",
         "features"                :"mfcc,chroma,mel",
-        "Test or Train"           :"Test",
+        "Test or Train"           :"Train",
         
         "FIELD DESCRIPTION":[
 
