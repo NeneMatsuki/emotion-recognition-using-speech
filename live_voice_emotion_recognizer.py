@@ -148,7 +148,7 @@ if __name__ == "__main__":
     grid_tuned_models = get_pre_tuned_models(True)
     grid_tuned_models_name, grid_tuned_models_dict = get_pre_tuned_models_dict(grid_tuned_models)
 
-    json_file = "test_train_config.json"
+    json_file = "test_train_input_config.json"
     
     with open(json_file, 'r') as config_file:
         data = json.load(config_file)
@@ -174,42 +174,53 @@ if __name__ == "__main__":
 
     print(f'\nLength of audio recorded: {librosa.get_duration(filename = filename)} seconds')
 
+    file = False
+    buffer = True
+
 # audio buffer directly
-    print(f'\nPredicting from recording directily')
-    start_predict = time.perf_counter()
-    result = detector.predict_proba_audio(data)
-    end_predict = time.perf_counter()
+    if(buffer):
+        print(f'\nPredicting from recording directily')
+        start_predict = time.perf_counter()
+        emotion_probabilities = detector.predict_proba_audio_buffer(data)
+        end_predict = time.perf_counter()
 
-    print(f"\n emotion probabilities \n{result}")
+        print(f"\n emotion probabilities \n{emotion_probabilities}")
 
-    maximum = max(result, key=result.get)
-    max_value = result[maximum]
-    del result[maximum]
+        most_likely_emotion_key = max(emotion_probabilities, key=emotion_probabilities.get)
+        most_likely_emotion_value = emotion_probabilities[most_likely_emotion_key]
+        del emotion_probabilities[most_likely_emotion_key]
 
-    second = max(result, key=result.get)
-    second_value = result[second]
+        # get second most likely emotion
+        second_likely_emotion_key = max(emotion_probabilities, key=emotion_probabilities.get)
+        second_likely_emotion_value = emotion_probabilities[second_likely_emotion_key]
+        
+        effective_prob = (most_likely_emotion_value - second_likely_emotion_value)*100
+        # print to user 
+        print(f"\nBest prediction  : {most_likely_emotion_key} \nsecond best prediction : {second_likely_emotion_key} \ndifference is {effective_prob} %")
+        print(f"\nTherefore predicted {most_likely_emotion_key} with an effective probability of {effective_prob} %")
+        print(f"Time it took to predict: {(end_predict - start_predict)*1000} ms")
 
-    print(f"\nfirst prediction  : {maximum} \nsecond prediction : {second} \ndifference is {(max_value - second_value)*100} %")
+    if(file):
+        #from file
+        print(f'\nPredicting from recording saved to file')
+        start_predict = time.perf_counter()
+        emotion_probabilities = detector.predict_proba_file(filename)
+        end_predict = time.perf_counter()
 
-    print(f"\nTime it took to predict: {(end_predict - start_predict)*1000}ms")
+        print(f"\n emotion probabilities \n{emotion_probabilities}")
+        
+        most_likely_emotion_key = max(emotion_probabilities, key=emotion_probabilities.get)
+        most_likely_emotion_value = emotion_probabilities[most_likely_emotion_key]
+        del emotion_probabilities[most_likely_emotion_key]
 
-# from file
-    # print(f'\nPredicting from recording saved to file')
-    # start_predict = time.perf_counter()
-    # result = detector.predict_proba(filename)
-    # end_predict = time.perf_counter()
-
-    # print(f"\n emotion probabilities \n{result}")
-    
-    # maximum = max(result, key=result.get)
-    # max_value = result[maximum]
-    # del result[maximum]
-
-    # second = max(result, key=result.get)
-    # second_value = result[second]
-
-    # print(f"\nfirst prediction  : {maximum} \nsecond prediction : {second} \ndifference is {(max_value - second_value)*100} %")
-
-    # print(f"\nTime it took to predict: {((end_predict - start_predict) + extra_time_recording_file)*1000} s")
+        # get second most likely emotion
+        second_likely_emotion_key = max(emotion_probabilities, key=emotion_probabilities.get)
+        second_likely_emotion_value = emotion_probabilities[second_likely_emotion_key]
+        
+        effective_prob = (most_likely_emotion_value - second_likely_emotion_value)*100
+        # print to user 
+        print(f"\nBest prediction  : {most_likely_emotion_key} \nsecond best prediction : {second_likely_emotion_key} \ndifference is {effective_prob} %")
+        print(f"\nTherefore predicted {most_likely_emotion_key} with an effective probability of {effective_prob} %")
+        print(f"Time it took to predict: {(end_predict - start_predict)*1000} ms")
 
 
