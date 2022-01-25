@@ -266,7 +266,7 @@ def load_training_settings(json_file):
         data = json.load(config_file)
         train_setting = data["TRAIN FIELD SETTING"]
 
-        if(list(train_setting) != ["Train mode", "TRAIN MULTIPLE SETTING", "SECTION DESCRIPTION"]):
+        if(list(train_setting) != ["Train mode", "TRAIN MULTIPLE SETTING", "FIELD DESCRIPTION"]):
             print(f"Fields [Train mode, TRAIN MULTIPLE SETTING, SECTION DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
             sys.exit(f"Fields [Train mode, TRAIN MULTIPLE SETTING, SECTION DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
             

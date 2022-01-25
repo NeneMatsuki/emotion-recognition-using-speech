@@ -61,7 +61,7 @@ class EmotionRecognizer:
             self.tess_ravdess = True
     
         self.classification = kwargs.get("classification", True)
-        self.balance = kwargs.get("balance", False)
+        self.balance = kwargs.get("balance", True)
         self.override_csv = kwargs.get("override_csv", True)
         self.verbose = kwargs.get("verbose", 1)
 
