@@ -53,7 +53,7 @@
         },
         
         "TEST MULTIPLE SETTING": {
-            "Display predictions"   : "text",
+            "Display predictions"   : "excel all",
             "Plot stats bool"       : "True"
         },
 
@@ -81,6 +81,7 @@
     },
 
     "TRAIN FIELD SETTING" : {
+        "Train mode"       : "single",
 
         "TRAIN MULTIPLE SETTING": {
             "Multiple classifiers to train": ["KNeighborsClassifier","SVC","GradientBoostingClassifier","MLPClassifier","BaggingClassifier"]
