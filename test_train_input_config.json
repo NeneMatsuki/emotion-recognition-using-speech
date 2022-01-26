@@ -5,8 +5,8 @@
         "Pre-saved model folder"  :"16k_3feat_JL",
         "Emotions"                :"angry,happy,neutral,sad",
         "Features"                :"mfcc,chroma,mel",
-        "Test or Train"           :"Test",
-        "Mode"                    :"multiple",
+        "Test or Train"           :"Train",
+        "Mode"                    :"single",
         
         "FIELD DESCRIPTION":[
 
@@ -81,8 +81,6 @@
     },
 
     "TRAIN FIELD SETTING" : {
-        "Train mode"       : "single",
-
         "TRAIN MULTIPLE SETTING": {
             "Multiple classifiers to train": ["KNeighborsClassifier","SVC","GradientBoostingClassifier","MLPClassifier","BaggingClassifier"]
         },

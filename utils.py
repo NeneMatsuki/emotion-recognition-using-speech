@@ -261,9 +261,9 @@ def load_input_settings(json_file):
             train_setting = data["TRAIN FIELD SETTING"]
 
             # if the config file does not have the correct fields, then exit 
-            if(list(train_setting) != ["Train mode", "TRAIN MULTIPLE SETTING", "FIELD DESCRIPTION"]):
-                print(f"Fields [Train mode, TRAIN MULTIPLE SETTING, FIELD DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
-                sys.exit(f"Fields [Train mode, TRAIN MULTIPLE SETTING, FIELD DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
+            if(list(train_setting) != ["TRAIN MULTIPLE SETTING", "FIELD DESCRIPTION"]):
+                print(f"Fields [TRAIN MULTIPLE SETTING, FIELD DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
+                sys.exit(f"Fields [TRAIN MULTIPLE SETTING, FIELD DESCRIPTION] needs to be in TRAIN FIELD SETTING in {json_file}")
             
             if(mode == "multiple"):
                 multiple_setting = train_setting['TRAIN MULTIPLE SETTING']
