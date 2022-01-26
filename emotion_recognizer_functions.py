@@ -67,7 +67,7 @@ def sm_predict_excel(frequency, detector, emotions, rows, cols, sheet, time_take
                 sheet[get_column_letter(cols) + str(rows)] = "correct"
                 cols += 1        
             else:
-                sheet[get_column_letter(cols) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()} : "
+                sheet[get_column_letter(cols) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
                 cols += 1
 
 
@@ -109,7 +109,7 @@ def predict_excel(frequency, detector, folder, rows, cols, sheet, time_taken, du
         sentiment = audio.split("_")
 
         # Get prediction and record the correct sentiment
-        #duration.append(librosa.get_duration(os.path.join('predict_from_audio',f'{folder}_{frequency}',audio)))
+        duration.append(librosa.get_duration(filename = os.path.join('predict_from_audio',f'{folder}_{frequency}',audio)))
 
         start_predict = time.perf_counter()
         predictions = detector.predict_proba_file(os.path.join('predict_from_audio',f'{folder}_{frequency}',audio))
@@ -321,7 +321,7 @@ def predict_all_excel(detector, rows, cols, sheet, file, time_taken, duration):
 
     return(rows, time_taken, duration)
 
-def plot_time_taken(duration, time_taken, frequency, model):
+def plot_time_taken(duration, time_taken, frequency, model, portion):
     """ Takes duration of audio files predicted and time taken to predict, and outputs them as a visualisation
         Saves plot as an png file
 
@@ -331,6 +331,7 @@ def plot_time_taken(duration, time_taken, frequency, model):
         time_taken  : list that stores the time taken for each prediction
         frequency   : frequency_features used to predict eg 16k_3feat
         model       : model used to predict
+        portion     : portion of the dataset it was tested on 
 
     """
     median_time = statistics.median(time_taken)
@@ -427,10 +428,10 @@ def plot_time_taken(duration, time_taken, frequency, model):
     fig.suptitle(f"Prediction time(s) for {frequency[:3]}Hz speech audio using {model}", fontsize = 21)
     
     plt.tight_layout()
-    plt.savefig(f'performance_plots/{frequency}_{model}.png')
+    plt.savefig(f'performance_plots/{frequency}_{model}_{portion}.png')
 
     
-    print(f'Plot of time taken to predict saved to performance_plots/{frequency}_{model}.png' )
+    print(f'Plot of time taken to predict saved to performance_plots/{frequency}_{model}_{portion}.png' )
 
 def get_long_audio(files):
     with open(os.path.join("predict_from_audio","long_audio.txt"), "w") as long_audio_file:

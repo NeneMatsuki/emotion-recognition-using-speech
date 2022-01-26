@@ -12,7 +12,7 @@ from collections import defaultdict
 with open('test_train_input_config.json') as config_file:
     data = json.load(config_file)
     mandatory_settings =    data["MANDATORY FIELD SETTING"]
-    model_folder =    mandatory_settings["pre-saved model folder"]
+    model_folder =    mandatory_settings["Pre-saved model folder"]
 
 class AudioExtractor:
     """A class that is used to featurize audio clips, and provide

@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from emotion_recognizer_functions import *
 
-from utils import get_pre_tuned_models, get_pre_tuned_models_dict,load_mandatory_settings, load_test_mode_settings, load_train_mode_settings
+from utils import get_pre_tuned_models, get_pre_tuned_models_dict,load_input_settings
 from live_voice_emotion_recognizer import record_without_file
 
 
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     # get model parameters that are grid tuned 
 
     # load mandatory settings
-    test_or_train, test_or_train_mode, model_name, model_folder, emotions, features, model_dir = load_mandatory_settings(json_file)
+    test_or_train, mode, model_name, model_folder, emotions, features, model_dir, mode_settings = load_input_settings(json_file)
 
     # If test
     if(test_or_train == "test"):
@@ -31,10 +31,10 @@ if __name__ == "__main__":
         detector = EmotionRecognizer(emotions=emotions, model_dir = model_dir, features=features, verbose=0)
 
         # if predicting a single audio
-        if(test_or_train_mode == 'single'):
+        if(mode == 'single'):
 
             # get audio directory
-            audio_dir = load_test_mode_settings(json_file, 'single')
+            audio_dir = mode_settings["Audio directory"]
 
             # print to user what the settings are 
             print(f'\nChosen to test a single audio using {model_name} trained on {model_folder}')
@@ -64,15 +64,26 @@ if __name__ == "__main__":
             print(f"Time it took to predict: {(end_predict - start_predict)*1000} ms")
 
         # if predicting multiple audio
-        elif(test_or_train_mode == 'multiple'):
+        elif(mode == 'multiple'):
 
-            # get prefferend method of displaying predicitons   
-            prediction_output_mode, is_plot_stats = load_test_mode_settings(json_file, 'multiple')
+            # get the method to display the predictions  
+            prediction_output_mode = mode_settings["Display predictions"]
 
-            # if display is excel and predicting all 10521 test dataset
+            #get boolean to plot stats
+            if(mode_settings["Plot stats bool"].lower() == "true"):
+                is_plot_stats = True
+            elif(mode_settings["Plot stats bool"].lower() == "false"):
+                is_plot_stats = False
+            else:
+                print("Please choose true or false in Plot stats bool, TEST MULTIPLE SETING")
+                sys.exit("Please choose true or false in Plot stats bool, TEST MULTIPLE SETING")
+
+            print(f'\nChosen to test multiple audio files using {model_name} trained on {model_folder}')
+
+            # if display is excel and predicting al4l 10521 test dataset
             if(prediction_output_mode == "excel all"):
                 # initialise workbook 
-                wb = load_workbook('predict_from_audio/prediction.xlsx') #comment
+                wb = load_workbook('predict_from_audio/prediction.xlsx') # audio path to excel file
                 wb.remove(wb['predictions'])
                 wb.create_sheet('predictions')
                 sheet = wb['predictions']
@@ -97,7 +108,7 @@ if __name__ == "__main__":
 
                 # if plotting the time taken is selected, plot the time taken to predict with the length of the audio
                 if (is_plot_stats):
-                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name)
+                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "all")
 
             # if test subset of test file (71 files)
             elif(prediction_output_mode.lower() == 'excel subset'):
@@ -116,16 +127,17 @@ if __name__ == "__main__":
 
                 # iterate through files and record predictions
                 rows, time_taken, duration = sm_predict_excel(frequency= model_folder[:3], detector = detector, emotions = emotions, rows = 2, cols = 1, sheet = sheet, time_taken = [], duration = [])
-                rows, time_taken, duration = predict_excel(frequency = model_folder[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
                 rows, time_taken, duration = predict_excel(frequency = model_folder[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
+                rows, time_taken, duration = predict_excel(frequency = model_folder[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
 
                 # save and display where the predictions are saved
                 wb.save('predict_from_audio/prediction.xlsx')
                 print('predictions saved to predict_from_audio/prediction.xlsx')
 
-                # if plotting is selected then display plot
+                # if plotting is selected then display plot, otherwise predict Nene audio - Can't get duration of nene audio as not in float form
                 if (is_plot_stats):
-                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder[:3],model = model_name)
+                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "subset")
+                
 
             # else if prediction_output_modeting to text
             else:
@@ -134,11 +146,12 @@ if __name__ == "__main__":
                 with open(file = 'predict_from_audio' + os.sep + 'predictions.txt', mode  = 'w') as file:
                     time_taken, duration = sm_predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file)
                     print('predictions saved to predict_from_audio/prediction.txt')
+
                 if (is_plot_stats):
-                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder[:3],model = model_name)
+                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "subset")
         
         # if predicting live audio
-        elif(test_or_train_mode == 'live'):
+        elif(mode == 'live'):
 
             # record
             print("Please talk")
@@ -160,7 +173,7 @@ if __name__ == "__main__":
             # get second most likely emotion
             second_likely_emotion_key = max(emotion_probabilities, key=emotion_probabilities.get)
             second_likely_emotion_value = emotion_probabilities[second_likely_emotion_key]
-            
+
             effective_prob = (most_likely_emotion_value - second_likely_emotion_value)*100
             # print to user 
             print(f"\nBest prediction  : {most_likely_emotion_key} \nsecond best prediction : {second_likely_emotion_key} \ndifference is {effective_prob} %")
@@ -172,13 +185,13 @@ if __name__ == "__main__":
             sys.exit("Please choose whether to predict single or multiple.\n This can be done under Test Settings, Test mode in predict.json")
     
     # if train
-    else:
+    if(test_or_train == "train"):
         # if train mode is multiple, get the list of classifiers that were entered
-        if(test_or_train_mode == "multiple"):
-            model_to_train = load_train_mode_settings(json_file, test_or_train_mode)
+        if(mode == "multiple"):
+            model_to_train = mode_settings['Multiple classifiers to train']
         
         # if single, get the classifier that was chosen in the mandatory settings
-        elif(test_or_train_mode == "single"):
+        elif(mode == "single"):
             model_to_train = [model_name]
         
         else:
@@ -191,6 +204,7 @@ if __name__ == "__main__":
             
         # start timing in order to display the time taken to train the model(s) later on 
         start_train = time.perf_counter()
+
 
         # join model name
         for model in model_to_train:

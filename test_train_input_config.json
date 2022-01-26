@@ -1,31 +1,33 @@
 {
     "MANDATORY FIELD SETTING": {
 
-        "classifier name"         :"MLPClassifier",
-        "pre-saved model folder"  :"16k_3feat_JL",
-        "emotions"                :"angry,happy,neutral,sad",
-        "features"                :"mfcc,chroma,mel",
-        "Test or Train"           :"Train",
+        "Model name"              :"MLPClassifier",
+        "Pre-saved model folder"  :"16k_3feat_JL",
+        "Emotions"                :"angry,happy,neutral,sad",
+        "Features"                :"mfcc,chroma,mel",
+        "Test or Train"           :"Test",
+        "Mode"                    :"multiple",
         
         "FIELD DESCRIPTION":[
 
             "Use these fields to cofigure settings required to test and train a model",
 
-            "classifier name        (str)  : Name of classifier to use. Choose from: ",                                            
+            "Model name             (str)  : Name of classifier to use. Choose from: ",                                            
             "                                [KNeighborsClassifier,SVC,GradientBoostingClassifier,MLPClassifier,BaggingClassifier]",      
 
-            "pre-saved model folder (str)  : Under the folder [models], choose a folder which have pretrained models in it. The names describe the sampling rate and features it was trained on . Folders available are:",
+            "Pre-saved model folder (str)  : Under the folder [models], choose a folder which have pretrained models in it. The names describe the sampling rate and features it was trained on . Folders available are:",
             "                                [16k_3feat, 16k_3feat_JL, 16k_4feat, 16k_5feat, 44k_3feat, 44k_4feat, aak_5feat]",
             "                                the reccomended model to use is 16k_3feat_JL",
             "                                NOTE: If training/testing on different combinations of frequency and features, please create a new folder in the folder [models], and record the name of the new folder to [saved model folder] "  ,
             "                                      In doing this, please make sure the first 3 characters are the sample rate ie. 22k",
             
-            "emotions               (str)  : emotions to test/train Choose from: ",
+            "Emotions               (str)  : emotions to test/train Choose from: ",
             "                                [angry,happy,neutral,sad,calm,angry,fear,disgust,ps(pleasant surprise)] ",
-            "                                NOTE: If the pre-saved model folder chosen above, is one that already exists in the repo, emotions must be [angry,happy,neutral,sad]. ",
+            "                                NOTE: Emotions must all be in lowercase",
+            "                                      If the pre-saved model folder chosen above, is one that already exists in the repo, emotions must be [angry,happy,neutral,sad]. ",
             "                                      If predicting other emotions, please create a new  folder in the folder [models] , record the name to [pre-saved model folder], and retrain with custom emotion labels",
 
-            "features               (str)  : Features to extract from audio, the number of features must equal the number specified in model_ver or the same features Choose from:",
+            "Features               (str)  : Features to extract from audio, the number of features must equal the number specified in model_ver or the same features Choose from:",
             "                                [mfcc,chroma,mel,contrast,tonnetz] ",
             "                                NOTE: If the model folder chosen above is one that already exists in the repo, if the name has: ",
             "                                      3feat = mfcc,chroma,mel",
@@ -34,13 +36,17 @@
             "                                      if using other combinations of sampling frequency and features, please create a new  folder in the folder [models] , record the name to [pre-saved model folder], and retrain with custom features",
 
             "Test or Train          (str)  : whether to test or train. If test, please configure Testing settings. If train, please configure Train settings. Please train to display a confusion matrix Choose from: ",
-            "                                [test, train]"
+            "                                [test, train]",
+
+            "Mode                   (str)  : If test in  [Test or Train] : Whether to test pre-recorded single or multiple audio files, or predict from live voice from your microphone.",
+            "                                                              Plotting prediction times is available if predicting multiple is chosen. Choose from:",
+            "                                                              [live, single, multiple]",
+            "                                If train in [Test or Train] : whether to train a single or multiple classifier(s). If training single, it will be the one specified in the mandatory settings.",
+            "                                                              If chosen multiple, please configure train multiple settings"
         ]
     },
 
     "TEST FIELD SETTING" : {
-
-        "Test mode" : "multiple",
 
         "TEST SINGLE SETTING": {
             "Audio directory" : "predict_from_audio/emotion testing audio 16k/angry/a2_high_R.wav"
