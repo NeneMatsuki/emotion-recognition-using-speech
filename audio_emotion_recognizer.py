@@ -98,7 +98,8 @@ if __name__ == "__main__":
                 sheet[get_column_letter(i + 4) + "1"] = "audio file"
 
                 # read through all files, and record the predicitons
-                rows, time_taken, duration = sm_predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, time_taken = [], duration = [])
+                #rows, time_taken, duration = sm_predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, time_taken = [], duration = [])
+                rows, time_taken, duration = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'test_custom.csv', time_taken = [], duration = [])
                 rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_tess_ravdess.csv', time_taken = time_taken, duration = duration)
                 rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_emodb.csv', time_taken = time_taken, duration = duration)                    
 
@@ -144,7 +145,9 @@ if __name__ == "__main__":
                 print("This is not implemented fully, only can predict from custom subset audio")
 
                 with open(file = 'predict_from_audio' + os.sep + 'predictions.txt', mode  = 'w') as file:
-                    time_taken, duration = sm_predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file)
+                    time_taken, duration = sm_predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file, time_taken=[], duration = [])
+                    time_taken, duration = predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file, folder = "JL", time_taken = time_taken, duration = duration)
+                    time_taken, duration = predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file, folder = "Nene", time_taken = time_taken, duration = duration)
                     print('predictions saved to predict_from_audio/prediction.txt')
 
                 if (is_plot_stats):

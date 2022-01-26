@@ -160,18 +160,19 @@ def sm_predict_text(frequency, detector, emotions, file, time_taken, duration):
 
     """
     # iterate through all the files
-    file.write("results," + str(emotions) + "\n")
+    file.write(f"results                    {str(emotions)}\n")
+    file.write('\nPredicting sm audio files')
     for emotion in emotions:
 
         # record emotions to predict to write to the putput file later
         to_predict = "\n" + emotion + (8-len(emotion))*(" ")
 
-        for audio in os.listdir(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",f"{emotion}")):   
+        for audio in os.listdir(os.path.join("predict_from_audio",f"emotion testing audio {frequency[:3]}",emotion)):   
             # write if prediction was correct
-            duration.append(librosa.get_duration(filename = audio))
+            duration.append(librosa.get_duration(filename = os.path.join("predict_from_audio",f"emotion testing audio {frequency[:3]}",emotion,audio)))
 
             start_predict = time.perf_counter()
-            predictions = detector.predict_proba_file(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",emotion, audio))
+            predictions = detector.predict_proba_file(os.path.join("predict_from_audio",f"emotion testing audio {frequency[:3]}",emotion,audio))
             end_predict = time.perf_counter()
 
             time_taken.append((end_predict - start_predict)*1000)
@@ -188,7 +189,55 @@ def sm_predict_text(frequency, detector, emotions, file, time_taken, duration):
                 file.write('%.2f' % value)
                 file.write(',')
     return(time_taken, duration)
-                
+
+def predict_text(frequency, detector, emotions, file, folder, time_taken, duration):
+    """ Predicts a subset of sm audio and outputs the predictions to a specified text file
+
+        Parameters:
+        -----------
+        frequency   : Sampling rate of the audio file
+        detector    : The instance of EmotionalRecognzer used to predict sentiment
+        emotions    : emotions to predict
+        file        : text file to output to
+        time_taken  : list that stores the time taken for each prediction
+        duration    : list that stores the duration/length of each audio file
+
+        Returns:
+        --------
+        rows        : next free row after writing predictions
+        time_taken  : list that stores the time taken for each prediction, with times taken added
+        duration    : list that stores the duration/length of each audio file, with length of files added
+
+    """
+    # iterate through all the files
+    audio_folder = os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}')
+    file.write(f'\n\nPredicting {folder} audio files')
+    for audio in os.listdir(audio_folder):  
+        sentiment = audio.split("_")
+        to_predict = "\n" + sentiment[1] + (8-len(sentiment[1]))*(" ")
+
+        # write if prediction was correct
+        duration.append(librosa.get_duration(filename = os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}',audio)))
+
+        start_predict = time.perf_counter()
+        predictions = detector.predict_proba_file(os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}',audio))
+        end_predict = time.perf_counter()
+
+        time_taken.append((end_predict - start_predict)*1000)
+
+        observed_emotion = max(predictions, key=predictions.get).lower()
+        if(sentiment[1]==observed_emotion):
+            file.write(to_predict + " correct           :" )
+        else:
+            wrong = str(observed_emotion) + (8-len(observed_emotion))*(" ")
+            file.write(f"{to_predict} incorrect {wrong}:")
+        
+        # Write probabiltiy distribution
+        for value in predictions.values():
+            file.write('%.2f' % value)
+            file.write(',')
+    return(time_taken, duration)
+
 def sm_predict_all_excel(detector, rows, cols, sheet, time_taken, duration):
     """ Predicts all custom testing audio specified in the file train_custom.csv and outputs the predictions to an excel spreadsheet 
 
