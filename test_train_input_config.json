@@ -5,8 +5,8 @@
         "Pre-saved model folder"  :"16k_3feat_JL",
         "Emotions"                :"angry,happy,neutral,sad",
         "Features"                :"mfcc,chroma,mel",
-        "Test or Train"           :"Train",
-        "Mode"                    :"single",
+        "Test or Train"           :"Test",
+        "Mode"                    :"multiple",
         
         "FIELD DESCRIPTION":[
 
@@ -53,7 +53,8 @@
         },
         
         "TEST MULTIPLE SETTING": {
-            "Display predictions"   : "excel all",
+            "Display predictions"   : "text",
+            "Testing portion"       : "all",
             "Plot stats bool"       : "True"
         },
 
@@ -71,9 +72,12 @@
             
             "Configure Test multiple settings if multiple is chosen as Test mode",
             "   Display predictions (str) : how to output the predictions choose from:",
-            "                               excel subset =  will predict a subset of the testing data (71 files)and records the outcome it to an excel file; prediction.xlsx",
-            "                               excel all    =  will predict all of the testing data (10521 files)  and records the outcome to an excel file; prediction.xlsx",
-            "                               text         =  will predict a subset testing data  and records it to an text file; prection.txt",
+            "                               excel =  will predict and record the outcome to an excel file; prediction.xlsx",
+            "                               text  =  will predict and record the outcome an text file; prection.txt",
+
+            "   Testing portion     (str) : Portion of predictions to predict, choose from:",
+            "                               all = will predict all of the testing data",
+            "                               subset = will predict a subset of the testing data (71 files)",
     
             "   Plot stats bool    (bool) : Whether to plot time taken to predict and the length of the audio. Will be saved in the folder performance_plots. Choose from",
             "                               [True, False]"

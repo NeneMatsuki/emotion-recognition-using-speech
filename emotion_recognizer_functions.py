@@ -20,7 +20,7 @@ import statistics
 import numpy as np
 import seaborn as sns
 
-def sm_predict_excel(frequency, detector, emotions, rows, cols, sheet, time_taken, duration):
+def sm_predict_subset_excel(frequency, detector, emotions, rows, cols, sheet, time_taken, duration):
     """ Predicts a subset of sm audio and outputs the predictions to an excel spreadsheet 
 
         Parameters:
@@ -81,7 +81,7 @@ def sm_predict_excel(frequency, detector, emotions, rows, cols, sheet, time_take
     
     return(rows, time_taken, duration)
 
-def predict_excel(frequency, detector, folder, rows, cols, sheet, time_taken, duration):
+def predict_subset_excel(frequency, detector, folder, rows, cols, sheet, time_taken, duration):
     """ Predicts audio files in a sub folder in predict_from_audio folder and outputs the predictions to an excel spreadsheet 
 
         Parameters:
@@ -140,174 +140,8 @@ def predict_excel(frequency, detector, folder, rows, cols, sheet, time_taken, du
     
     return(rows, time_taken, duration)
 
-def sm_predict_text(frequency, detector, emotions, file, time_taken, duration):
-    """ Predicts a subset of sm audio and outputs the predictions to a specified text file
-
-        Parameters:
-        -----------
-        frequency   : Sampling rate of the audio file
-        detector    : The instance of EmotionalRecognzer used to predict sentiment
-        emotions    : emotions to predict
-        file        : text file to output to
-        time_taken  : list that stores the time taken for each prediction
-        duration    : list that stores the duration/length of each audio file
-
-        Returns:
-        --------
-        rows        : next free row after writing predictions
-        time_taken  : list that stores the time taken for each prediction, with times taken added
-        duration    : list that stores the duration/length of each audio file, with length of files added
-
-    """
-    # iterate through all the files
-    file.write(f"results                    {str(emotions)}\n")
-    file.write('\nPredicting sm audio files')
-    for emotion in emotions:
-
-        # record emotions to predict to write to the putput file later
-        to_predict = "\n" + emotion + (8-len(emotion))*(" ")
-
-        for audio in os.listdir(os.path.join("predict_from_audio",f"emotion testing audio {frequency[:3]}",emotion)):   
-            # write if prediction was correct
-            duration.append(librosa.get_duration(filename = os.path.join("predict_from_audio",f"emotion testing audio {frequency[:3]}",emotion,audio)))
-
-            start_predict = time.perf_counter()
-            predictions = detector.predict_proba_file(os.path.join("predict_from_audio",f"emotion testing audio {frequency[:3]}",emotion,audio))
-            end_predict = time.perf_counter()
-
-            time_taken.append((end_predict - start_predict)*1000)
-
-            observed_emotion = max(predictions, key=predictions.get).lower()
-            if(emotion==observed_emotion):
-                file.write(to_predict + " correct           :" )
-            else:
-                wrong = str(observed_emotion) + (8-len(observed_emotion))*(" ")
-                file.write(f"{to_predict} incorrect {wrong}:")
-            
-            # Write probabiltiy distribution
-            for value in predictions.values():
-                file.write('%.2f' % value)
-                file.write(',')
-    return(time_taken, duration)
-
-def predict_text(frequency, detector, emotions, file, folder, time_taken, duration):
-    """ Predicts a subset of sm audio and outputs the predictions to a specified text file
-
-        Parameters:
-        -----------
-        frequency   : Sampling rate of the audio file
-        detector    : The instance of EmotionalRecognzer used to predict sentiment
-        emotions    : emotions to predict
-        file        : text file to output to
-        time_taken  : list that stores the time taken for each prediction
-        duration    : list that stores the duration/length of each audio file
-
-        Returns:
-        --------
-        rows        : next free row after writing predictions
-        time_taken  : list that stores the time taken for each prediction, with times taken added
-        duration    : list that stores the duration/length of each audio file, with length of files added
-
-    """
-    # iterate through all the files
-    audio_folder = os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}')
-    file.write(f'\n\nPredicting {folder} audio files')
-    for audio in os.listdir(audio_folder):  
-        sentiment = audio.split("_")
-        to_predict = "\n" + sentiment[1] + (8-len(sentiment[1]))*(" ")
-
-        # write if prediction was correct
-        duration.append(librosa.get_duration(filename = os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}',audio)))
-
-        start_predict = time.perf_counter()
-        predictions = detector.predict_proba_file(os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}',audio))
-        end_predict = time.perf_counter()
-
-        time_taken.append((end_predict - start_predict)*1000)
-
-        observed_emotion = max(predictions, key=predictions.get).lower()
-        if(sentiment[1]==observed_emotion):
-            file.write(to_predict + " correct           :" )
-        else:
-            wrong = str(observed_emotion) + (8-len(observed_emotion))*(" ")
-            file.write(f"{to_predict} incorrect {wrong}:")
-        
-        # Write probabiltiy distribution
-        for value in predictions.values():
-            file.write('%.2f' % value)
-            file.write(',')
-    return(time_taken, duration)
-
-def sm_predict_all_excel(detector, rows, cols, sheet, time_taken, duration):
-    """ Predicts all custom testing audio specified in the file train_custom.csv and outputs the predictions to an excel spreadsheet 
-
-        Parameters:
-        -----------
-        detector    : The instance of EmotionalRecognzer used to predict sentiment
-        rows        : row of the spreadsheet to start from
-        cols        : column of the spreadsheet to start from
-        sheet       : spreadsheet to output to
-        time_taken  : list that stores the time taken for each prediction
-        duration    : list that stores the duration/length of each audio file
-
-        Returns:
-        --------
-        rows        : next free row after writing predictions
-        time_taken  : list that stores the time taken for each prediction, with times taken added
-        duration    : list that stores the duration/length of each audio file, with length of files added
-
-    """
-
-    sheet[get_column_letter(cols) + str(rows)] = "sm audio"
-    rows += 1
-
-
-    with open('test_custom.csv', 'r') as test_file:
-        csv_reader = reader(test_file)
-        header = next(csv_reader)
-
-        if header != None:
-            for row in csv_reader:
-                audio = row[1]
-                emotion = row[2]
-                duration.append(librosa.get_duration(filename = audio))
-
-                start_predict = time.perf_counter()
-                predictions = detector.predict_proba_file(audio)
-                end_predict = time.perf_counter()
-
-                time_taken.append((end_predict - start_predict)*1000)
-
-                # record correct emotion
-                sheet[get_column_letter(cols) + str(rows)] = emotion
-
-                # get intensity if applicable
-                audio_info = audio.split("_")
-                if ((audio_info[1] == "high") or (audio_info[1] == "med") or (audio_info[1] == "low")):
-                    sheet[get_column_letter(cols + 1) + str(rows)] = audio_info[1]
-                cols += 2
-
-                # record if the perediction is correct
-                if(emotion==max(predictions, key=predictions.get).lower()):
-                    sheet[get_column_letter(cols) + str(rows)] = "correct"
-                    cols += 1        
-                else:
-                    sheet[get_column_letter(cols) + str(rows)] = f"incorrect {max(predictions, key=predictions.get).lower()}"
-                    cols += 1
-                
-                for value in (predictions).values():
-                    sheet[get_column_letter(cols) + str(rows)] = value
-                    cols += 1
-                
-                sheet[get_column_letter(cols) + str(rows)] = audio
-
-                rows += 1
-                cols = 1
-
-    return(rows, time_taken, duration)
-
 def predict_all_excel(detector, rows, cols, sheet, file, time_taken, duration):
-    """ Predicts all custom testing audio specified in a csv file (test_tess_ravdess.csv, test_emodb.csv) and outputs the predictions to an excel spreadsheet 
+    """ Predicts all custom testing audio specified in a csv file (test_custom.csv, test_tess_ravdess.csv, test_emodb.csv) and outputs the predictions to an excel spreadsheet 
 
         Parameters:
         -----------
@@ -364,11 +198,160 @@ def predict_all_excel(detector, rows, cols, sheet, file, time_taken, duration):
                     cols += 1
                 sheet[get_column_letter(cols) + str(rows)] = audio
 
-
                 rows += 1
                 cols = 1
 
     return(rows, time_taken, duration)
+
+def sm_predict_subset_text(frequency, detector, emotions, file, time_taken, duration):
+    """ Predicts a subset of sm audio and outputs the predictions to a specified text file
+
+        Parameters:
+        -----------
+        frequency   : Sampling rate of the audio file
+        detector    : The instance of EmotionalRecognzer used to predict sentiment
+        emotions    : emotions to predict
+        file        : text file to output to
+        time_taken  : list that stores the time taken for each prediction
+        duration    : list that stores the duration/length of each audio file
+
+        Returns:
+        --------
+        rows        : next free row after writing predictions
+        time_taken  : list that stores the time taken for each prediction, with times taken added
+        duration    : list that stores the duration/length of each audio file, with length of files added
+
+    """
+    # iterate through all the files
+
+    for emotion in emotions:
+
+        # record emotions to predict to write to the putput file later
+        emotion_to_predict = "\n" + emotion + (8-len(emotion))*(" ")
+
+        for audio in os.listdir(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",f"{emotion}")):   
+            # write if prediction was correct
+            duration.append(librosa.get_duration(filename = audio))
+
+            start_predict = time.perf_counter()
+            predictions = detector.predict_proba_file(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",emotion, audio))
+            end_predict = time.perf_counter()
+
+            time_taken.append((end_predict - start_predict)*1000)
+
+            observed_emotion = max(predictions, key=predictions.get).lower()
+            if(emotion==observed_emotion):
+                file.write(emotion_to_predict + " correct           :" )
+            else:
+                wrong = str(observed_emotion) + (8-len(observed_emotion))*(" ")
+                file.write(f"{emotion_to_predict} incorrect {wrong}:")
+            
+            # Write probabiltiy distribution
+            for value in predictions.values():
+                file.write('%.2f' % value)
+                file.write(',')
+    return(time_taken, duration)
+
+def predict_subset_text(frequency, detector, file, folder, time_taken, duration):
+    """ Predicts a subset of sm audio and outputs the predictions to a specified text file
+
+        Parameters:
+        -----------
+        frequency   : Sampling rate of the audio file
+        detector    : The instance of EmotionalRecognzer used to predict sentiment
+        emotions    : emotions to predict
+        file        : text file to output to
+        time_taken  : list that stores the time taken for each prediction
+        duration    : list that stores the duration/length of each audio file
+
+        Returns:
+        --------
+        rows        : next free row after writing predictions
+        time_taken  : list that stores the time taken for each prediction, with times taken added
+        duration    : list that stores the duration/length of each audio file, with length of files added
+
+    """
+    # iterate through all the files
+    audio_folder = os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}')
+    file.write(f'\n\nPredicting {folder} audio files')
+    for audio in os.listdir(audio_folder):  
+        sentiment = audio.split("_")
+        emotion_to_predict = "\n" + sentiment[1] + (8-len(sentiment[1]))*(" ")
+
+        # write if prediction was correct
+        duration.append(librosa.get_duration(filename = os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}',audio)))
+
+        start_predict = time.perf_counter()
+        predictions = detector.predict_proba_file(os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}',audio))
+        end_predict = time.perf_counter()
+
+        time_taken.append((end_predict - start_predict)*1000)
+
+        observed_emotion = max(predictions, key=predictions.get).lower()
+        if(sentiment[1]==observed_emotion):
+            file.write(emotion_to_predict + " correct           :" )
+        else:
+            wrong = str(observed_emotion) + (8-len(observed_emotion))*(" ")
+            file.write(f"{emotion_to_predict} incorrect {wrong}:")
+        
+        # Write probabiltiy distribution
+        for value in predictions.values():
+            file.write('%.2f' % value)
+            file.write(',')
+    return(time_taken, duration)
+
+def predict_all_text(detector,csv_file, text_file, time_taken, duration):
+    """ Predicts all custom testing audio specified in a csv file (test_custom.csv, test_tess_ravdess.csv, test_emodb.csv) and outputs the predictions to an excel spreadsheet 
+
+        Parameters:
+        -----------
+        detector    : The instance of EmotionalRecognzer used to predict sentiment
+        rows        : row of the spreadsheet to start from
+        cols        : column of the spreadsheet to start from
+        sheet       : spreadsheet to output to
+        file        : csv file where the testing audio is recorded, choose from test_tess_ravdess.csv, test_emodb.csv, test_custom.csv
+        time_taken  : list that stores the time taken for each prediction
+        duration    : list that stores the duration/length of each audio file
+
+        Returns:
+        --------
+        rows        : next free row after writing predictions
+        time_taken  : list that stores the time taken for each prediction, with times taken added
+        duration    : list that stores the duration/length of each audio file, with length of files added
+
+    """
+    text_file.write(f'\n\nPredicting {csv_file} audio files')
+
+    with open(csv_file, 'r') as audio_file:
+        csv_reader = reader(audio_file)
+        header = next(csv_reader)
+
+        if header != None:
+            for row in csv_reader:
+                audio = row[1]
+                emotion_to_predict = "\n" + row[2] + (8-len(row[2]))*(" ")
+
+                duration.append(librosa.get_duration(filename = audio))
+
+                start_predict = time.perf_counter()
+                predictions = detector.predict_proba_file(audio)
+                end_predict = time.perf_counter()
+
+                time_taken.append((end_predict - start_predict)*1000)
+
+                observed_emotion = max(predictions, key=predictions.get).lower()
+                if(emotion_to_predict==observed_emotion):
+                    text_file.write(emotion_to_predict + " correct           :" )
+                else:
+                    wrong = str(observed_emotion) + (8-len(observed_emotion))*(" ")
+                    text_file.write(f"{emotion_to_predict} incorrect {wrong}:")
+                
+                # Write probabiltiy distribution
+                for value in predictions.values():
+                    text_file.write('%.2f' % value)
+                    text_file.write(',')
+
+    return(time_taken, duration)
 
 def plot_time_taken(duration, time_taken, frequency, model, portion):
     """ Takes duration of audio files predicted and time taken to predict, and outputs them as a visualisation
@@ -428,7 +411,7 @@ def plot_time_taken(duration, time_taken, frequency, model, portion):
     ax1.axvline(x = median_time, color = 'g' , label = f"median: {round(median_time,2)} ms")
     ax1.axvline(x = mean_time, color = 'm', label = f"mean: {round(mean_time,2)} ms")
     ax1.set_xlabel("Time taken to predict (ms)", fontsize = 12)
-    ax1.set_ylabel("Count", fontsize = 12)
+    ax1.set_ylabel("Audio count", fontsize = 12)
     ax1.legend(loc="upper right")
 
     # plot histogram and probability density for the duration of audio
@@ -441,15 +424,11 @@ def plot_time_taken(duration, time_taken, frequency, model, portion):
     hist2.set_xticks(np.arange(0,end,1))
     hist2.set_xlim(0,20)
 
-
-
     ax2.axvline(x = median_length, color = 'g', label = f"median: {round(median_length,2)} s")
     ax2.axvline(x = mean_length, color = 'm', label = f"mean: {round(mean_length,2)} s")
     ax2.set_xlabel("Duration Of Audio (s)", fontsize = 12)
-    ax2.set_ylabel("Count", fontsize = 12)
+    ax2.set_ylabel("Audio count", fontsize = 12)
     ax2.legend(loc="upper right")
-
-
 
     # plot time it took to predict and the length of the audio together, in ascending order of the length of audio
     ax3 = axd['lower']
@@ -478,8 +457,6 @@ def plot_time_taken(duration, time_taken, frequency, model, portion):
     
     plt.tight_layout()
     plt.savefig(f'performance_plots/{frequency}_{model}_{portion}.png')
-
-    
     print(f'Plot of time taken to predict saved to performance_plots/{frequency}_{model}_{portion}.png' )
 
 def get_long_audio(files):

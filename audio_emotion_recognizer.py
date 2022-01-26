@@ -68,6 +68,7 @@ if __name__ == "__main__":
 
             # get the method to display the predictions  
             prediction_output_mode = mode_settings["Display predictions"]
+            testing_portion = mode_settings["Testing portion"]
 
             #get boolean to plot stats
             if(mode_settings["Plot stats bool"].lower() == "true"):
@@ -81,7 +82,7 @@ if __name__ == "__main__":
             print(f'\nChosen to test multiple audio files using {model_name} trained on {model_folder}')
 
             # if display is excel and predicting al4l 10521 test dataset
-            if(prediction_output_mode == "excel all"):
+            if(prediction_output_mode == "excel"):
                 # initialise workbook 
                 wb = load_workbook('predict_from_audio/prediction.xlsx') # audio path to excel file
                 wb.remove(wb['predictions'])
@@ -97,62 +98,73 @@ if __name__ == "__main__":
                 
                 sheet[get_column_letter(i + 4) + "1"] = "audio file"
 
-                # read through all files, and record the predicitons
-                #rows, time_taken, duration = sm_predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, time_taken = [], duration = [])
-                rows, time_taken, duration = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'test_custom.csv', time_taken = [], duration = [])
-                rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_tess_ravdess.csv', time_taken = time_taken, duration = duration)
-                rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_emodb.csv', time_taken = time_taken, duration = duration)                    
+                # if testing all
+                if(testing_portion == "all"):
 
-                # save and display where the predictions ar saved
-                wb.save('predict_from_audio/prediction.xlsx')
-                print('predictions saved to predict_from_audio/prediction.xlsx')
+                    # read through all files, and record the predicitons
+                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'test_custom.csv', time_taken = [], duration = [])
+                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_tess_ravdess.csv', time_taken = time_taken, duration = duration)
+                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_emodb.csv', time_taken = time_taken, duration = duration)                    
 
-                # if plotting the time taken is selected, plot the time taken to predict with the length of the audio
-                if (is_plot_stats):
-                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "all")
+                    # save and display where the predictions ar saved
+                    wb.save('predict_from_audio/prediction.xlsx')
+                    print('predictions saved to predict_from_audio/prediction.xlsx')
 
-            # if test subset of test file (71 files)
-            elif(prediction_output_mode.lower() == 'excel subset'):
-                # initialise workbook 
-                wb = load_workbook('predict_from_audio/prediction.xlsx')
-                wb.remove(wb['predictions'])
-                wb.create_sheet('predictions')
-                sheet = wb['predictions']
-                sheet["A1"] = "True emotion"
-                sheet["B1"] = "Intensity" 
-                sheet["C1"] = "emotion_probabilities"
-
-                # record emotions
-                for i in range(len(emotions)):
-                    sheet[get_column_letter(i + 4) + "1"] =  emotions[i]
-
-                # iterate through files and record predictions
-                rows, time_taken, duration = sm_predict_excel(frequency= model_folder[:3], detector = detector, emotions = emotions, rows = 2, cols = 1, sheet = sheet, time_taken = [], duration = [])
-                rows, time_taken, duration = predict_excel(frequency = model_folder[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
-                rows, time_taken, duration = predict_excel(frequency = model_folder[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
-
-                # save and display where the predictions are saved
-                wb.save('predict_from_audio/prediction.xlsx')
-                print('predictions saved to predict_from_audio/prediction.xlsx')
-
-                # if plotting is selected then display plot, otherwise predict Nene audio - Can't get duration of nene audio as not in float form
-                if (is_plot_stats):
-                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "subset")
+                    # if plotting the time taken is selected, plot the time taken to predict with the length of the audio
+                    if (is_plot_stats):
+                        plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "all")
                 
+                elif(testing_portion == "subset"):
+                    # iterate through files and record predictions
+                    rows, time_taken, duration = sm_predict_subset_excel(frequency= model_folder[:3], detector = detector, emotions = emotions, rows = 2, cols = 1, sheet = sheet, time_taken = [], duration = [])
+                    rows, time_taken, duration = predict_subset_excel(frequency = model_folder[:3], detector = detector, folder = "JL", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
+                    rows, time_taken, duration = predict_subset_excel(frequency = model_folder[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
 
+                    # save and display where the predictions are saved
+                    wb.save('predict_from_audio/prediction.xlsx')
+                    print('predictions saved to predict_from_audio/prediction.xlsx')
+
+                    # if plotting is selected then display plot, otherwise predict Nene audio - Can't get duration of nene audio as not in float form
+                    if (is_plot_stats):
+                        plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "subset")
+
+                # if not subset or all, then exit
+                else:
+                    print("Please select all or subset in Testing portion in TEST MULTIPLE SETTING")
+                    sys.exit("Please select all or subset in Testing portion in TEST MULTIPLE SETTING")
+                
             # else if prediction_output_modeting to text
-            else:
-                print("This is not implemented fully, only can predict from custom subset audio")
+            elif(prediction_output_mode == "text"):
 
-                with open(file = 'predict_from_audio' + os.sep + 'predictions.txt', mode  = 'w') as file:
-                    time_taken, duration = sm_predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file, time_taken=[], duration = [])
-                    time_taken, duration = predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file, folder = "JL", time_taken = time_taken, duration = duration)
-                    time_taken, duration = predict_text(frequency= model_folder, detector = detector, emotions = emotions, file = file, folder = "Nene", time_taken = time_taken, duration = duration)
-                    print('predictions saved to predict_from_audio/prediction.txt')
+                with open(file = os.path.join('predict_from_audio','predictions.txt'), mode  = 'w') as text_file:
+                    text_file.write("results," + str(emotions) + "\n")
 
-                if (is_plot_stats):
-                    plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "subset")
-        
+                    if(testing_portion == "all"):
+
+                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_emodb.csv', text_file = text_file, time_taken = [], duration = [])
+                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_tess_ravdess.csv', text_file = text_file, time_taken = [], duration = [])
+                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_custom.csv', text_file = text_file, time_taken = [], duration = [])
+                        print('predictions saved to predict_from_audio/prediction.txt')
+
+                        # if plotting the time taken is selected, plot the time taken to predict with the length of the audio
+                        if (is_plot_stats):
+                            plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "all")
+                    
+                    elif(testing_portion == "subset"):
+                        # iterate through files and record predictions
+                        time_taken, duration = sm_predict_subset_text(frequency= model_folder, detector = detector, emotions = emotions, file = file, time_taken=[], duration = [])
+                        time_taken, duration = predict_subset_text(frequency= model_folder, detector = detector, file = text_file, folder = "JL", time_taken = time_taken, duration = duration)
+                        time_taken, duration = predict_subset_text(frequency= model_folder, detector = detector, file = text_file, folder = "Nene", time_taken = time_taken, duration = duration)
+                        print('predictions saved to predict_from_audio/prediction.txt')
+
+                        if (is_plot_stats):
+                            plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "subset")
+
+                    # if not subset or all, then exit
+                    else:
+                        print("Please select all or subset in Testing portion in TEST MULTIPLE SETTING")
+                        sys.exit("Please select all or subset in Testing portion in TEST MULTIPLE SETTING")
+
         # if predicting live audio
         elif(mode == 'live'):
 
@@ -185,6 +197,7 @@ if __name__ == "__main__":
 
         # if single or multiple is not chosen
         else:
+            print("Please choose whether to predict single or multiple.\n This can be done under Test Settings, Test mode in predict.json")
             sys.exit("Please choose whether to predict single or multiple.\n This can be done under Test Settings, Test mode in predict.json")
     
     # if train

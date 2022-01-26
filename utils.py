@@ -241,9 +241,9 @@ def load_input_settings(json_file):
             elif(mode == 'multiple'):
                 # load and check settings
                 multiple_settings = test_settings["TEST MULTIPLE SETTING"]
-                if(list(multiple_settings) != ["Display predictions", "Plot stats bool"]):
-                    print((f"Fields [Display predictions, Plot time taken] needs to be in TEST SINGLE SETTING in {json_file}"))
-                    sys.exit(f"Fields [Display predictions, Plot time taken] needs to be in TEST SINGLE SETTING in {json_file}")
+                if(list(multiple_settings) != ["Display predictions","Testing portion","Plot stats bool"]):
+                    print((f"Fields [Display predictions, Testing portion, Plot time taken] needs to be in TEST MULTIPLE SETTING in {json_file}"))
+                    sys.exit(f"Fields [Display predictions, Testing Portion, Plot time taken] needs to be in TEST MULTIPLE SETTING in {json_file}")
 
                 return(test_or_train, mode, model_name, model_folder, emotions, features, model_dir, multiple_settings)
 
