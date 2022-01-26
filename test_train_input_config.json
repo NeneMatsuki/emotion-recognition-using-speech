@@ -40,14 +40,14 @@
 
     "TEST FIELD SETTING" : {
 
-        "Test mode" : "single",
+        "Test mode" : "multiple",
 
         "TEST SINGLE SETTING": {
             "Audio directory" : "predict_from_audio/emotion testing audio 16k/angry/a2_high_R.wav"
         },
         
         "TEST MULTIPLE SETTING": {
-            "Display predictions"   : "excel subset",
+            "Display predictions"   : "excel all",
             "Plot stats bool"       : "True"
         },
 
@@ -75,7 +75,7 @@
     },
 
     "TRAIN FIELD SETTING" : {
-        "Train mode"       : "multiple",
+        "Train mode"       : "single",
 
         "TRAIN MULTIPLE SETTING": {
             "Multiple classifiers to train": ["KNeighborsClassifier","SVC","GradientBoostingClassifier","MLPClassifier","BaggingClassifier"]
