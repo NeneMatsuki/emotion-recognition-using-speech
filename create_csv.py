@@ -7,7 +7,7 @@ import json
 with open('test_train_input_config.json') as config_file:
     data = json.load(config_file)
     mandatory_settings =    data["MANDATORY FIELD SETTING"]
-    model_folder =    mandatory_settings["pre-saved model folder"]
+    model_folder =    mandatory_settings["Pre-saved model folder"]
     frequency = model_folder[:3]
 
 def write_emodb_csv(emotions=["sad", "neutral", "happy"], train_name="train_emo.csv",
