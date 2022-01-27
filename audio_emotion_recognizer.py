@@ -142,8 +142,8 @@ if __name__ == "__main__":
                     if(testing_portion == "all"):
 
                         time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_emodb.csv', text_file = text_file, time_taken = [], duration = [])
-                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_tess_ravdess.csv', text_file = text_file, time_taken = [], duration = [])
-                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_custom.csv', text_file = text_file, time_taken = [], duration = [])
+                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_tess_ravdess.csv', text_file = text_file, time_taken =time_taken, duration = duration)
+                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_custom.csv', text_file = text_file, time_taken =time_taken, duration = duration)
                         print('predictions saved to predict_from_audio/prediction.txt')
 
                         # if plotting the time taken is selected, plot the time taken to predict with the length of the audio
@@ -152,7 +152,7 @@ if __name__ == "__main__":
                     
                     elif(testing_portion == "subset"):
                         # iterate through files and record predictions
-                        time_taken, duration = sm_predict_subset_text(frequency= model_folder, detector = detector, emotions = emotions, file = file, time_taken=[], duration = [])
+                        time_taken, duration = sm_predict_subset_text(frequency= model_folder, detector = detector, emotions = emotions, file = text_file, time_taken=[], duration = [])
                         time_taken, duration = predict_subset_text(frequency= model_folder, detector = detector, file = text_file, folder = "JL", time_taken = time_taken, duration = duration)
                         time_taken, duration = predict_subset_text(frequency= model_folder, detector = detector, file = text_file, folder = "Nene", time_taken = time_taken, duration = duration)
                         print('predictions saved to predict_from_audio/prediction.txt')

@@ -1,17 +1,5 @@
-from openpyxl.reader import excel
-from emotion_recognition import EmotionRecognizer
-from deep_emotion_recognition import DeepEmotionRecognizer
 import os
-import glob
 import librosa
-from array import array
-from struct import pack
-from sklearn.ensemble import GradientBoostingClassifier, BaggingClassifier, RandomForestClassifier, AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
-from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 import matplotlib.pyplot as plt
 import time
@@ -19,6 +7,7 @@ from csv import reader
 import statistics
 import numpy as np
 import seaborn as sns
+import math
 
 def sm_predict_subset_excel(frequency, detector, emotions, rows, cols, sheet, time_taken, duration):
     """ Predicts a subset of sm audio and outputs the predictions to an excel spreadsheet 
@@ -340,7 +329,7 @@ def predict_all_text(detector,csv_file, text_file, time_taken, duration):
                 time_taken.append((end_predict - start_predict)*1000)
 
                 observed_emotion = max(predictions, key=predictions.get).lower()
-                if(emotion_to_predict==observed_emotion):
+                if(row[2]==observed_emotion):
                     text_file.write(emotion_to_predict + " correct           :" )
                 else:
                     wrong = str(observed_emotion) + (8-len(observed_emotion))*(" ")
@@ -405,7 +394,6 @@ def plot_time_taken(duration, time_taken, frequency, model, portion):
         hist1.set_yticks(np.arange(start,end,1))
     start, end = hist1.get_xlim()
     hist1.set_xticks(np.arange(0,end,5))
-    hist1.set_xlim(0,125)
 
 
     ax1.axvline(x = median_time, color = 'g' , label = f"median: {round(median_time,2)} ms")
@@ -422,7 +410,6 @@ def plot_time_taken(duration, time_taken, frequency, model, portion):
         hist2.set_yticks(np.arange(start,end,1))
     start, end = hist2.get_xlim()
     hist2.set_xticks(np.arange(0,end,1))
-    hist2.set_xlim(0,20)
 
     ax2.axvline(x = median_length, color = 'g', label = f"median: {round(median_length,2)} s")
     ax2.axvline(x = mean_length, color = 'm', label = f"mean: {round(mean_length,2)} s")
@@ -455,7 +442,7 @@ def plot_time_taken(duration, time_taken, frequency, model, portion):
     #Prediction time(s) for 16KHz speech audio files using the MLP classifier
     fig.suptitle(f"Prediction time(s) for {frequency[:3]}Hz speech audio using {model}", fontsize = 21)
     
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.savefig(f'performance_plots/{frequency}_{model}_{portion}.png')
     print(f'Plot of time taken to predict saved to performance_plots/{frequency}_{model}_{portion}.png' )
 

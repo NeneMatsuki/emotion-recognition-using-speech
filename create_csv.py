@@ -129,8 +129,6 @@ def write_custom_csv(emotions=['sad', 'neutral', 'happy','angry'], train_name="t
                 pass
     
     # write CSVs
-    if train_target["path"]:
-        pd.DataFrame(train_target).to_csv(train_name)
 
-    if test_target["path"]:
-        pd.DataFrame(test_target).to_csv(test_name)
+    pd.DataFrame(train_target).to_csv(train_name)
+    pd.DataFrame(test_target).to_csv(test_name)
