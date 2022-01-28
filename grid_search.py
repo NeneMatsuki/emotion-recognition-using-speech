@@ -8,6 +8,7 @@ faster search )
 """
 
 import pickle
+import time
 
 from emotion_recognition import EmotionRecognizer
 from parameters import classification_grid_parameters, regression_grid_parameters
@@ -19,7 +20,7 @@ features = ["mfcc", "chroma", "mel"]
 n_jobs = 4
 
 best_estimators = []
-
+start = time.perf_counter()
 for model, params in classification_grid_parameters.items():
     if model.__class__.__name__ == "KNeighborsClassifier":
         # in case of a K-Nearest neighbors algorithm
@@ -31,8 +32,11 @@ for model, params in classification_grid_parameters.items():
     best_estimators.append((best_estimator, best_params, cv_best_score))
     print(f"{emotions} {best_estimator.__class__.__name__} achieved {cv_best_score:.3f} cross validation accuracy score!")
 
+end = time.perf_counter()
 print(f"[+] Pickling best classifiers for {emotions}...")
 pickle.dump(best_estimators, open(f"grid/best_classifiers.pickle", "wb"))
+
+print(f'{end - start} seconds taken to grid search')
 
 best_estimators = []
 

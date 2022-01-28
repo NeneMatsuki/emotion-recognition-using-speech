@@ -2,11 +2,11 @@
     "MANDATORY FIELD SETTING": {
 
         "Model name"              :"MLPClassifier",
-        "Pre-saved model folder"  :"16k_3feat_JL",
+        "Pre-saved model folder"  :"16k_3feat",
         "Emotions"                :"angry,happy,neutral,sad",
         "Features"                :"mfcc,chroma,mel",
-        "Test or Train"           :"Test",
-        "Mode"                    :"multiple",
+        "Test or Train"           :"Train",
+        "Mode"                    :"single",
         
         "FIELD DESCRIPTION":[
 
@@ -16,8 +16,8 @@
             "                                [KNeighborsClassifier,SVC,GradientBoostingClassifier,MLPClassifier,BaggingClassifier]",      
 
             "Pre-saved model folder (str)  : Under the folder [models], choose a folder which have pretrained models in it. The names describe the sampling rate and features it was trained on . Folders available are:",
-            "                                [16k_3feat, 16k_3feat_JL, 16k_4feat, 16k_5feat, 44k_3feat, 44k_4feat, aak_5feat]",
-            "                                the reccomended model to use is 16k_3feat_JL",
+            "                                [16k_3feat, , 16k_4feat, 16k_5feat, 44k_3feat, 44k_4feat, 44k_5feat]",
+            "                                the reccomended model to use is 16k_3feat ( 16k 3 features trained with JL corpus audio too",
             "                                NOTE: If training/testing on different combinations of frequency and features, please create a new folder in the folder [models], and record the name of the new folder to [saved model folder] "  ,
             "                                      In doing this, please make sure the first 3 characters are the sample rate ie. 22k",
             
@@ -76,8 +76,8 @@
             "                               text  =  will predict and record the outcome an text file; prection.txt",
 
             "   Testing portion     (str) : Portion of predictions to predict, choose from:",
-            "                               all = will predict all of the testing data",
-            "                               subset = will predict a subset of the testing data (71 files)",
+            "                               all = will predict all of the testing data in the folder data/frequency",
+            "                               subset = will predict testing data in the folder test_audio/frequency (71 files)",
     
             "   Plot stats bool    (bool) : Whether to plot time taken to predict and the length of the audio. Will be saved in the folder performance_plots. Choose from",
             "                               [True, False]"

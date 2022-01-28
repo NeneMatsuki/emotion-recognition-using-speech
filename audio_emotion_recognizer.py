@@ -19,8 +19,6 @@ if __name__ == "__main__":
         print(f"config file, {json_file} does not exist")
         sys.exit(f"config file, {json_file} does not exist")
 
-    # get model parameters that are grid tuned 
-
     # load mandatory settings
     test_or_train, mode, model_name, model_folder, emotions, features, model_dir, mode_settings = load_input_settings(json_file)
 
@@ -84,7 +82,7 @@ if __name__ == "__main__":
             # if display is excel and predicting al4l 10521 test dataset
             if(prediction_output_mode == "excel"):
                 # initialise workbook 
-                wb = load_workbook('predict_from_audio/prediction.xlsx') # audio path to excel file
+                wb = load_workbook('test_audio/prediction.xlsx') # audio path to excel file
                 wb.remove(wb['predictions'])
                 wb.create_sheet('predictions')
                 sheet = wb['predictions']
@@ -102,13 +100,13 @@ if __name__ == "__main__":
                 if(testing_portion == "all"):
 
                     # read through all files, and record the predicitons
-                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'test_custom.csv', time_taken = [], duration = [])
-                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_tess_ravdess.csv', time_taken = time_taken, duration = duration)
-                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'test_emodb.csv', time_taken = time_taken, duration = duration)                    
+                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = 2, cols = 1, sheet = sheet, file = 'audio_csv/test_custom.csv', time_taken = [], duration = [])
+                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'audio_csv/test_tess_ravdess.csv', time_taken = time_taken, duration = duration)
+                    rows, time_taken, duration = predict_all_excel(detector = detector,rows = rows, cols = 1, sheet = sheet, file = 'audio_csv/test_emodb.csv', time_taken = time_taken, duration = duration)                    
 
                     # save and display where the predictions ar saved
-                    wb.save('predict_from_audio/prediction.xlsx')
-                    print('predictions saved to predict_from_audio/prediction.xlsx')
+                    wb.save('test_audio/prediction.xlsx')
+                    print('predictions saved to test_audio/prediction.xlsx')
 
                     # if plotting the time taken is selected, plot the time taken to predict with the length of the audio
                     if (is_plot_stats):
@@ -121,8 +119,8 @@ if __name__ == "__main__":
                     rows, time_taken, duration = predict_subset_excel(frequency = model_folder[:3], detector = detector, folder = "Nene", rows = rows, cols = 1, sheet = sheet, time_taken = time_taken, duration = duration)
 
                     # save and display where the predictions are saved
-                    wb.save('predict_from_audio/prediction.xlsx')
-                    print('predictions saved to predict_from_audio/prediction.xlsx')
+                    wb.save('test_audio/prediction.xlsx')
+                    print('predictions saved to test_audio/prediction.xlsx')
 
                     # if plotting is selected then display plot, otherwise predict Nene audio - Can't get duration of nene audio as not in float form
                     if (is_plot_stats):
@@ -136,15 +134,15 @@ if __name__ == "__main__":
             # else if prediction_output_modeting to text
             elif(prediction_output_mode == "text"):
 
-                with open(file = os.path.join('predict_from_audio','predictions.txt'), mode  = 'w') as text_file:
+                with open(file = os.path.join('test_audio','predictions.txt'), mode  = 'w') as text_file:
                     text_file.write("results," + str(emotions) + "\n")
 
                     if(testing_portion == "all"):
 
-                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_emodb.csv', text_file = text_file, time_taken = [], duration = [])
-                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_tess_ravdess.csv', text_file = text_file, time_taken =time_taken, duration = duration)
-                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'test_custom.csv', text_file = text_file, time_taken =time_taken, duration = duration)
-                        print('predictions saved to predict_from_audio/prediction.txt')
+                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'audio_csv/test_emodb.csv', text_file = text_file, time_taken = [], duration = [])
+                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'audio_csv/test_tess_ravdess.csv', text_file = text_file, time_taken =time_taken, duration = duration)
+                        time_taken, duration = predict_all_text(detector = detector ,csv_file = 'audio_csv/test_custom.csv', text_file = text_file, time_taken =time_taken, duration = duration)
+                        print('predictions saved to test_audio/prediction.txt')
 
                         # if plotting the time taken is selected, plot the time taken to predict with the length of the audio
                         if (is_plot_stats):
@@ -155,7 +153,7 @@ if __name__ == "__main__":
                         time_taken, duration = sm_predict_subset_text(frequency= model_folder, detector = detector, emotions = emotions, file = text_file, time_taken=[], duration = [])
                         time_taken, duration = predict_subset_text(frequency= model_folder, detector = detector, file = text_file, folder = "JL", time_taken = time_taken, duration = duration)
                         time_taken, duration = predict_subset_text(frequency= model_folder, detector = detector, file = text_file, folder = "Nene", time_taken = time_taken, duration = duration)
-                        print('predictions saved to predict_from_audio/prediction.txt')
+                        print('predictions saved to test_audio/prediction.txt')
 
                         if (is_plot_stats):
                             plot_time_taken(duration = duration, time_taken = time_taken, frequency = model_folder,model = model_name, portion = "subset")
@@ -214,8 +212,8 @@ if __name__ == "__main__":
             print("Please choose whether to predict single or multiple.\n This can be done under Test Settings, Test mode in predict.json")
             sys.exit("Please choose whether to predict single or multiple.\n This can be done under Test Settings, Test mode in predict.json")
         
-        # get previously tuned models (already included in this repo)
-        pre_tuned_models = get_pre_tuned_models(True)                                               # gets pre - grid tuned models that were already included in the repo (as a emotion_probabilities of gridsearch.[y])
+        # get previously tuned models 
+        pre_tuned_models = get_pre_tuned_models(True)                                               # gets pre - grid tuned models run gridsearch.py for MLP classifier, others were already included in repo
         pre_tuned_model_name, pre_tuned_models_dict = get_pre_tuned_models_dict(pre_tuned_models)   # Formats these pre - grid tuned models as dictionaries
             
         # start timing in order to display the time taken to train the model(s) later on 

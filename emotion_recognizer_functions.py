@@ -34,13 +34,13 @@ def sm_predict_subset_excel(frequency, detector, emotions, rows, cols, sheet, ti
     rows += 1
 
     for emotion in emotions:
-        for audio in os.listdir(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",f"{emotion}")):
+        for audio in os.listdir(os.path.join("test_audio",f"emotion testing audio {frequency}",f"{emotion}")):
 
             # calculate probability
-            duration.append(librosa.get_duration(filename = os.path.join("predict_from_audio",f"emotion testing audio {frequency}",emotion, audio)))
+            duration.append(librosa.get_duration(filename = os.path.join("test_audio",f"emotion testing audio {frequency}",emotion, audio)))
 
             start_predict = time.perf_counter()
-            predictions = detector.predict_proba_file(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",emotion, audio))
+            predictions = detector.predict_proba_file(os.path.join("test_audio",f"emotion testing audio {frequency}",emotion, audio))
             end_predict = time.perf_counter()
 
             time_taken.append((end_predict - start_predict)*1000)
@@ -71,13 +71,13 @@ def sm_predict_subset_excel(frequency, detector, emotions, rows, cols, sheet, ti
     return(rows, time_taken, duration)
 
 def predict_subset_excel(frequency, detector, folder, rows, cols, sheet, time_taken, duration):
-    """ Predicts audio files in a sub folder in predict_from_audio folder and outputs the predictions to an excel spreadsheet 
+    """ Predicts audio files in a sub folder in test_audio folder and outputs the predictions to an excel spreadsheet 
 
         Parameters:
         -----------
         frequency   : Sampling rate of the audio file
         detector    : The instance of EmotionalRecognzer used to predict sentiment
-        folder      : folder in predict_from_audio that audio files to predict are stored in
+        folder      : folder in test_audio that audio files to predict are stored in
         rows        : row of the spreadsheet to start from
         cols        : column of the spreadsheet to start from
         sheet       : spreadsheet to output to
@@ -94,14 +94,14 @@ def predict_subset_excel(frequency, detector, folder, rows, cols, sheet, time_ta
     sheet[get_column_letter(cols) + str(rows)] = f"{folder} audio"
     rows += 1
 
-    for audio in os.listdir(os.path.join('predict_from_audio',f'{folder}_{frequency}')):
+    for audio in os.listdir(os.path.join('test_audio',f'{folder}_{frequency}')):
         sentiment = audio.split("_")
 
         # Get prediction and record the correct sentiment
-        duration.append(librosa.get_duration(filename = os.path.join('predict_from_audio',f'{folder}_{frequency}',audio)))
+        duration.append(librosa.get_duration(filename = os.path.join('test_audio',f'{folder}_{frequency}',audio)))
 
         start_predict = time.perf_counter()
-        predictions = detector.predict_proba_file(os.path.join('predict_from_audio',f'{folder}_{frequency}',audio))
+        predictions = detector.predict_proba_file(os.path.join('test_audio',f'{folder}_{frequency}',audio))
         end_predict = time.perf_counter()
 
         time_taken.append((end_predict - start_predict)*1000)
@@ -218,12 +218,12 @@ def sm_predict_subset_text(frequency, detector, emotions, file, time_taken, dura
         # record emotions to predict to write to the putput file later
         emotion_to_predict = "\n" + emotion + (8-len(emotion))*(" ")
 
-        for audio in os.listdir(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",f"{emotion}")):   
+        for audio in os.listdir(os.path.join("test_audio",f"emotion testing audio {frequency}",f"{emotion}")):   
             # write if prediction was correct
             duration.append(librosa.get_duration(filename = audio))
 
             start_predict = time.perf_counter()
-            predictions = detector.predict_proba_file(os.path.join("predict_from_audio",f"emotion testing audio {frequency}",emotion, audio))
+            predictions = detector.predict_proba_file(os.path.join("test_audio",f"emotion testing audio {frequency}",emotion, audio))
             end_predict = time.perf_counter()
 
             time_taken.append((end_predict - start_predict)*1000)
@@ -261,17 +261,17 @@ def predict_subset_text(frequency, detector, file, folder, time_taken, duration)
 
     """
     # iterate through all the files
-    audio_folder = os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}')
+    audio_folder = os.path.join('test_audio',f'{folder}_{frequency[:3]}')
     file.write(f'\n\nPredicting {folder} audio files')
     for audio in os.listdir(audio_folder):  
         sentiment = audio.split("_")
         emotion_to_predict = "\n" + sentiment[1] + (8-len(sentiment[1]))*(" ")
 
         # write if prediction was correct
-        duration.append(librosa.get_duration(filename = os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}',audio)))
+        duration.append(librosa.get_duration(filename = os.path.join('test_audio',f'{folder}_{frequency[:3]}',audio)))
 
         start_predict = time.perf_counter()
-        predictions = detector.predict_proba_file(os.path.join('predict_from_audio',f'{folder}_{frequency[:3]}',audio))
+        predictions = detector.predict_proba_file(os.path.join('test_audio',f'{folder}_{frequency[:3]}',audio))
         end_predict = time.perf_counter()
 
         time_taken.append((end_predict - start_predict)*1000)
@@ -442,12 +442,12 @@ def plot_time_taken(duration, time_taken, frequency, model, portion):
     #Prediction time(s) for 16KHz speech audio files using the MLP classifier
     fig.suptitle(f"Prediction time(s) for {frequency[:3]}Hz speech audio using {model}", fontsize = 21)
     
-    #plt.tight_layout()
+    plt.tight_layout()
     plt.savefig(f'performance_plots/{frequency}_{model}_{portion}.png')
     print(f'Plot of time taken to predict saved to performance_plots/{frequency}_{model}_{portion}.png' )
 
 def get_long_audio(files):
-    with open(os.path.join("predict_from_audio","long_audio.txt"), "w") as long_audio_file:
+    with open(os.path.join("test_audio","long_audio.txt"), "w") as long_audio_file:
         for file in files:
             with open(file, 'r') as audio_file:
                 csv_reader = reader(audio_file)

@@ -36,7 +36,7 @@ classification_grid_parameters = {
         'alpha': [0.001, 0.005, 0.01],
         'batch_size': [128, 256, 512, 1024],
         'learning_rate': ['constant', 'adaptive'],
-        'max_iter': [200, 300, 400, 500]
+        'max_iter': [400, 300, 400, 500]
     }
     #,
     # BaggingClassifier():    {
