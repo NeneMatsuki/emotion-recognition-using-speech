@@ -250,10 +250,14 @@ def load_input_settings(json_file):
             # If doing live testing
             elif(mode == 'live'):
                 return(test_or_train, mode, model_name, model_folder, emotions, features, model_dir, None)
+            
+            # If printing confusion matrix
+            elif(mode == 'confusion'):
+                return(test_or_train, mode, model_name, model_folder, emotions, features, model_dir, None)
 
             # is not specified
             else:
-                sys.exit("Please choose whether to predict single or multiple.\n This can be done under Testing Settings, Test mode in predict.json")
+                sys.exit("Please choose whether to predict single,multiple, live or confusion.\n This can be done under Testing Settings, Test mode in predict.json")
         
         # if train load training settings
         elif(test_or_train == "train"):

@@ -193,10 +193,15 @@ if __name__ == "__main__":
             print(f"\nTherefore predicted {most_likely_emotion_key} with an effective probability of {effective_prob} %")
             print(f"Time it took to predict: {(end_predict - start_predict)*1000} ms")
 
+        elif(mode == 'confusion'):
+            detector.load_data()
+            print(detector.confusion_matrix())
+            print("Test accuracy score: {:.3f}%".format(detector.test_score()*100))
+
         # if single or multiple is not chosen
         else:
-            print("Please choose whether to predict single or multiple.\n This can be done under Test Settings, Test mode in predict.json")
-            sys.exit("Please choose whether to predict single or multiple.\n This can be done under Test Settings, Test mode in predict.json")
+            print("Please choose whether to predict single, multiple, live, or confusion.\n This can be done under Test Settings, Test mode in predict.json")
+            sys.exit("Please choose whether to predict single,multiple, live or confusion.\n This can be done under Test Settings, Test mode in predict.json")
     
     # if train
     if(test_or_train == "train"):
@@ -227,9 +232,11 @@ if __name__ == "__main__":
             model_dir = os.path.join(model_folder,model)
 
             #load model parameters that are saved as a dictionary returned in grid_tuned_models_dict()
-            detector = EmotionRecognizer(pre_tuned_models_dict[model.format(pre_tuned_model_name)] , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
-            
-            # train the model and display status, and print the confusioni matrix
+            if(model == "MLPClassifier"):
+                detector = EmotionRecognizer(pre_tuned_models_dict[model.format(pre_tuned_model_name)] , emotions=emotions, model_dir = model_dir, features=features, verbose=0)
+            else:
+                detector = EmotionRecognizer(emotions=emotions, model_dir = model_dir, features=features, verbose=0)
+            # train the model and display status, and print the confusion matrix
             detector.train()
             print(f"\n{model} trained")
             print(detector.confusion_matrix())

@@ -38,9 +38,9 @@
             "Test or Train          (str)  : whether to test or train. If test, please configure Testing settings. If train, please configure Train settings. Please train to display a confusion matrix Choose from: ",
             "                                [test, train]",
 
-            "Mode                   (str)  : If test in  [Test or Train] : Whether to test pre-recorded single or multiple audio files, or predict from live voice from your microphone.",
+            "Mode                   (str)  : If test in  [Test or Train] : Whether to test pre-recorded single or multiple audio files, predict from live voice from your microphone, or print a confusion matrix on a pre-trained model.",
             "                                                              Plotting prediction times is available if predicting multiple is chosen. Choose from:",
-            "                                                              [live, single, multiple]",
+            "                                                              [live, single, multiple, confusion]",
             "                                If train in [Test or Train] : whether to train a single or multiple classifier(s). If training single, it will be the one specified in the mandatory settings.",
             "                                                              If chosen multiple, please configure train multiple settings"
         ]
@@ -62,15 +62,11 @@
         "FIELD DESCRIPTION": [
 
             "Use these fields to cofigure settings required to test a model",
-
-            "Test mode (str) : Whether to test pre-recorded single or multiple audio files, or predicting from your live voice from your microphone.",
-            "                  Plotting prediction times is available if predicting multiple is chosen. Choose from:",
-            "                  [live, single, multiple]",
     
-            "Configure Test single settings if single is chosen as Test mode:", 
+            "Configure Test single settings if single is chosen as Mode:", 
                 "Audio dierctory (str) : the directory of the audio file to test",
             
-            "Configure Test multiple settings if multiple is chosen as Test mode",
+            "Configure Test multiple settings if multiple is chosen as Mode",
             "   Display predictions (str) : how to output the predictions choose from:",
             "                               excel =  will predict and record the outcome to an excel file; prediction.xlsx",
             "                               text  =  will predict and record the outcome an text file; prection.txt",
@@ -86,7 +82,7 @@
 
     "TRAIN FIELD SETTING" : {
         "TRAIN MULTIPLE SETTING": {
-            "Multiple classifiers to train": ["KNeighborsClassifier","SVC","GradientBoostingClassifier","MLPClassifier","BaggingClassifier"]
+            "Multiple classifiers to train": ["DecisionTreeClassifier","GradientBoostingClassifier","MLPClassifier"]
         },
 
         "FIELD DESCRIPTION": [
