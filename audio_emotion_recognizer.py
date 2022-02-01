@@ -47,19 +47,33 @@ if __name__ == "__main__":
             print(f'\n{emotion_probabilities}')
 
             # get most likely emotion
-            most_likely_emotion_key     = max(emotion_probabilities, key=emotion_probabilities.get) 
-            most_likely_emotion_value   = emotion_probabilities[most_likely_emotion_key]
+            most_likely_emotion_key = max(emotion_probabilities, key=emotion_probabilities.get)
+            most_likely_emotion_value = emotion_probabilities[most_likely_emotion_key]
             del emotion_probabilities[most_likely_emotion_key]
-        
+
             # get second most likely emotion
-            second_likely_emotion_key   = max(emotion_probabilities, key=emotion_probabilities.get)
+            second_likely_emotion_key = max(emotion_probabilities, key=emotion_probabilities.get)
             second_likely_emotion_value = emotion_probabilities[second_likely_emotion_key]
 
             effective_prob = (most_likely_emotion_value - second_likely_emotion_value)*100
             # print to user 
             print(f"\nBest prediction  : {most_likely_emotion_key} \nsecond best prediction : {second_likely_emotion_key} \ndifference is {effective_prob} %")
-            print(f"\nTherefore predicted {most_likely_emotion_key} with an effective probability of {effective_prob} %")
+
+            if most_likely_emotion_key == "neutral":
+                colour_string = f'\x1b[1;33;40m{most_likely_emotion_key}\x1b[0m'
+            elif most_likely_emotion_key == "happy":
+                colour_string = f'\x1b[1;32;40m{most_likely_emotion_key}\x1b[0m'
+            elif most_likely_emotion_key == "sad":
+                colour_string = f'\x1b[1;36;40m{most_likely_emotion_key}\x1b[0m'
+            elif most_likely_emotion_key == "angry":
+                colour_string = f'\x1b[1;31;40m{most_likely_emotion_key}\x1b[0m'
+            else: 
+                colour_string = f'\x1b[1;37;40m{most_likely_emotion_key}\x1b[0m'
+
+
+            print(f"\nTherefore predicted {colour_string} with an effective probability of \x1b[1;35;40m{effective_prob} %\x1b[0m")
             print(f"Time it took to predict: {(end_predict - start_predict)*1000} ms")
+
 
         # if predicting multiple audio
         elif(mode == 'multiple'):
@@ -190,7 +204,20 @@ if __name__ == "__main__":
             effective_prob = (most_likely_emotion_value - second_likely_emotion_value)*100
             # print to user 
             print(f"\nBest prediction  : {most_likely_emotion_key} \nsecond best prediction : {second_likely_emotion_key} \ndifference is {effective_prob} %")
-            print(f"\nTherefore predicted {most_likely_emotion_key} with an effective probability of {effective_prob} %")
+
+            if most_likely_emotion_key == "neutral":
+                colour_string = f'\x1b[1;33;40m{most_likely_emotion_key}\x1b[0m'
+            elif most_likely_emotion_key == "happy":
+                colour_string = f'\x1b[1;32;40m{most_likely_emotion_key}\x1b[0m'
+            elif most_likely_emotion_key == "sad":
+                colour_string = f'\x1b[1;36;40m{most_likely_emotion_key}\x1b[0m'
+            elif most_likely_emotion_key == "angry":
+                colour_string = f'\x1b[1;31;40m{most_likely_emotion_key}\x1b[0m'
+            else: 
+                colour_string = f'\x1b[1;37;40m{most_likely_emotion_key}\x1b[0m'
+
+
+            print(f"\nTherefore predicted {colour_string} with an effective probability of \x1b[1;35;40m{effective_prob} %\x1b[0m")
             print(f"Time it took to predict: {(end_predict - start_predict)*1000} ms")
 
         elif(mode == 'confusion'):
