@@ -2,11 +2,11 @@
     "MANDATORY FIELD SETTING": {
 
         "Model name"              :"MLPClassifier",
-        "Pre-saved model folder"  :"16k_3feat",
+        "Pre-saved model folder"  :"16k_2feat",
         "Emotions"                :"angry,happy,neutral,sad",
-        "Features"                :"mfcc,chroma,mel",
-        "Test or Train"           :"Train",
-        "Mode"                    :"single",
+        "Features"                :"mfcc,mel",
+        "Test or Train"           :"Test",
+        "Mode"                    :"multiple",
         
         "FIELD DESCRIPTION":[
 
@@ -16,8 +16,8 @@
             "                                [KNeighborsClassifier,SVC,GradientBoostingClassifier,MLPClassifier,BaggingClassifier]",      
 
             "Pre-saved model folder (str)  : Under the folder [models], choose a folder which have pretrained models in it. The names describe the sampling rate and features it was trained on . Folders available are:",
-            "                                [16k_3feat, , 16k_4feat, 16k_5feat, 44k_3feat, 44k_4feat, 44k_5feat]",
-            "                                the reccomended model to use is 16k_3feat ( 16k 3 features trained with JL corpus audio too",
+            "                                [16k_2feat, 16k_3feat, , 16k_4feat, 16k_5feat, 44k_3feat, 44k_4feat, 44k_5feat]",
+            "                                the reccomended model to use is 16k_2feat ( 16k 2 features - mfcc and mel spectogram trained with JL corpus audio too",
             "                                NOTE: If training/testing on different combinations of frequency and features, please create a new folder in the folder [models], and record the name of the new folder to [saved model folder] "  ,
             "                                      In doing this, please make sure the first 3 characters are the sample rate ie. 22k",
             
@@ -82,7 +82,7 @@
 
     "TRAIN FIELD SETTING" : {
         "TRAIN MULTIPLE SETTING": {
-            "Multiple classifiers to train": ["DecisionTreeClassifier","GradientBoostingClassifier","MLPClassifier"]
+            "Multiple classifiers to train":["KNeighborsClassifier", "SVC", "GradientBoostingClassifier", "DecisionTreeClassifier", "MLPClassifier", "BaggingClassifier"]
         },
 
         "FIELD DESCRIPTION": [
